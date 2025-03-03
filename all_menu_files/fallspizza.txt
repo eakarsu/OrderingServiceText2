@@ -1,0 +1,745 @@
+Pizza Toss Your Own:
+Gluten-free, cheese - $12.99
+Regular 12 inch small, 8 slices - $12.99
+Regular 14 inch large, 12 slices - $16.99
+Regular 34 inch party size, 24 slices - $22.99
+
+Protein toppings:
+Gluten-free +$1.5
+Regular small +$1.5
+Regular large +$2.5
+Regular party size +3.5
+Options: pepperoni, italian sausage, hamburger, ham, meatball
+
+Premium toppings:
+Gluten-free +$3
+Regular small +$3
+Regular large +$5
+Regular party size +7
+Options: bacon, chicken, steak, gyro, ricotta, anchovies, gorgonzola, burrata, feta
+
+Veggie toppings:
+Gluten-free +$1.5
+Regular small +$1.5
+Regular large +$2.5
+Regular party size +3.5
+Options: pineapple, spinach, mushroom, onion, green pepper, eggplant, tomato, fresh garlic, pickled red onion, black olives, broccoli, jalapeno pepper, arugula, basil, artichoke hearts, mikes hot honey.
+Sauces: red, white riccota, garlic butter, pesto, fresh garlic olive oil, bleu cheese.
+Cheeses: mozzarella, gorgonzalo, feta, cheddar
+
+Crust options:
+thick crust, small +$1.99,
+thick crust, large +$2.99,
+thick crust, party size +$399
+thin crust, free
+
+Jumbo Calzones:
+Our own fresh dough with mozzarella and ricotta cheese.
+Served with a side of tangy, tomato marinara sauce.
+
+Cheese $15.99
+Each additional topping is +$1.99.
+Protein toppings: pepperoni, italian sausage, hamburger, ham, meatball.
+Premium toppings: bacon, chicken, steak, gyro, ricotta, anchovies, gorgonzola, burrata, feta.
+Veggie toppings: pineapple, spinach, mushroom, onion, green pepper, eggplant, tomato, fresh garlic, pickled red onion, black olives, broccoli, jalapeno pepper, arugula, basil, artichoke hearts, mikes hot honey.
+
+Philly Steak, $18.99. Shaved steak, onions, mushrooms, green peppers, ricotta, mozzarella.
+Meatball Special, $18.99. Meatball, onions, mushrooms, green peppers, ricotta, mozzarella.
+House Special, $18.99. Italian sausage, pepperoni, hamburger, green peppers, onions, mushrooms, red sauce, ricotta, mozzarella.
+Meat Lover, $18.99. Pepperoni, Italian sausages, ham, bacon, ricotta, mozzarella.
+Bufallo Chicken, $18.99. Grilled chicken, choice of bufallo sauce, ricotta, mozzarella
+
+Sauces: Honey BBQ, Gold Fever, Mild, Spicy Garlic, Hot, Fire.
+
+Signature Pizzas:
+House Special:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Italian sausage, pepperoni, hamburger, green peppers, onions, mushrooms, red souce, mozzarella.
+
+House Plus:
+Gluten-free $18.99
+Small $18.99
+Large $25.99
+Party size $35.99
+Ingredients: Italian sausage, pepperoni, hamburger, green peppers, onions, mushrooms, bacon, black olives, red souce, mozzarella.
+
+Meat Lovers:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Pepperoni, Italian sausage, hamburger, ham, bacon, red sauce, mozzarella.
+
+Pesto:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Grilled chicken, feta cheese, tomato, black olives, red onions, fresh basil, pesto sauce, mozzarella.
+
+Black Garlic Pepperoni:
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Black garlic, pepperoni, red sauce, mozzarella.
+
+Hawaian:
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Bacon, ham, pineapple, red sauce, mozzarella.
+
+Vecchia Signora The Old Lady:
+vegeterian
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Gorgonzola, mozzarella, tomato, oregano, red pepper flakes, thin crust.
+
+Chicken Bacon Ranch:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Grilled chicken, bacon, ranch, mozzarella.
+
+Crispy Buffalo Chicken:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Crispy chicken, red onions, bleu cheese, choice of buffalo sauce, mozzarella.Sauce options: Honey BBQ, BBQ, cold fever, mild, spicy, garlic, hot, fire.
+
+Triple Pepperoni:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: 3x pepperoni, calabrian chili oil, Mikes hot honey, red sauce, mozzarella.
+
+Cali Dream:
+vegeterian
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Artichoke hearts, tomato, olives, fresh garlic olive oil, mozzarella.
+
+Alfredo:
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Grilled chicken, broccoli, alfredo sauce, mozzarella.
+
+Chicken Broccoli:
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Grilled chicken, broccoli, white ricotta sauce, mozzarella.
+
+Vegetatian:
+vegetarian
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Mushrooms, tomato, olives, green peppers, spinach, broccoli, onions, fresh garlic, red sauce, mozzarella.
+
+Loaded Potato:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Bacon, pickled red onions, mashed potato, broccoli, white sauce, mozzarella, thin crust.
+
+Margherita:
+vegeterian
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Tomato, fresh basil, white ricotta sauce, mozzarella.
+
+Eddys Special:
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Grilled chicken, bacon, spinach, ricotta, white ricotta sauce, mozzrella.
+
+Porta Nolana:
+vegetarian
+Gluten-free $16.99
+Small $16.99
+Large $23.99
+Party size $34.99
+Ingredients: Spinach, tomato, feta cheese, black olives, fresh garlic olive oil, mozzarella.
+
+Salad Pizza:
+vegetarian
+Gluten-free $17.99
+Small $17.99
+Large $24.99
+Party size $35.99
+Ingredients: Pesto, mozzarella, arugula salad, balsalmic glaze, burrata, EVOD, pine nuts, sun dried tomatoes, shavede parmesan.
+
+
+Signature Calzones:
+House Special Calzone:
+$18.99
+Ingredients: Italian sausage, pepperoni, hamburger, green peppers, onions, mushrooms, red souce, mozzarella.
+
+House Plus Calzone:
+$18.99
+Ingredients: Italian sausage, pepperoni, hamburger, green peppers, onions, mushrooms, bacon, black olives, red souce, mozzarella.
+
+Meat Lovers Calzone:
+$18.99
+Ingredients: Pepperoni, Italian sausage, hamburger, ham, bacon, red sauce, mozzarella.
+
+Pesto Calzone:
+$18.99
+Ingredients: Grilled chicken, feta cheese, tomato, black olives, red onions, fresh basil, pesto sauce, mozzarella.
+
+Black Garlic Pepperoni Calzone:
+$18.99
+Ingredients: Black garlic, pepperoni, red sauce, mozzarella.
+
+Hawaian Calzone:
+$18.99
+Ingredients: Bacon, ham, pineapple, red sauce, mozzarella.
+
+Vecchia Signora - The Old Lady Calzone:
+vegeterian
+$18.99
+Ingredients: Gorgonzola, mozzarella, tomato, oregano, red pepper flakes, thin crust.
+
+Chicken Bacon Ranch Calzone:
+$18.99
+Ingredients: Grilled chicken, bacon, ranch, mozzarella.
+
+Crispy Buffalo Chicken Calzone:
+$18.99
+Ingredients: Crispy chicken, red onions, bleu cheese, choice of buffalo sauce, mozzarella.Sauce options: Honey BBQ, BBQ, cold fever, mild, spicy, garlic, hot, fire.
+
+Triple Pepperoni Calzone:
+$18.99
+Ingredients: 3x pepperoni, calabrian chili oil, Mikes hot honey, red sauce, mozzarella.
+
+Cali Dream Calzone:
+vegeterian
+$18.99
+Ingredients: Artichoke hearts, tomato, olives, fresh garlic olive oil, mozzarella.
+
+Alfredo Calzone:
+$18.99
+Ingredients: Grilled chicken, broccoli, alfredo sauce, mozzarella.
+
+Chicken Broccoli Calzone:
+$18.99
+Ingredients: Grilled chicken, broccoli, white ricotta sauce, mozzarella.
+
+Vegetatian Calzone:
+$18.99
+Ingredients: Mushrooms, tomato, olives, green peppers, spinach, broccoli, onions, fresh garlic, red sauce, mozzarella.
+
+Loaded Potato Calzone:
+$18.99
+Ingredients: Bacon, pickled red onions, mashed potato, broccoli, white sauce, mozzarella, thin crust.
+
+Margherita Calzone:
+vegeterian
+$18.99
+Ingredients: Tomato, fresh basil, white ricotta sauce, mozzarella.
+
+Eddys Special Calzone:
+$18.99
+Ingredients: Grilled chicken, bacon, spinach, ricotta, white ricotta sauce, mozzrella.
+
+Porta Nolana Calzone:
+$18.99
+Ingredients: Spinach, tomato, feta cheese, black olives, fresh garlic olive oil, mozzarella.
+
+Salad Pizza Calzone:
+vegetarian
+$18.99
+Ingredients: Pesto, mozzarella, arugula salad, balsalmic glaze, burrata, EVOD, pine nuts, sun dried tomatoes, shaved parmesan.
+
+
+Handhelds - Grinders, Wraps, Pitas:
+8 inch Grinder $9.99
+16 inch Grinder $14.99
+Pita $9.99
+Deluxe Pita $12.99
+Wrap $9.99
+Deluxe Wrap $12.99
+Description: All grinders, wraps, and pitas come toasted. Deluxe pitas and wraps are served with fries and pickles.
+
+Deli:
+Cold Cut:
+Ingredients: Ham, pepperoni, salami, lettuce, tomato, mayo, provolone cheese.
+
+Turkey:
+Ingredients: Turkey, lettuce, tomato, mayo, provolone cheese.
+
+Ham & Cheese:
+Ingredients: Ham, lettuce, tomato, provolone cheese.
+
+Pastrami:
+Ingredients: Pastrami, lettuce, tomato, mayo, provolone cheese.
+
+Grill:
+Steak & Cheese:
+Ingredients: Shaved steak, lettuce, tomato, mayo, provolone cheese.
+
+Cheeseburger:
+Add $1 to price
+Ingredients: Angus patty, lettuce, tomato, mayo, american cheese.
+
+Grilled chicken:
+Ingredients: Grilled chicken, lettuce, tomato, mayo, provolone cheese.
+
+BLT:
+Ingredients: Bacon, lettuce, tomato, mayo, provolone cheese.
+
+Chicken Cutlet:
+Ingredients: Fried chicken cutlet, lettuce, tomato, mayo, provolone cheese.
+
+Parmagiana:
+Chicken Parm:
+Ingredients: Chicken cutlet, marinara sauce, parmasean, mozzarella.
+
+Meatball Parm:
+Ingredients: Meatball, marinara sauce, parmesean, mozzarella.
+
+Eggplant Parm:
+Ingredients: Eggplant, marinara sauce, parmesean, mozzarella.
+
+Seafood:
+Tuna:
+Ingredients: Tuna salad, lettuce, tomato, mayo, provolone cheese.
+
+Fillet O Fish:
+Ingredients: Beer battered Alaskan cod, lettuce, tomato, tartar, provolone cheese.
+
+Upgrade any deluxe handheld:
+Truffle fries +$2
+Onion rings +$2
+Curly fries +$1
+Sweet potato fries +$1
+Whole wheat wrap +$1
+
+Signature Handhelds - Grinders, Wraps, Pitas:
+8 inch Grinder $10.99
+16 inch Grinder $15.99
+Pita $10.99
+Deluxe Pita $13.99
+Wrap $10.99
+Deluxe Wrap $13.99
+Description: All signature grinders, wraps, and pitas come toasted. Deluxe pitas and wraps are served with fries and pickles.
+
+Gourmet:
+Spicy Philly:
+Ingredients: Shaved steak, onions, mushrooms, jalapeno peppers, mayo, cheddar cheese.
+
+Philly:
+Ingredients: Shaved steak, onions, mushrooms, sweet peppers, mayo, provolone cheese.
+
+Cambridge:
+Ingredients: Shaved steak, pickles, lettuce, tomato, bleu cheese.
+
+Pesto Chicken:
+Ingredients: Grilled chicken, red onions, tomato, lettuce, pesto sauce, feta cheese.
+
+Chicken Stir Fry:
+Ingredients: Grilled chicken, teriyaki, onions, sweet peppers, mushroom, tomato, lettuce, provolone cheese.
+
+Crispy Chicken:
+Ingredients: Crispy chicken, ranch, tomato, lettuce, bacon, provolone cheese.
+
+Buffalo Chicken:
+Ingredients: Crispy chicklen, sauce of choice, tomato, lettuce, bleu cheese.
+Sauce options: BBQ, BBQ Gold Fever, Mild, Spicy Garlic, Hot, Fire.
+
+Gyro:
+Ingredients: Lamb and beef gyro, tzatziki, red onions, lettuce, tomato.
+
+Truffle Mushroom:
+Ingredients: Angus burger patty, bacon, mushroom, lettuce, tomato, (truffle mayo, swiss cheese) or (mayo, cheddar cheese).
+
+Chipotle Chicken:
+Ingredients: Grilled chicken, red onions, chipotle sauce, lettuce, tomato, mayo, cheddar cheese.
+
+Reuben-ish:
+Ingredients: Choice of corned beef or pastrami, thousand islands, sauerkraut, swiss cheese.
+
+Upgrade any signature handheld:
+Truffle fries +$2
+Onion rings +$2
+Curly fries +$1
+Sweet potato fries +$1
+Whole wheat wrap +$1
+
+
+Burgers:
+Home Pressed, Fresh, Double Patty 8oz. Angus Burger.
+All burgers are charcoal grilled. Served with fries and pickles on the side.
+
+Classic Cheeseburger $14.99
+Ingredients: 8 oz double patty, lettuce, tomato, mayo, american cheese, Brioche bun.
+
+Bacon Cheeseburger $15.99
+Ingredients: 8 oz double patty, lettuce, tomato, mayo, american cheese, bacon, Brioche bun.
+
+Ultimate Burger $15.99
+Ingredients: 8 oz double patty, lettuce, tomato, siracha aioli, pickled red onions, american cheese, jalapenos, Brioche bun.
+
+Truffle Mushroom Burger $15.99
+Ingredients: 8 oz double patty, lettuce, tomato, swiss cheese, truffle mayo, mushrooms, bacon, Brioche bun.
+
+
+Quesadillas:
+Served with salsa and sour cream.
+
+Cheese $10.99
+Vegetarian
+Ingredients: cheddar cheese.
+
+Chicken $13.99
+Ingredients: Grilled chicken, onion, mushrooms, cheddar cheese.
+
+Chicken and Cheese $12.99
+Ingredients: Grilled chicken, cheddar cheese.
+
+Sweet and Spicy $13.99
+Ingredients: Crispy chicken, siracha aioli, Mikes hot honey, cheddar cheese.
+
+Steak $13.99
+Ingredients: Shaved steak, onion, sweet peppers, mushrooms, cheddar cheese.
+
+ALL NEW - Panini:
+All paninis are served with fries and coleslaw on the side.
+Caprese $13.99
+vegetarian
+Ingredients: Tomato, basil, pesto, arugula, mozzarella cheese.
+
+TBC $13.99
+Ingredients: Turkey, bacon, red roasted peppers, chipotle sauce, provolone cheese.
+
+Pesto Chicken $13.99
+Ingredients: Grilled chicken, pickled red onions, roasted red peppers, pesto suce, provolone cheese.
+
+Club Sandwiches:
+All clubs are served with fries and coleslaw on the side.
+
+Turkey $13.99
+Ingredients: Turkey, bacon, lettuce, tomato, mayo, provolone cheese.
+
+BLT $13.99
+Ingredients: Bacon, lettuce, tomato, mayo, provolone cheese.
+
+Grilled Chicken $13.99
+Ingredients: Grilled chicken, bacon, lettuce, tomato, mayo, provolone cheese.
+
+Upgrade any burger, panini or club:
+Truffle fries +$2
+Onion rings +$2
+Curly fries +$1
+Sweet potato fries +$1
+
+
+Salads:
+Home made fresh daily.
+All salads are served with toasted garlic bread or pita, and chice of dressing on the side.
+Dressing options: Ranch, bleu cheese, creamy italian, caesar, balsalmic vinegar, raspberry vinegar, thousand island, greek, french, honey mustard.
+
+Green Salads:
+Garden $9.99
+Gluten-free
+Ingredients: House green mix, cucumber, tomato, green peppers, onions, kalamata olives.
+
+Caesar $9.99
+Ingredients: Romaine lettuce, tomato, croutons, parmesan.
+
+Greek $11.99
+Gluten-free
+Ingredients: Garden salad, grape leaves, pepperoncini, feta cheese.
+
+Grilled Chicken Salads:
+Grilled Chicken $12.99
+Ingredients: Grilled chicken, garden salad.
+
+Caesar with Grilled Chicken $12.99
+Ingredients: Grilled chicken, romaine lettuce, tomato, croutons, parmesan.
+
+Greek with Grilled Chicken $13.99
+Gluten-free
+Ingredients: Grilled chicken, garden salad, grape leaves, pepperoncini, feta cheese.
+
+Gorgonzola with chicken $13.99
+Gluten-free
+Ingredients: Grilled chicken, garden salad, gorgonzola.
+
+House with Grilled Chicken $13.99
+Gluten-free
+Ingredients: Grilled chicken, garden salad, bacon, egg, feta cheese, mozzarella.
+
+Chicken Souvlaki $13.99
+Ingredients: Grilled chicken, garden salad, feta cheese, tzatziki sauce, sliced pita bread.
+
+Cajun Chicken $12.99
+Ingredients: Cajun grilled chicken, garden salad, cheddar cheese.
+
+Spicy Southwest $13.99
+Ingredients: Grilled chicken, garden salad, tortilla strips, corn, jalapenos, cheddar cheese.
+
+Falls Special $13.99
+Gluten-free
+Ingredients: Grilled chicken, garden salad, bacon, ham, mozzarella.
+
+Crispy Chicken Salads:
+Crispy Chicken $12.99
+Ingredients: Crispy chicken, garden salad.
+
+Buffalo Chicken $12.99
+Ingredients: Crispy chicken, garden salad, choice of bufallo sauce.
+Sauce options: BBQ, BBQ Gold, Gold fever, mild, spicy garlic, hot, fire.
+
+Deli Salads:
+Cheff $12.99
+Gluten-free
+Ingredients: Garden salad, ham, salami, turkey, american cheese, egg.
+
+Antipasto $12.99
+Ingredients: Garden salad, ham, salami, pepperoni, mozzarella.
+
+
+Wings:
+Served with celery and bleu cheese or ranch.
+
+Traditional:
+Gluten-free
+6 pieces $8.99
+12 pieces $14.99
+18 pieces $22.99
+24 pieces $28.99
+30 pieces $35.99
+36 pieces $41.99
+50 pieces $57.99
+
+Boneless:
+Gluten-free
+6 pieces $10.99
+12 pieces $18.99
+
+Sauce options: Teriyaki, honey BBQ, BBQ, garlic parm, gold fever, mango habanero, mild, spicy garlic, thai sweet chili, hot, fire, suicide.
+
+
+Desserts:
+Tiramisu $7.99
+Pistachio & Ricotta $7.99
+Red Velvet $7.99
+Cheesecake $7.99
+Chocolate Cake $7.99
+Carrot Cake $7.99
+Cannoli $8.5
+Fried Dough (with cinnamon and sugar) $7.99
+Nutella bites (fried dough with nutella and sugar) $9.5
+
+Beverages:
+Sodas:
+Can $2.5
+Glass (mexican coca cola) $3.99
+20oz $3.99
+2 liter $4.99
+Coca-cola, coke zero, diet coke, sprite, orange fanta, grape fanta, root beer, powerade, dr. pepper, ginger ale, fruit punch, iced tea.
+
+
+Appetizers and sides:
+French Fries $5.99
+French Fries with Cheese $8.99
+French Fries with Bacon and Cheese $9.99
+
+Curly Fries $6.99
+Curly Fries with Cheese $9.99
+Curly Fries with Bacon and Cheese $10.99
+
+Sweet Potato Fries $6.99
+Gluten-fee and vegetarian
+Crispy lower calorie, gluten-free option to regular fries.
+
+Onion Rings $8.99
+Golden battered onion rings.
+
+Fried Mozzarella Sticks $10.99
+6 piece mozzarella sticks, marinara dipping sauce.
+
+Fried Cheese Ravioli $9.99
+6 piece cheese ravioli, marinara dipping sauce.
+
+Fried Pickles $9.99
+10oz fried pickles, thousand island dipping sauce.
+
+Jalapeno Poppers $11.99
+6 piece cheddar filled jalapeno poppers, marinara dipping sauce.
+
+Chicken Tenders $11.99
+5 piece chicken tenders, BBQ dipping sauce.
+
+Burrata Caprese $14.99
+vegetarian
+Burrata, fresh basil, tomato, sundried tomato, balsalmic glaze, EVOO served with 4 piece fresh hommaderustic bread.
+
+Fried Shrimp $11.99
+7 piece fried shrimp, cocktail dipping sauce.
+
+Fried Calamari $11.99
+7oz fried calamari, marinara dipping sauce.
+
+Falls Nachos $13.99
+Tortilla chips, hamburger, jalapenos, olives, tomato, nacho cheese, side sour cream, side salsa.
+
+Potato Skins $12.99
+vegetatian option: broccoli and cheese.
+non-vegetarian option: bacon and cheese.
+
+Baked Meatballs $11.99
+Meatball, marinara, parmesan, mozzarella.
+
+Baked Sausage $11.99
+Sweet and spicy sausage, marinara, parmesan, mozzarella.
+
+Garlic Knots $10.99
+vegetarian
+Garlic knots, garlic butter, parmesan, marinara dipping sauce.
+
+
+Breadsticks:
+Brushed with olive oil, garlic and parmesan.
+
+Plain Breadsticks $9.99
+vegetarian
+Marinara dipping sauce.
+
+Cheese Breadsticks $10.99
+vegetarian
+Mozzarella, marinara dipping sauce.
+
+Gorgonzola Breadsticks $10.99
+vegetarian
+Mozzarella, gargonzola, marinara dipping sauce.
+
+
+Kids Meal:
+Nuggets and Fries $11.5
+10 chicken nuggets, fries, side BBQ dipping sauce.
+
+Tenders and Fries $11.5
+4 chicken tenders, fries, side BBQ dipping sauce.
+
+Grilled Cheese and Fries $10.99
+vegetarian
+White bread, american cheese, fries.
+
+
+Dinner:
+All dinners are served with toasted garlic bread, side salad and choice of dressing.
+Dressing options: Ranch, bleu cheese, italian, creamy italian, caesar, balsalmic vinegar, raspberry vinegar, thousand island, greek, french, honey mustard.
+
+Pastas:
+Chicken Parmigiana $22.99
+Ingredients: Chicken cutlet, marinara, mozzarella, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Spaghetti and Meatball $22.99
+Ingredients: Meatball, marinara, parmesan,choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Sausage Parmagiana $22.99
+Ingredients: Sausage, marinara, parmesan, mozzarella, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Pasta with Meatsauce $19.99
+Ingredients: Bolognese, marinara, parmesan, mozzarella, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Chicken Broccoli Alfredo $19.99
+Ingredients: Chicken, broccoli, garlic, alfredo sauce, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Pasta Alfredo $16.99
+vegetarian
+Ingredients: Garlic, alfredo sauce, parmesan, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Shrimp Alfredo $27.99
+Ingredients: Shrimp, garlic, alfredo sauce, parmesan, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Chicken Broccoli in Garlic $19.99
+Ingredients: Grilled chicken, broccoli, garlic butter sauce, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Gnocchi Alla Sorrentina $22.99
+Ingredients: Potato gnocchi, grilled chicken, roasted red peppers, white wine, alla sorrentina sauce, calabrian chili.
+
+Shrimp Scampi $27.99
+Ingredients: Shrimp, lemon butter sauce, garlic, parsley, choice of pasta.
+Pasta options: Ziti, fetticcine, spaghetti, or gluten free penne for an extra +$1
+
+Baked Pastas:
+Lasagna $22.99
+Ingredients: House lasagna, bolognese sauce, ricotta, baked mozzarella.
+
+Cheese Ravioli $19.99
+vegetarian
+Ingredients: Ricotta ravioli, marinara, mozzarella.
+
+Italian Combo $19.99
+vegetarian
+Ingredients: Ricotta ravioli, manicotti, stuffed shells, mozzarella.
+
+Manicotti $20.99
+vegetarian
+Ingredients: Manicotti, marinara, mozzarella.
+
+Stuffed Shells $21.99
+vegetarian
+Ingredients: Three cheese stuffed shells, marinara, mozzarella.
+
+
+Sautees:
+Chicken Stir Fry $21.99
+Gluten-free
+Ingredients: Grilled chicken, red roasted pepper, onion, broccoli, mushroom, garlic, teriyaki, over rice.
+
+Fried Chicken:
+Chicken Tender $20.99
+Ingredients: 5 piece chicken tender, fries, side BBQ dipping sauce.
+
+Seafood:
+Fish and Chips $21.99
+Ingredients: 2 piece alaskan cod, fries, lemon, side tartar sauce.
+
+
+Deals:
+Pizza Tuesdays: 50% off for any pizza on Tuesdays.
+Wings Wednesdays: 50% off wings on Wednesdays.
+Small cheese pizza, 6 wings and 2 liter soda, $2 off.
+Large cheese pizza, 12 wings and 2 liter soda, $3 off.
+Party size cheese pizza, 24 wings and 2 liter soda, $4 off.
+Party size pizza with 3 toppings $28.99.
+2 8inch grinders, 2 small chips, 2 can sodas, $3 off.
+2 16inch grinders, 2 small chips, 2 can sodas, $4 off.
+Large cheese pizza, cheese calzone, 12 wings and 2 liter soda, $3 off.
+6 wings and fries combo $11.
+If you order is $50 or more, 2 liter soda is free.
+

@@ -1,0 +1,721 @@
+[Begin Category] Acai Bowls
+- Acai Bowl: $12.97
+  Acai, Banana, Blueberry, Strawberry, Granola, Coconut, Honey
+[End Category]
+
+[Begin Category] Bottled Drinks
+- Apple Juice: $3.59
+- Arizona Iced Cold Brew Green Tea: $4.09
+- Arizona Iced Cold Brew Iced Tea: $4.09
+- Arizona Iced Cold Brew Sweet Tea: $4.09
+- Arizona Iced Cold Brew Unsweet Tea: $4.09
+- Arizona Iced Tea 16 oz Arnold Palmer: $3.59
+- Arizona Iced Tea 16 oz Diet Green Tea: $3.59
+- Arizona Iced Tea 16 oz Diet Iced Tea: $3.59
+- Arizona Iced Tea 16 oz Green Tea: $3.59
+- Arizona Iced Tea 16 oz Iced Tea: $3.59
+- Coke 20oz soda: $3.59
+- Cranberry Juice: $3.59
+- Diet Coke 20oz soda: $3.59
+- Diet Dr. Pepper 20oz soda: $3.59
+- Diet Pepsi 20oz soda: $3.59
+- Diet Sprite 20oz soda: $3.59
+- Dr. Pepper 20oz soda: $3.59
+- Essentia 1 L: $4.89
+- Gatorade Cool Blue: $3.59
+- Gatorade Frost: $3.59
+- Gatorade Fruit Punch: $3.59
+- Gatorade Fruit Punch Zero: $3.59
+- Gatorade Glacier Cherry: $3.59
+- Gatorade Glacier Cherry Zero: $3.59
+- Gatorade Iceberg: $3.59
+- Gatorade Lemon Lime: $3.59
+- Gatorade Lemon Lime Zero: $3.59
+- Gatorade Orange: $3.59
+- Grape Juice: $3.59
+- Grapefruit Juice: $3.59
+- Monster: $3.50
+- Monster Rehab: $3.50
+- Monster Zero Sugar: $3.50
+- Orange Juice: $3.59
+  OJ
+- Orange Mango Juice: $3.59
+- Orange Pineapple Juice: $3.59
+- Pepsi 20oz soda: $3.59
+- Poland Spring Water 1 L: $4.23
+- Poland Spring Water 1.5 L: $4.89
+- Poland Spring Water 500 mL: $2.55
+- Poland Spring Water 700 mL Sport Bottle: $3.59
+- Red Bull 8.4 oz.: $2.95
+- Red Bull Sugar Free 8.4 oz: $2.95
+- Snapple 16 oz Fruit Punch: $2.75
+- Snapple 16 oz Grapeade: $2.75
+- Snapple 16 oz Green Tea: $2.75
+- Snapple 16 oz Half and Half: $2.75
+- Snapple 16 oz Half and Half Zero Sugar: $2.75
+- Snapple 16 oz Honey Sweet Tea: $2.75
+- Snapple 16 oz Kiwi Strawberry: $2.75
+- Snapple 16 oz Lemon Tea: $2.75
+- Snapple 16 oz Mango Madness: $2.75
+- Snapple 16 oz Mango Tea: $2.75
+- Snapple 16 oz Orangeade: $2.75
+- Snapple 16 oz Peach Tea : $2.75
+- Snapple 16 oz Raspberry Peach: $2.75
+- Snapple 16 oz Raspberry Tea: $2.75
+- Snapple 16 oz Snapple Apple: $2.75
+- Snapple 16 oz Zero Sugar Lemon Tea: $2.75
+- Snapple 16 oz Zero Sugar Peach Tea: $2.75
+- Snapple 16 oz Zero Sugar Raspberry Tea: $2.75
+- Sprite 20oz soda: $3.59
+- Vegetable Juice: $3.59
+- Vitamin Water Energy (Tropical Citrus): $3.59
+- Vitamin Water Essential (Orange): $3.59
+- Vitamin Water Focus (Kiwi Strawberry): $3.59
+- Vitamin Water Power-C (Dragonfruit): $3.59
+- Vitamin Water Rise (Orange, Zero Sugar): $3.59
+- Vitamin Water Squeezed (Lemonade, Zero Sugar): $3.59
+- Vitamin Water XXX (Acai Blueberry Pomegranate): $3.59
+[End Category]
+
+[Begin Category] Breakfast Combos
+- French Toast: $9.95
+  Texas style french toast served with butter and syrup
+- Healthy One: $11.64
+  Three egg whites, turkey, spinach, Alpine Lace Swiss, in a whole wheat wrap.
+- Hungry Man: $12.95
+  Three eggs, ham, bacon, sausage, and cheese on a hero.
+- Melville Platter: $12.95
+  Two eggs, ham, bacon, sausage, home-fries, and toast.
+- Protein Slammer: $12.94
+  Five egg whites, extra turkey, Alpine Lace Swiss cheese, on a whole wheat wrap.
+- Super Thing: $12.94
+  Two eggs, extra bacon, extra sausage, onions, and American cheese.
+[End Category]
+
+[Begin Category] BYO Breakfast
+- Bagel (Base Price: $0.00)
+  Customizable options:
+    Bagel Options (Rule: Select 1)
+      - Cinnamon Raisin (Small) - $1.50
+      - Egg (Small) - $1.50
+      - Egg Everything (Small) - $1.50
+      - Everything (Small) - $1.50
+      - Everything Flat  (Small) - $2.00
+      - Hero (Small) - $0.00
+      - Onion (Small) - $1.50
+      - Plain (Small) - $1.50
+      - Plain Flat (Small) - $2.00
+      - Poppy (Small) - $1.50
+      - Poppy Flat (Small) - $2.00
+      - Salt (Small) - $1.50
+      - Sesame (Small) - $1.50
+      - Sesame Flat  (Small) - $2.00
+      - Whole Wheat (Small) - $1.50
+      - Whole Wheat Everything (Small) - $1.50
+    Bagel Spreads (Rule: None)
+      - Bacon (Small) - $4.00
+      - Butter (Small) - $1.00
+      - Cream Cheese (Small) - $2.00
+      - Double toated (Small) - $0.00
+      - Grape Jelly (Small) - $1.00
+      - Green Olive Cream Cheese (Small) - $2.50
+      - Lox (Small) - $6.00
+      - Onion (Small) - $0.75
+      - Peanut Butter (Small) - $2.00
+      - Plain (Small) - $0.00
+      - Scallion Cream Cheese (Small) - $2.50
+      - Toasted (Small) - $0.00
+      - Tomato (Small) - $0.75
+      - Vegetable Cream Cheese  (Small) - $2.50
+- Breakfast Grill (Base Price: $2.60)
+  Build your Own Breakfast
+  Customizable options:
+    Breakfast Add-ons (Rule: Select up to 4 items)
+      - Avocado (Small) - $2.00
+      - Broccoli (Small) - $0.50
+      - Green Peppers (Small) - $0.50
+      - Hash Brown (Small) - $1.50
+      - Home-Fries (Small) - $1.50
+      - Hot Peppers (Small) - $0.50
+      - Mushrooms (Small) - $0.50
+      - Onions (Small) - $0.50
+      - Spinach (Small) - $0.50
+    Breakfast Bread (Rule: Select 1)
+      - Cinnamon Raisin Bagel (Medium) - $0.50
+      - Croissant (Medium) - $2.00
+      - Egg Bagel (Medium) - $0.50
+      - Egg Everything Bagel (Medium) - $0.50
+      - English Muffin (Medium) - $0.50
+      - Everything Bagel (Medium) - $0.50
+      - Hero (Medium) - $1.00
+      - Onion Bagel (Medium) - $0.50
+      - Onion Roll (Medium) - $0.50
+      - Pita (Medium) - $1.00
+      - Plain Bagel (Medium) - $0.50
+      - Platter (Medium) - $0.00
+      - Poppy Bagel (Medium) - $0.50
+      - Roll (Medium) - $0.00
+      - Rye Bread (sliced) (Medium) - $0.00
+      - Salt Bagel (Medium) - $0.50
+      - Sesame Bagel (Medium) - $0.50
+      - Spinach Wrap (Medium) - $1.00
+      - White Bread (sliced) (Medium) - $0.00
+      - White Wrap  (Medium) - $1.00
+      - Whole Wheat Bagel (Medium) - $0.50
+      - Whole Wheat Bread (sliced) (Medium) - $0.00
+      - Whole Wheat Everything Bagel (Medium) - $0.50
+      - Whole Wheat Roll (Medium) - $0.50
+      - Whole Wheat Wrap (Medium) - $1.00
+    Breakfast Cheese (Rule: Select up to 2 items)
+      - American Cheese  (Medium) - $1.00
+      - Blue Cheese Crumble (Medium) - $1.00
+      - Cheddar (Medium) - $1.00
+      - Feta Cheese (Medium) - $1.00
+      - Fresh Mozzarella  (Medium) - $1.00
+      - Mozzarella (Medium) - $1.00
+      - Muenster (Medium) - $1.00
+      - Pepperjack (Medium) - $1.00
+      - Provolone (Medium) - $1.00
+      - Swiss (Medium) - $1.00
+    Breakfast Dressing (Rule: Select up to 3 items)
+      - Balsamic Vinaigrette (Medium) - $0.00
+      - Balsamic Vinegar (Medium) - $0.00
+      - Blue Cheese (Medium) - $0.00
+      - Buffalo Sauce (Medium) - $0.00
+      - Caesar (Medium) - $0.00
+      - Cajun Mayo (Medium) - $0.00
+      - Crushed Red Pepper (Medium) - $0.00
+      - Dressing on the Side (Medium) - $0.00
+      - Extra Dressing (Medium) - $0.00
+      - Fat-Free Honey Dijon (Medium) - $0.00
+      - Fat-Free Italian (Medium) - $0.00
+      - Fat-Free Ranch (Medium) - $0.00
+      - Fat-Free Raspberry Vinaigrette (Medium) - $0.00
+      - Greek (Medium) - $0.00
+      - Honey Dipp Sauce (Medium) - $0.00
+      - Honey Mustard (Medium) - $0.00
+      - Horseraddish Mayo (Medium) - $0.00
+      - Hot Sauce (Medium) - $0.00
+      - Italian (Medium) - $0.00
+      - Ketchup (Medium) - $0.00
+      - Light Dressing (Medium) - $0.00
+      - Mayo (Medium) - $0.00
+      - Mustard (Medium) - $0.00
+      - Oil & Vinegar (Medium) - $0.00
+      - Olive Oil (Medium) - $0.00
+      - Pepper (Medium) - $0.00
+      - Ranch (Medium) - $0.00
+      - Raspberry Vinaigrette (Medium) - $0.00
+      - Red Vinegar (Medium) - $0.00
+      - Russian (Medium) - $0.00
+      - Salt (Medium) - $0.00
+      - Santa Fe (Medium) - $0.00
+      - Sesame Ginger (Medium) - $0.00
+      - SPK (Medium) - $0.00
+    Breakfast Egg Option (Rule: None)
+      - 4 Eggs (Small) - $3.00
+      - Egg Whites (Small) - $0.00
+      - Fried Well Done (Small) - $0.00
+      - Omelet (Small) - $0.00
+      - Over Easy (Small) - $0.00
+      - Over Hard (Small) - $0.00
+      - Over Medium (Small) - $0.00
+      - Scrambled (Small) - $0.00
+      - Scrambled Soft (Small) - $0.00
+      - Scrambled Well Done (Small) - $0.00
+      - Sunny Side Up (Small) - $0.00
+    Breakfast Egg Quantity (Rule: None)
+      - 1 Egg (Small) - $0.75
+      - 2 Eggs (Small) - $1.50
+      - 3 Eggs (Small) - $2.25
+      - 5 Eggs (Small) - $3.75
+      - 6 Eggs (Small) - $4.50
+      - 7 Eggs (Small) - $5.25
+      - 8 Eggs (Small) - $6.00
+      - Fried (Small) - $0.00
+    Breakfast Meat (Rule: Select up to 1 item)
+      - Bacon (Small) - $2.00
+      - Bologna (Small) - $1.50
+      - Fried Chicken Cutlet (Small) - $2.50
+      - Grilled Chicken (Small) - $2.50
+      - Ham (Small) - $1.50
+      - Honey Turkey (Small) - $2.00
+      - No Meat (Small) - $0.00
+      - Pastrami (Small) - $2.50
+      - Pepper Turkey (Small) - $2.00
+      - Pepperoni (Small) - $2.00
+      - Salami (Small) - $2.00
+      - Sausage (Small) - $1.50
+      - Steak (Small) - $2.00
+      - Turkey (Small) - $2.00
+      - Turkey Bacon (Small) - $2.00
+      - Turkey Sausage (Small) - $2.00
+[End Category]
+
+[Begin Category] BYO Sandwiches
+- BYO Sandwich (Base Price: $16.00)
+  BYO sandwich is available only regular size.
+  Customizable options:
+    Bread (Rule: None)
+      - Cinnamon Raisin Bagel (Medium) - $0.50
+      - Croissant (Medium) - $2.00
+      - Egg Bagel (Medium) - $0.50
+      - Egg Everything Bagel (Medium) - $0.50
+      - English Muffin (Medium) - $0.50
+      - Everything Bagel (Medium) - $0.50
+      - Hero (Medium) - $1.00
+      - Onion Bagel (Medium) - $0.50
+      - Onion Roll (Medium) - $0.50
+      - Pita (Medium) - $1.00
+      - Plain Bagel (Medium) - $0.50
+      - Platter (Medium) - $0.00
+      - Poppy Bagel (Medium) - $0.50
+      - Roll (Medium) - $0.00
+      - Rye Bread (sliced) (Medium) - $0.00
+      - Salt Bagel (Medium) - $0.50
+      - Sesame Bagel (Medium) - $0.50
+      - Spinach Wrap (Medium) - $1.00
+      - White Bread (sliced) (Medium) - $0.00
+      - White Wrap  (Medium) - $1.00
+      - Whole Wheat Bagel (Medium) - $0.50
+      - Whole Wheat Bread (sliced) (Medium) - $0.00
+      - Whole Wheat Everything Bagel (Medium) - $0.50
+      - Whole Wheat Roll (Medium) - $0.50
+      - Whole Wheat Wrap (Medium) - $1.00
+    Cheese (Rule: None)
+      - American Cheese  (Medium) - $1.00
+      - Blue Cheese Crumble (Medium) - $1.00
+      - Cheddar (Medium) - $1.00
+      - Feta Cheese (Medium) - $1.00
+      - Fresh Mozzarella  (Medium) - $1.00
+      - Mozzarella (Medium) - $1.00
+      - Muenster (Medium) - $1.00
+      - Pepperjack (Medium) - $1.00
+      - Provolone (Medium) - $1.00
+      - Swiss (Medium) - $1.00
+    Protein (Rule: None)
+      - Bacon (Medium) - $3.00
+      - Buffalo chicken salad (Medium) - $2.00
+      - Chicken salad (Medium) - $2.00
+      - Egg salad (Medium) - $2.00
+      - Fried eggplant (Medium) - $2.00
+      - Garden tuna salad (Medium) - $2.50
+      - Grilled chicken (Medium) - $2.00
+      - Grilled vegetables (Medium) - $2.00
+      - Ham (Medium) - $2.00
+      - Ham capicola (Medium) - $2.00
+      - Honey mustard chicken salad (Medium) - $2.00
+      - Honey turkey (Medium) - $3.00
+      - House Roast Turkey (Medium) - $2.00
+      - No meat (Medium) - $0.00
+      - Oven gold turkey (Medium) - $3.00
+      - Pastrami (Medium) - $3.00
+      - Pepper turkey (Medium) - $3.00
+      - Pepperoni (Medium) - $3.00
+      - Roast beef (Medium) - $3.00
+      - Salami (Medium) - $3.00
+      - Sliced buffalo chicken (Medium) - $3.00
+      - Sliced roast chicken (Medium) - $3.00
+      - Smoked turkey (Medium) - $3.00
+      - Tuna salad (Medium) - $2.00
+      - Virginia ham (Medium) - $3.00
+    Toppings (Rule: None)
+      - Avocado (Medium) - $1.50
+      - Cherry Peppers (Medium) - $0.75
+      - Cole-Slaw (Medium) - $1.50
+      - Cucumber (Medium) - $0.75
+      - Fried Onion Rings (Medium) - $1.50
+      - Lettuce (Medium) - $1.00
+      - Macaroni Salad (Medium) - $1.50
+      - Onion (Medium) - $0.75
+      - Potato Salad  (Medium) - $1.50
+      - Red Onion (Medium) - $0.75
+      - Roasted Red Peppers (Medium) - $1.00
+      - Spinach (Medium) - $1.00
+      - Sundried Tomato (Medium) - $1.00
+      - tomato (Medium) - $1.00
+[End Category]
+
+[Begin Category] Chips
+- Classic Lays: $3.24
+- Cool Ranch Doritos: $3.24
+- Nacho Cheese Doritos: $3.24
+- Spicy Sweet Chili Doritos: $3.24
+[End Category]
+
+[Begin Category] Chopped Salad
+- BYO Salad (Base Price: $9.95)
+  Build Your Own Salad
+  Customizable options:
+    Salad Add-ons (Rule: None)
+      - Almonds (Small) - $2.00
+      - Black olives (Small) - $0.50
+      - Bleu cheese (Small) - $2.00
+      - Broccoli (Small) - $0.50
+      - Brussels sprouts (Small) - $0.50
+      - Cheddar cheese (Small) - $2.00
+      - Cranberries(dried) (Small) - $0.50
+      - Crispy tortilla strips (Small) - $0.50
+      - Croutons (Small) - $0.50
+      - Cucumber (Small) - $0.50
+      - Feta cheese (Small) - $2.00
+      - Grilled chicken (Small) - $2.00
+      - Grilled Salmon (Small) - $3.00
+      - Marinated Steak (Small) - $3.00
+      - Tomatoes (Small) - $0.50
+      - Walnuts (Small) - $2.00
+    Salad Base (Rule: Select 1)
+      - Mixed Greens (Small) - $0.00
+      - Romaine (Small) - $0.00
+      - Spinach (Small) - $0.00
+    Salad Dressing (Rule: Select up to 3 items)
+      - Balsamic Vinaigrette (Small) - $0.00
+      - Bleu Cheese (Small) - $0.00
+      - Caesar (Small) - $0.00
+      - Italian (Small) - $0.00
+      - Oil & Vinegar (Small) - $0.00
+      - Olive Oil (Small) - $0.00
+      - Pepper (Small) - $0.00
+      - Ranch (Small) - $0.00
+      - Raspberry Vinaigrette (Small) - $0.00
+      - Russian (Small) - $0.00
+      - Salt (Small) - $0.00
+      - Santa Fe (Small) - $0.00
+[End Category]
+
+[Begin Category] Coffee & Tea
+  * Coffee Creamers:
+Milk
+Fat-Free Milk
+Half and Half
+French Vanilla
+Irish Cream
+Caramel
+Hazelnut
+- Cappuccino, Columbian Coffee, Large: $2.76
+- Cappuccino, Columbian Coffee, Medium: $2.25
+- Cappuccino, Columbian Coffee, Small: $1.76
+- French Vanilla, Columbian Coffee, Large: $2.76
+- French Vanilla, Columbian Coffee, Medium: $2.25
+- French Vanilla, Columbian Coffee, Small: $1.76
+- Green Decaf Tea, Columbian Coffee, Large: $2.76
+- Green Decaf Tea, Columbian Coffee, Medium: $2.25
+- Green Decaf Tea, Columbian Coffee, Small: $1.76
+- Green Tea, Columbian Coffee, Large: $2.76
+- Green Tea, Columbian Coffee, Medium: $2.25
+- Green Tea, Columbian Coffee, Small: $1.76
+- Hot Coffee, Columbian Coffee, Large: $2.76
+- Hot Coffee, Columbian Coffee, Medium: $2.25
+- Hot Coffee, Columbian Coffee, Small: $1.76
+- Hot Decaf Coffee, Columbian Coffee, Large: $2.76
+- Hot Decaf Coffee, Columbian Coffee, Medium: $2.25
+- Hot Decaf Coffee, Columbian Coffee, Small: $1.76
+- Hot Decaf Tea, Columbian Coffee, Large: $2.76
+- Hot Decaf Tea, Columbian Coffee, Medium: $2.25
+- Hot Decaf Tea, Columbian Coffee, Small: $1.76
+- Hot Tea, Columbian Coffee, Large: $2.76
+- Hot Tea, Columbian Coffee, Medium: $2.25
+- Hot Tea, Columbian Coffee, Small: $1.76
+[End Category]
+
+[Begin Category] Cold Sandwiches
+- Balsamic Avocado Hero: $18.95
+  Turkey breast, avocado, tomato, romaine lettuce and balsamic vinaigrette.
+- Cajun Roast Beef Hero: $18.95
+  Cajun roast beef, Cheddar cheese, lettuce, roasted red peppers and creole mayo.
+- California Hero: $18.95
+  Turkey breast, avocado, lettuce, tomatoes and Russian dressing.
+- Chicken Knock Out Hero: $18.95
+  Fried chicken cutlet, hot cherry peppers, jalapeño Jack cheese, lettuce, tomato, and horseradish dressing.
+- Dagwood Hero: $18.95
+  Roast beef, turkey, ham, American, Swiss, lettuce, tomato, and mayo.
+- Grandpa Ted Hero: $18.95
+  Turkey breast, Genoa salami, cole-slaw and mustard.
+- Honey Dipped Chicken Hero: $18.95
+  Chicken cutlet, Cheddar cheese, romaine lettuce, tomato, and honey dip sauce.
+- Italian Grilled Chicken Hero: $18.95
+  Grilled chicken, lettuce, roasted red peppers, fresh Mozzarella and pesto sauce.
+- Italian Hero: $18.95
+  Capicola ham, salami, pepperoni, lettuce, tomato, Provolone cheese and Italian dressing on a hero
+- Monte Christo Hero: $18.95
+  Turkey breast, ham, Swiss cheese, lettuce, tomato and Russian dressing.
+- Nazareth Hero: $18.95
+  Fried chicken cutlet, bacon, Swiss cheese, cole-slaw and Russian dressing.
+- Roast Beef Deluxe Hero: $18.95
+  Roast beef, bacon, Cheddar, lettuce, tomato and mayo.
+- Turkey Club Hero: $18.95
+  Roast turkey breast, bacon, lettuce, tomato and mayo on a hero.
+[End Category]
+
+[Begin Category] Desserts
+- Chocolate Chip Cookies: $2.29
+- Chocolate Pudding: $3.89
+- Rice Pudding: $4.54
+[End Category]
+
+[Begin Category] Grill Menu
+- Beef gyro: $12.94
+  Lettuce, tomato, cucumbers, onions, gyro sauce.
+- Cuban Sandwich: $18.12
+  Pulled pork, ham, Swiss cheese, pickles and tomatoes on a garlic bread hero.
+- Falafel Wrap: $11.64
+  Falafel, lettuce, onion, cucumber, tomato and tahini sauce.
+- Grilled Monte Cristo: $16.84
+  Ham, turkey, Swiss cheese, Russian dressing and tomato on Texas style bread.
+- Philly Cheese Steak: $14.24
+  Tender rib-eye steak, sautéed peppers, onions, and mixed Cheese.
+- Wrap Supreme: $11.64
+  Chicken tenders, lettuce, tomato, cheese, and ranch dressing.
+[End Category]
+
+[Begin Category] Hot Sandwiches
+- Chicken Fiesta Hero: $18.95
+  Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo on a toasted hero.
+- Chicken Italian Melt Hero: $13.95
+  Fried chicken cutlet, mozzarella cheese, lettuce, tomato, onions, oil, vinegar on a toasted hero.
+- Dare Devil Hero: $18.95
+  Fried chicken cutlet, cheddar cheese, potato salad, lettuce and Russian dressing on a toasted hero
+- Half Hollow Hero: $18.95
+  Sliced buffalo chicken, bacon, mozzarella, lettuce, tomato and Bleu cheese on a toasted garlic hero.
+- Mac-Truck Hero: $18.95
+  Fried chicken cutlet. Mozzarella, mac salad, bacon and honey mustard on a toasted garlic hero.
+- Melville Spice Hero: $13.95
+  Fried cajun chicken cutlet, bacon, cheddar cheese, lettuce, tomato, and Russian dressing on a toasted hero.
+- Original Hero: $18.95
+  Fried chicken cutlet, cucumber, lettuce, tomato, Mozzarella, ranch and hot sauce on a toasted hero.
+- Passport Hero: $18.95
+  Fried chicken cutlet, bacon, lettuce, ranch, barbeque sauce, American cheese on a toasted hero.
+- Pat's Fiesta Hero: $18.95
+  Fried chicken cutlet, roasted red peppers, Pecorino cheese, fresh Mozzarella, pesto sauce, toasted hero.
+- Route 110 Hero: $18.95
+  Grilled chicken, turkey, roasted red pepper, Jack cheese, lettuce and pesto sauce on a toasted hero.
+- Southern Ranch Hero: $18.95
+  Roast beef, roasted red peppers, Jack cheese, lettuce and ranch dressing on a toasted garlic hero.
+- Spicy CAB Ride Hero: $18.95
+  Fried chicken cutlet, avocado, bacon, mozzarella, cheddar, lettuce, tomato and spicy mayo on a toasted hero.
+- Sweet Hills Hero: $18.95
+  Honey turkey, bacon, Cheddar, Mozzarella, lettuce, and honey mustard on a toasted hero.
+- Texas Hero: $18.95
+  Fried chicken cutlet, bacon, fried onions, Mozzarella, Cheddar and barbeque sauce on a toasted garlic hero.
+- X-Factor Hero: $13.95
+  Fried chicken cutlet, mozzarella cheese, bacon, cole-slaw and Russian dressing on a toasted garlic hero.
+[End Category]
+
+[Begin Category] Iced Tea and Lemonade
+- Home-Made Iced Tea, Large: $3.50
+- Home-Made Iced Tea, Medium: $2.76
+- Home-Made Lemonade, Large: $3.50
+- Home-Made Lemonade, Medium: $2.76
+- Unsweetened Iced Tea, Large: $3.50
+- Unsweetened Iced Tea, Medium: $2.76
+[End Category]
+
+[Begin Category] Muffins & Pastries
+- Apple Turnover: $3.59
+- Banana Nut Muffin: $3.59
+- Blueberry Muffin: $3.59
+- Bran Muffin: $3.59
+- Cheese Danish: $3.59
+- Chocolate Chip Muffin: $3.59
+- Chocolate Chocolate Muffin: $3.59
+- Corn Muffin: $3.59
+- Croissant: $3089.00
+- Strawberry Cheese Danish: $3.59
+[End Category]
+
+[Begin Category] Omelets
+- American Omelet: $10.32
+  ham, American cheese, and tomato.
+- Mexican Omelet: $10.32
+  mushrooms, tomato, onions, jalapeño, and cheese.
+- Sausage & Potato Omelet: $10.32
+  sausage, home-fries, and cheddar cheese.
+- Simon's Omelet: $11.64
+  avocado, spinach, Feta cheese and salsa.
+- Western Omelet: $10.32
+  peppers, onions, and ham.
+[End Category]
+
+[Begin Category] Paninis
+- California Panini: $14.24
+  Turkey breast, tomato, avocado, Mozzarella cheese and Russian dressing.
+- Caprese Style Panini: $14.24
+  Grilled chicken, mozzarella cheese, roasted red peppers, pesto sauce
+- Chicken Fiesta Panini: $14.24
+  Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo.
+- Chicken Margherita Panini: $14.24
+  Grilled chicken, tomatoes, fresh mozzarella, fresh basil and red onions.
+- Delightful Panini: $14.24
+  Turkey breast, Swiss cheese, honey mustard and cole-slaw.
+- Desire Panini: $14.24
+  House roast turkey breast, Swiss cheese, cole-slaw and Russian.
+- Italian Chicken Panini: $14.24
+  Grilled chicken, pesto sauce, roasted red pepper, and fresh mozzarella.
+- Manhattan Panini: $14.24
+  Roast beef, tomato, onions, bacon, Mozzarella cheese and Russian dressing.
+- Monterey Panini: $14.24
+  Virginia ham, sharp Cheddar cheese, plum tomato and bacon, and Russian dressing.
+- Smokey Joe Panini: $14.24
+  Smoked turkey, Cheddar cheese, bacon, crispy fried onions and Russian.
+- Sunset Paninic: $14.24
+  Turkey, mozzarella, tomato, avocado, ranch dressing.
+- Texas Panini: $14.24
+  Fried chicken cutlet, bacon, fried onions, cheddar cheese and barbeque sauce.
+- Torino Panini: $14.24
+  Fried chicken cutlet, Mozzarella, sundried tomato and pesto sauce.
+- Tuna Cheddar Panini: $14.24
+  Tuna, Cheddar cheese and tomatoes.
+[End Category]
+
+[Begin Category] Salads
+  * Salad dressing options, Please select up to 3:
+Mayo
+SPK
+Russian
+Ranch
+Honey Mustard
+Italian
+Oil & Vinegar
+Caesar
+Cajun Mayo
+Balsamic Vinaigrette
+Hot Sauce
+Ketchup
+Raspberry Vinaigrette
+Blue Cheese
+Olive Oil
+Salt
+Pepper
+Buffalo Sauce
+Greek
+Santa Fe
+Sesame Ginger
+Balsamic Vinegar
+Red Vinegar
+Honey Dipp Sauce
+Fat-Free Italian
+Fat-Free Ranch
+Fat-Free Honey Dijon
+Fat-Free Raspberry Vinaigrette
+Horseraddish Mayo
+Mustard
+Crushed Red Pepper
+Dressing on the Side
+Extra Dressing
+Light Dressing
+
+Salad can be served in a Wrap:
+Salad wrap options:
+White Wrap
+Whole Wheat Wrap
+Spinach Wrap
+
+Salad can be order as chopped:
+Chopped salad can be ordered with dressing or dressing on side.
+- Chef Salad: $15.54
+  Mixed lettuce, ham, eggs, turkey, carrots, Cheddar cheese, cucumber, tomatoes and green peppers.
+- Cobb Salad: $15.54
+  Mixed lettuce, bacon, chicken, Provolone cheese, eggs, tomatoes, and black olives.
+- Greek Salad: $15.54
+  Romaine lettuce, tomatoes, stuffed grape leaves, green peppers, Feta cheese and black olives.
+- Grilled Chicken Caesar Salad: $15.54
+  Romaine lettuce, tomatoes, grilled chicken, Parmigiano cheese, croutons, and caesar dressing.
+- Grilled Chicken Salad: $15.54
+  Romaine lettuce, tomatoes, grilled chicken, green bell peppers, shredded carrots and cucumbers.
+- Santa Fe Salad: $15.54
+  Mixed lettuce, grilled chicken, beans, corn, Cheddar cheese, and crunchy cheese tortilla strips, and Santa Fe dressing.
+[End Category]
+
+[Begin Category] Sliced Cold Cuts
+- American cheese 1 lb.: $11.98
+- American cheese 1/2 lb.: $5.99
+- American cheese 1/4 lb.: $2.99
+- American cheese 3/4 lb.: $8.98
+- Boars Head Bologna 1 lb.: $11.98
+- Boars Head Bologna 1/2 lb.: $5.99
+- Boars Head Bologna 1/4 lb.: $2.99
+- Boars Head Bologna 3/4 lb.: $8.98
+- Boars Head Buffalo Chicken 1 lb.: $15.98
+- Boars Head Buffalo Chicken 1/2 lb.: $7.99
+- Boars Head Buffalo Chicken 1/4 lb.: $3.99
+- Boars Head Buffalo Chicken 3/4 lb.: $11.98
+- Boars Head Honey Turkey 1 lb.: $15.98
+- Boars Head Honey Turkey 1/2 lb.: $7.99
+- Boars Head Honey Turkey 1/4 lb.: $3.99
+- Boars Head Honey Turkey 3/4 lb.: $11.98
+- Boars Head Liverwurst 1 lb.: $11.98
+- Boars Head Liverwurst 1/2 lb.: $5.99
+- Boars Head Liverwurst 1/4 lb.: $2.99
+- Boars Head Liverwurst 3/4 lb.: $8.98
+- Boars Head Oven Roast Chicken 1 lb.: $15.98
+- Boars Head Oven Roast Chicken 1/2 lb.: $7.99
+- Boars Head Oven Roast Chicken 1/4 lb.: $3.99
+- Boars Head Oven Roast Chicken 3/4 lb.: $11.98
+- Boars Head Pastrami 1 lb.: $17.98
+- Boars Head Pastrami 1/2 lb.: $8.98
+- Boars Head Pastrami 1/4 lb.: $4.49
+- Boars Head Pastrami 3/4 lb.: $13.49
+- Boars Head Pepper Turkey 1 lb.: $15.98
+- Boars Head Pepper Turkey 1/2 lb.: $7.99
+- Boars Head Pepper Turkey 1/4 lb.: $3.99
+- Boars Head Pepper Turkey 3/4 lb.: $11.98
+- Boars Head Pepperoni 1 lb.: $15.98
+- Boars Head Pepperoni 1/2 lb.: $7.99
+- Boars Head Pepperoni 1/4 lb.: $3.99
+- Boars Head Pepperoni 3/4 lb.: $11.98
+- Boars Head Salami 1 lb.: $15.98
+- Boars Head Salami 1/2 lb.: $7.99
+- Boars Head Salami 1/4 lb.: $3.99
+- Boars Head Salami 3/4 lb.: $11.98
+- Boars Head Smoked Turkey 1 lb.: $15.98
+- Boars Head Smoked Turkey 1/2 lb.: $7.99
+- Boars Head Smoked Turkey 1/4 lb.: $3.99
+- Boars Head Smoked Turkey 3/4 lb.: $11.98
+- Boars Head Virginia Ham 1 lb.: $15.98
+- Boars Head Virginia Ham 1/2 lb.: $7.99
+- Boars Head Virginia Ham 1/4 lb.: $3.99
+- Boars Head Virginia Ham 3/4 lb.: $11.98
+- Cheddar cheese 1 lb.: $11.98
+- Cheddar cheese 1/2 lb.: $5.99
+- Cheddar cheese 1/4 lb.: $2.99
+- Cheddar cheese 3/4 lb.: $8.98
+- Fresh Mozzarella cheese 1 lb.: $11.98
+- Fresh Mozzarella cheese 1/2 lb.: $5.99
+- Fresh Mozzarella cheese 1/4 lb.: $2.99
+- Fresh Mozzarella cheese 3/4 lb.: $8.98
+- House Roast Beef 1 lb.: $17.98
+- House Roast Beef 1/2 lb.: $8.98
+- House Roast Beef 1/4 lb.: $4.49
+- House Roast Beef 3/4 lb.: $13.49
+- House Roast Turkey 1 lb.: $15.98
+- House Roast Turkey 1/2 lb.: $7.99
+- House Roast Turkey 1/4 lb.: $3.99
+- House Roast Turkey 3/4 lb.: $11.98
+- Mozzarella cheese 1 lb.: $11.98
+- Mozzarella cheese 1/2 lb.: $5.99
+- Mozzarella cheese 1/4 lb.: $2.99
+- Mozzarella cheese 3/4 lb.: $8.98
+- Muenster cheese 1 lb.: $11.98
+- Muenster cheese 1/2 lb.: $5.99
+- Muenster cheese 1/4 lb.: $2.99
+- Muenster cheese 3/4 lb.: $8.98
+- Pepper Jack cheese 1 lb.: $11.98
+- Pepper Jack cheese 1/2 lb.: $5.99
+- Pepper Jack cheese 1/4 lb.: $2.99
+- Pepper Jack cheese 3/4 lb.: $8.98
+- Provolone cheese 1 lb.: $11.98
+- Provolone cheese 1/2 lb.: $5.99
+- Provolone cheese 1/4 lb.: $2.99
+- Provolone cheese 3/4 lb.: $8.98
+- Swiss cheese 1 lb.: $11.98
+- Swiss cheese 1/2 lb.: $5.99
+- Swiss cheese 1/4 lb.: $2.99
+- Swiss cheese 3/4 lb.: $8.98
+[End Category]
+
+[Begin Category] Snacks & Light Meals
+-   Yogurt Parfait: $6.99
+- Overnight Oats & Berries: $6.99
+- Peanut Butter & Chocolate Overnight Oats: $6.99
+- Strawberry Yogurt Parfait: $6.99
+[End Category]

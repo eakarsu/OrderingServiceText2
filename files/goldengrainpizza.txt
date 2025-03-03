@@ -1,0 +1,581 @@
+[Begin Category] Appetizers
+-  French Fries served w/ketchup.: $4.99
+-  French Fries w/Cheese: $5.99
+-  Fried Dough Balls (6 Pieces): $4.99
+-  Golden Bread: $4.99
+-  Onion Rings: $6.99
+-  Vine Leaves Stuffed w/ Rice: $7.99
+- Battered Fried Ravioli: $7.99
+- Beef Patty: $3.50
+  With Cheese $3.99
+With  Lettuce,Tomato, Cheese $4.99
+- Cheesy Bread: $10.99
+- Chicken Fries: $7.99
+- Chicken Tenders 4 pcs with fries: $7.99
+- Chicken Tenders 6 pcs: $7.99
+- Garlic Bread: $3.99
+  With Cheese $4.99
+With Bacon & Cheese $5.99
+- Garlic Knots (6 Pieces): $4.50
+- Jalapeno Poppers (6 Pieces): $7.99
+- Mac & Cheese 8 pcs: $7.99
+- Mozzarella Sticks 6 pcs: $7.99
+[End Category]
+
+[Begin Category] Beverages
+-  12 oz. Can: $1.45
+  Options: Coke, Vanilla Coke, Diet Coke, Sprite, Fanta Orange, Gingerale, Fuze Ice tea, Root beer
+-  20 oz Bottle: $2.99
+  Options: Coca Cola, Vanilla Coke, Coke Zero, Diet Coke, Sprite, Fanta Orange, Fuze Ice Tea, Lemonade, Root beer, Gingerale
+-  Water 20 Oz Aquafina: $1.99
+  Options:
+Mandarin Orange, Triple Berry, Lemon Lime
+- 16 Oz Bottle Bubbly: $2.59
+  Lime, Blackberry, Cherry
+- 2 Liter: $3.99
+  Options: Coca Cola, Diet Coke, Sprite, Fanta Orange, Fuze Ice Tea, Lemonade, Root beer, Gingerale
+- Gatorade: $2.78
+  Orange, Red, Blue, Lemon, Zero
+- Juice: $2.59
+  Options: Apple, Orange, Cranberry
+- Pure Leaf Tea: $2.99
+  Options: Peach, Raspberry, Lemon, Sweet Ice tea, Unsweetened
+[End Category]
+
+[Begin Category] BYO Pizza
+-  16” Large 8 cut (Base Price: $15.99)
+  (feeds 3-4)
+  Customizable options:
+    Cheese (Rule: Select up to 2 items)
+      - American (Large) - $2.50
+      - Extra Cheese (Large) - $2.50
+      - Feta (Large) - $2.50
+      - Fresh Mozzarella (Large) - $2.50
+      - Mild CheddarCheese (Large) - $2.50
+      - Parmesan (Large) - $2.50
+      - Provolone (Large) - $2.50
+      - Ricotta Cheese (Large) - $2.50
+      - Shredded Mozzarella (Large) - $2.50
+      - Swiss (Large) - $2.50
+    Meat (Rule: Select up to 2 items)
+      - Bacon (Large) - $2.50
+      - Breaded Chicken (Large) - $2.50
+      - Grilled Chicken (Large) - $2.50
+      - Ham (Large) - $2.50
+      - Meatballs (Large) - $2.50
+      - Pepperoni (Large) - $2.50
+      - Salami (Large) - $2.50
+      - Sausage (Large) - $2.50
+      - Steak (Large) - $2.50
+    Vegetable (Rule: Select up to 5 items)
+      - Black Olives (Large) - $2.50
+      - Broccoli (Large) - $2.50
+      - Fresh Basil (Large) - $2.50
+      - Fresh Eggplant (Large) - $2.50
+      - Green Peppers (Large) - $2.50
+      - Jalapeno Peppers (Large) - $2.50
+      - Mushrooms (Large) - $2.50
+      - Onions (Large) - $2.50
+      - Pineapple (Large) - $2.50
+      - Roasted Red Peppers (Large) - $2.50
+      - Spinach (Large) - $2.50
+      - Tomatoes (Large) - $2.50
+- 12” Medium 6 cut (Base Price: $11.99)
+  (feeds 1-2)
+  Customizable options:
+    Cheese (Rule: Select up to 2 items)
+      - American (Medium) - $2.00
+      - Extra Cheese (Medium) - $2.00
+      - Feta (Medium) - $2.00
+      - Fresh Mozzarella (Medium) - $2.00
+      - Mild CheddarCheese (Medium) - $2.00
+      - Parmesan (Medium) - $2.00
+      - Provolone (Medium) - $2.00
+      - Ricotta Cheese (Medium) - $2.00
+      - Shredded Mozzarella (Medium) - $2.00
+      - Swiss (Medium) - $2.00
+    Meat (Rule: Select up to 2 items)
+      - Bacon (Medium) - $2.00
+      - Breaded Chicken (Medium) - $2.00
+      - Grilled Chicken (Medium) - $2.00
+      - Ham (Medium) - $2.00
+      - Meatballs (Medium) - $2.00
+      - Pepperoni (Medium) - $2.00
+      - Salami (Medium) - $2.00
+      - Sausage (Medium) - $2.00
+      - Steak (Medium) - $2.00
+    Vegetable (Rule: Select up to 5 items)
+      - Black Olives (Medium) - $2.00
+      - Broccoli (Medium) - $2.00
+      - Fresh Basil (Medium) - $2.00
+      - Fresh Eggplant (Medium) - $2.00
+      - Green Peppers (Medium) - $2.00
+      - Jalapeno Peppers (Medium) - $2.00
+      - Mushrooms (Medium) - $2.00
+      - Onions (Medium) - $2.00
+      - Pineapple (Medium) - $2.00
+      - Roasted Red Peppers (Medium) - $2.00
+      - Spinach (Medium) - $2.00
+      - Tomatoes (Medium) - $2.00
+- 18” X-Large 12 cut (Base Price: $18.99)
+  feeds 6-7)
+  Customizable options:
+    Cheese (Rule: Select up to 2 items)
+      - American (X-Large) - $3.00
+      - Extra Cheese (X-Large) - $3.00
+      - Feta (X-Large) - $3.00
+      - Fresh Mozzarella (X-Large) - $3.00
+      - Mild CheddarCheese (X-Large) - $3.00
+      - Parmesan (X-Large) - $3.00
+      - Provolone (X-Large) - $3.00
+      - Ricotta Cheese (X-Large) - $3.00
+      - Shredded Mozzarella (X-Large) - $3.00
+      - Swiss (X-Large) - $3.00
+    Meat (Rule: Select up to 2 items)
+      - Bacon (X-Large) - $3.00
+      - Breaded Chicken (X-Large) - $3.00
+      - Grilled Chicken (X-Large) - $3.00
+      - Ham (X-Large) - $3.00
+      - Meatballs (X-Large) - $3.00
+      - Pepperoni (X-Large) - $3.00
+      - Salami (X-Large) - $3.00
+      - Sausage (X-Large) - $3.00
+      - Steak (X-Large) - $3.00
+    Vegetable (Rule: Select up to 5 items)
+      - Black Olives (X-Large) - $3.00
+      - Broccoli (X-Large) - $3.00
+      - Fresh Basil (X-Large) - $3.00
+      - Fresh Eggplant (X-Large) - $3.00
+      - Green Peppers (X-Large) - $3.00
+      - Jalapeno Peppers (X-Large) - $3.00
+      - Mushrooms (X-Large) - $3.00
+      - Onions (X-Large) - $3.00
+      - Pineapple (X-Large) - $3.00
+      - Roasted Red Peppers (X-Large) - $3.00
+      - Spinach (X-Large) - $3.00
+      - Tomatoes (X-Large) - $3.00
+[End Category]
+
+[Begin Category] Cold Subs
+  * Served on a White Sub Roll w/ a Bag of Chips.
+Your Choice of Trimmings: Lettuce, Tomatoes, Onions, Black Olives, Pickles, Hot Peppers, Provolone Cheese or American Cheese.
+Dressings: Italian, Russian, Mayo, Mustard or Oil & Vinegar
+-  American Mix Sub: $11.99
+  Roast beef, turkey, ham,
+American cheese & russian dressing
+-  BLT Sub 12 inch: $11.99
+  Bacon, lettuce, tomatoes, onion with either mayo or garlic butter
+-  BLT Sub 6 inch: $8.99
+  Bacon, lettuce, tomatoes, onion with either mayo or garlic butter
+-  Ham & Cheese Sub: $10.99
+  Mayo & American cheese
+- Albacore Tuna Sub: $11.99
+  Mayo & American cheese
+- Cheese Veggie Sub: $10.99
+  Mayo, green peppers, black olives,
+pickles & American cheese
+- Italian Mix Sub: $11.99
+  Ham, salami, pepperoni & provolone cheese
+- Roast Beef Sub: $11.99
+  Russian dressing & American cheese
+- Turkey Sub: $11.99
+  Mayo & American cheese
+[End Category]
+
+[Begin Category] Desserts
+  * Add Rasberry sauce $1.99
+-  Apple Cobbler: $4.99
+  Served with sweet icing
+-  Banana Cobbler: $4.99
+-  Carrot Cake: $4.99
+-  Peach Cobbler: $4.99
+-  Peanut Butter Pie: $5.99
+-  Tres Leche Cake: $5.99
+- Baklava: $4.99
+  3 Pcs Imported
+- Brownie: $4.99
+- Cheesecake: $3.99
+  Add Raspberry +$0.99
+- Chocolate Cake: $4.99
+- Oreo Cake: $5.99
+[End Category]
+
+[Begin Category] Famous Gourmet Pizzas
+  * Size options:
+12” Medium 6 Cut (feeds 1-2)
+16” Large 8 Cut (feeds 3-4), add $4 to base price
+18" X-Large 12 Cut (feeds 5-6), add $9 to base price
+-  BBQ Chicken: $15.99
+  Chicken tenders marinated in our bbq sauce & topped w/ mozzarella & yellow american cheeses
+-  Eggplant Bella: $15.99
+  Eggplant, marinara sauce, red roasted peppers, mozzarella cheese, fresh basil, garlic oil & oregano
+-  Veggie Lovers: $15.99
+  Loaded w/ mushrooms, onions, tomatoes, black olive, green pepper, garlic oil, broccoli (with or without sauce)
+- Baked Ziti Penne Pizza: $15.99
+  Penne ziti mixed with ricotta, parmesan, fresh basil, oregano & garlic oil
+- Bella Phily Steak Pizza: $15.99
+  Pizza Sauce, New York Strip Steak Grilled With Mushrooms, Onions & Green Peppers
+- Bruschetta Pizza: $15.99
+  Fresh Chopped Tomatoes, Fresh Basl Onions, Fresh Mozzarella Cheese,
+Pannesan Cheese & Special llaUan
+- Buffalo Chicken: $15.99
+  Chicken tenders marinated in frank's redhot sauce & topped w/bleu cheese
+- Cheese Burger Pizza: $15.99
+  Mozzarella cheese, cheddar cheese, sausage, fries, ketchup & ranch
+- Chicken Alfredo: $15.99
+  Crispy Chicken, Broccoli, Mozzarella Cheese, Alfredo Sauce
+- Chicken Bacon Ranch: $15.99
+  Breaded chicken breast, Bacon, Ranch dressing & mozzarella cheese
+- Chicken Bacon Ranch Pizza: $15.99
+  Breaded chicken breast, Bacon, ranch dressing & mozzarella cheese
+- Chicken Bella: $15.99
+  Chicken tenders marinated in our marinara sauce, red roasted peppers, mozzarella cheese, fresh mozzarella, fresh basil & garlic oil
+- Chicken Parmesan: $15.99
+  Chicken tenders marinated in our marinara sauce & topped w/ fresh basil, ricotta, parmesan & mozzarella cheeses
+- Christina Pizza: $15.99
+  Sliced fresh tomatoes, red roasted peppers, fresh mozzarella cheese, Fresh basil & garlic oil
+- Golden Grilled Chicken Ranch or BBQ Pizza: $15.99
+  Grilled chicken, grilled peppers, topped with either ranch or bbq sauce
+- Margherita: $15.99
+  Fresh mozzarella, fresh basi~ homemade margherita sauce, topped w/ olive oil & garlic
+- Meat Lovers: $15.99
+  Loaded w/ beef pepperoni, sausage & meatballs
+- Mediterranean: $15.99
+  w/ or w/out grilled chicken Tomatoes, roasted red peppers, spinach, feta cheese, fresh basil, mozzarella cheese, garlic & olive oil
+- Mexican: $15.99
+  Breaded Chicken Breast, Chopped Red Onions, Chopped Green Peppers, Roasted Peppers, Jalapeno Peppres
+- Supreme Deluxe: $15.99
+  Green peppers, pepperoni, sausage, mushrooms, onions & mozzarella cheese
+- Tomato Bacon Ranch Pizza: $15.99
+  Tomatoes, Bacon, Ranch Dressing & Mozzarella Cheese
+- White Broccoli Pizza: $15.99
+  Broccoli, Mozzarella Cheese, Ricotta Cheese, Gartlc & Olive Oil
+[End Category]
+
+[Begin Category] Fresh Salads
+  * Avocado $1.99
+Boiled Eggs $1.99
+Feta, American, Swiss or provolone cheese for medium +$0.99
+Feta, American, Swiss or provolone cheese for large +$1.99
+Grilled or Crispy Chicken, Extra Meat for medium +$1.99
+Grilled or Crispy Chicken, Extra Meat for large +$2.99
+Side Dressings +0.75
+Side Dressing Options: Italian, Bleu Cheese, Russian, Light Italian, Greek, French or Ranch, Honey mustard, Caser, Oil Vinegar, Balsamic
+-  Buffalo Chicken Salad: $9.99
+  Garden salad topped w/ crispy deep fried chicken tenders that have been tossed w/ frank’s red hot sauce & crumbled bleu cheese.
+Medium $9.99
+Large $12.99
+-  Caesar Salad: $7.99
+  Romaine lettuce, tomatoes, parmesan cheese, cherry tomatoes
+& croutons w/caesar dressing.
+Medium $7.99
+Large $9.99
+With Grilled and Crispy chicken Medium +$1.99
+With Grilled and Crispy chicken Large +$2.99
+-  Chef Salad: $9.99
+  Our garden salad topped w/ ham, turkey, provolone cheese & roast beef.
+Medium $9.99
+Large $11.99
+-  Falafel Salad: $9.99
+  on top of our garden salad.
+Medium $9.99
+Large $11.99
+-  Gyro Salad: $10.99
+  Comes with greek dressing or gyro sauce
+Medium $10.99
+Large $12.99
+-  Popcorn Chicken Salad: $8.99
+  Romaine lettuce,red onions, tomatoes,
+green peppers, cucumber, popcorn, chicken and Mozzarella cheese with Italian dressing.
+Medium $8.99
+Large $10.99
+- Antipasto Garden Salad: $9.99
+  Our garden salad topped w/ ham, salami, pepperoni, hot peppers, pepperoncini & provolone cheese.
+Medium $9.99
+Large $11.99
+- Golden Grain Salad: $8.99
+  Grilled chicken or crispy chicken, romaine lettuce, fresh mozzarella, roasted peppers, chopped tomatoes, red onions & fresh copped basil.
+Medium $8.99
+Large $10.99
+- Greek Salad: $9.99
+  Garden salad w/ feta cheese, black olives, vine leaves, stuffed with rice, pepperoncini.
+Medium $9.99
+Large $11.99
+With Grilled and Crispy chicken Medium +$1.99
+With Grilled and Crispy chicken Large +$2.99
+- Mediterranean Salad: $9.99
+  Grilled chicken or crispy chicken, spinach, roasted red peppers, cucumbers, red onions, feta cheese, olives, greek dressing.
+Medium $9.99
+Large $11.99
+With Grilled and Crispy chicken Medium +$1.99
+With Grilled and Crispy chicken Large +$2.99
+- Tuna Salad: $9.99
+  Our garden salad topped with gourmet tuna.
+Medium $9.99
+Large $11.99
+[End Category]
+
+[Begin Category] Giant Calzones & Stromboli Rolls
+  * Giant Calzones are 16” in Size. Ingredients Folded into Homemade Dough & Served w/ a Side of Marinara Sauce.
+Stromboli are 16” in Size. Ingredients Rolled in Homemade Pizza Dough w/ Mozzarella Cheese & are Served w/ a Side of Marinara Sauce.
+Extra Toppings additional $1.50
+-  Pepperoni Roll: $10.99
+- Any Way you Want Calzone: $11.99
+  Mozzarella Cheese Only w/Your Choice of Up to Four Toppings
+- BBQ Chicken Calzone: $11.99
+- BBQ Chicken Roll: $10.99
+- Buffalo Chicken Calzone: $11.99
+- Buffalo Chicken Roll: $10.99
+- Chicken Bacon Calzone: $11.99
+- Chicken Bacon Ranch Roll: $10.99
+- Mozarella & Ricotta Calzone: $10.99
+  Filled w/ Mozzarella & Ricotta Cheese
+- Stromboli: $11.99
+  Pepperoni, Green Peppers, Sausage & Mushrooms
+[End Category]
+
+[Begin Category] Gyros
+  * All gyros are served with a bag of potato chips
+Extra Meat +$1.99
+Extra Sauce +$0.75
+Make it deluxe for $2.50. Deluxe comes with French Fries & dill pickles
+-  Beef Gyros: $9.99
+  Thinly Sliced Meat Served A La Carte in Pita Bread w/ Lettuce, Tomatoes, Onions & Tzatziki Sauce
+- Chicken Gyros: $9.99
+  Grilled Chicken Tenders Served A La Carte in Pita Bread w/ Lettuce, Tomatoes, Onions & Tzatziki Sauce
+- Lamb Gyros: $9.99
+  Thinly sliced Lamb meat served in a a la carte in pita bread w/ tomatoes, onions & tzatziki sauce
+[End Category]
+
+[Begin Category] Hot Sub
+  * Served on a 12” White Sub Roll
+Make it deluxe for $2.99. Deluxe comes with French Fries & dill pickles
+-  Cheeseburger Sub 6 inch: $9.99
+  Two 6 oz. Grilled Burger Patties Topped w/American Cheese & a Side of Ketchup
+-  Chicken Bacon Ranch 6 inch: $7.99
+  Lettuce, Tomatoes, Onions & American cheese
+-  Chicken Parmesan: $11.99
+  Breaded Chicken Breast, Marinara Sauce & Mozzarella Cheese
+-  Hot Buffalo Chicken: $11.99
+  Breaded Chicken Tenders Tossed w/ Hot Buffalo Sauce & Bleu Cheese
+-  Steak & Cheese Sub 12 inch: $11.99
+  Sliced Steak & American Cheese
+- Breaded Chicken 12 inch: $10.99
+  Deep chicken tenders, lettuce, tomatoes, onions & cheese
+- Breaded Chicken 6 inch: $7.99
+  Deep chicken tenders, lettuce, tomatoes, onions & cheese
+- Cheeseburger Sub 12 inch: $11.99
+  Two 6 oz. Grilled Burger Patties Topped w/American Cheese & a Side of Ketchup
+- Chicken Bacon Ranch 12 inch: $10.99
+  Lettuce, Tomatoes, Onions & American cheese
+- Chicken Philly Sub: $12.50
+  Grilled Chicken Sauteed w/American Cheese, Onions, Mushrooms & Green Peppers
+- Eggplant Parmesan 12 inch: $10.99
+  Breaded Eggplant w/ Marinara Sauce & Mozzarella Cheese
+- Eggplant Parmesan 6 inch: $7.99
+  Breaded Eggplant w/ Marinara Sauce & Mozzarella Cheese
+- Grilled Chicken Sub 12 inch: $10.99
+  Lettuce, Tomatoes, Onions, Mayo & American Cheese
+- Grilled Chicken Sub 6 inch: $8.99
+  Lettuce, Tomatoes, Onions, Mayo & American Cheese
+- Meatball Parmesan: $10.99
+  Meatballs, Marinara Sauce & Mozzarella Cheese
+- Steak & Cheese Sub 6 inch: $9.99
+  Sliced Steak & American Cheese
+- Steak & Cheese Sub with the Works: $12.50
+  Sliced Steak w/ Sauteed Onions, Mushrooms, Green Peppers & American Cheese
+[End Category]
+
+[Begin Category] Italian Dinners
+  * Served with Garliic bread or pita bread. Choice of Spaghetti or Ziti
+-  Baked Stuffed Shells: $12.99
+  A hearty portion of ricotta cheese filled jumbo pasta shells, baked w/marinara sauce & mozzarella cheese
+-  Baked Ziti Pasta w/ Meatball: $12.99
+  Baked w/ a mix of marinara sauce, fresh basil & topped w/ mozzarella cheese
+-  Chicken Alfredo Dinner: $13.50
+  Ziti or spaghetti & melted mozzarella
+-  Spaghetti: $9.99
+  with melted mozzarella and Parmesan
+w/ Meatballs $11.99
+Served w/ Marinara Sauce & 5 Meatballs (No mozzarella cheese)
+- Baked Cheese Ravioli: $12.99
+  A hearty portion of ricotta cheese filled ravioli , baked w/ marinara sauce & mozzarella cheese
+- Baked Ziti Pasta: $11.99
+  Baked w/ a mix of marinara sauce, fresh basil, ricotta cheese & topped w/ mozzarella cheese
+- Chicken Parmesan: $12.99
+  Breaded chicken breast served over a bed of ziti or spaghetti w/ marinara sauce & topped w/ mozzarella cheese
+- Eggplant Parmesan: $12.99
+  Breaded eggplant atop your choice of spaghetti or ziti pasta & topped w/marinara sauce & mozzarella cheese
+- Meatball Parm Dinner: $12.99
+  Ziti Spaghetti & melted Mozzarella
+[End Category]
+
+[Begin Category] Jumbo Fresh Black Angus Burger
+  * Make It Deluxe For 2.99 Comes W/ French Fries & Pickle.
+Extra cheese $0.50
+Fried onions $0.50
+Bacon $1.50
+Extra meat $2.99
+-  Cheeseburger: $9.99
+  Served w/ Lettuce, Tomatoes, Onions, Mayo American Cheese & Side of Dill Pickles
+- Bacon Cheese Burger: $10.99
+  Served w/Bacon Lettuce, Tomatoes, Onions, Mayo American Cheese & Side of Dill Pickles
+- Buffalo Burger: $9.99
+  Served w/Crumbled Blue Cheese and BUFALLO hot sauce Lettuce, Onions, Tomatoes Mayo American Cheese & Side of Dill Pickles
+- Crispy Chicken Burger: $8.99
+  Crispy Chicken lettuce, tomato, pickles, ketchup, mayo & American Cheese
+- Hamburgers: $8.99
+  Served w/ Lettuce, Tomatoes, Onions, Mayo & Side of Dill Pickles
+- Mushroom Cheese Burger: $9.99
+  Lettuce & Tomatoes
+[End Category]
+
+[Begin Category] Quesadillas
+  * All Wraps Come w/ Pickles & Chips.
+Make It Deluxe For extra $2.5. Comes W/ French Fries & Pickle.
+- Buffalo Chicken Quesadilla: $10.99
+  Hot, Mild, BBQ
+- Cheese Quesadilla: $9.99
+- Grilled Chicken Quesadilla: $10.99
+  Onions & Peppers
+- Veggie Quesadilla: $9.99
+  Onions, Green Peppers, Mushroom& Tomato
+[End Category]
+
+[Begin Category] Shawarma
+  * Make it deluxe, comes w/ French fries and pickles for additional $2.5
+- Beef Shawarma Wrap: $10.99
+  Grilled chicken tenders w/ tomatoes, onions & tzatziki sauce
+- Chicken Shawarma Wrap: $10.99
+  Tortilla, lettuce, tomatoes, onions,  chicken, tzatziki sauce
+- Lamb Shawarma: $10.99
+  Thinly sliced Lamb meat w/ tomatoes, onions & tzatziki sauce
+[End Category]
+
+[Begin Category] Sicilian Deep Dish Pizza
+-  24 Cut Sicilian (Base Price: $29.99)
+  Customizable options:
+    Cheese (Rule: Select up to 2 items)
+      - American (X-Large) - $3.00
+      - Extra Cheese (X-Large) - $3.00
+      - Feta (X-Large) - $3.00
+      - Fresh Mozzarella (X-Large) - $3.00
+      - Mild CheddarCheese (X-Large) - $3.00
+      - Parmesan (X-Large) - $3.00
+      - Provolone (X-Large) - $3.00
+      - Ricotta Cheese (X-Large) - $3.00
+      - Shredded Mozzarella (X-Large) - $3.00
+      - Swiss (X-Large) - $3.00
+    Meat (Rule: Select up to 2 items)
+      - Bacon (X-Large) - $3.00
+      - Breaded Chicken (X-Large) - $3.00
+      - Grilled Chicken (X-Large) - $3.00
+      - Ham (X-Large) - $3.00
+      - Meatballs (X-Large) - $3.00
+      - Pepperoni (X-Large) - $3.00
+      - Salami (X-Large) - $3.00
+      - Sausage (X-Large) - $3.00
+      - Steak (X-Large) - $3.00
+    Vegetable (Rule: Select up to 5 items)
+      - Black Olives (X-Large) - $3.00
+      - Broccoli (X-Large) - $3.00
+      - Fresh Basil (X-Large) - $3.00
+      - Fresh Eggplant (X-Large) - $3.00
+      - Green Peppers (X-Large) - $3.00
+      - Jalapeno Peppers (X-Large) - $3.00
+      - Mushrooms (X-Large) - $3.00
+      - Onions (X-Large) - $3.00
+      - Pineapple (X-Large) - $3.00
+      - Roasted Red Peppers (X-Large) - $3.00
+      - Spinach (X-Large) - $3.00
+      - Tomatoes (X-Large) - $3.00
+- 12 Cut Sicilian (Base Price: $17.99)
+  Customizable options:
+    Cheese (Rule: Select up to 2 items)
+      - American (X-Large) - $3.00
+      - Extra Cheese (X-Large) - $3.00
+      - Feta (X-Large) - $3.00
+      - Fresh Mozzarella (X-Large) - $3.00
+      - Mild CheddarCheese (X-Large) - $3.00
+      - Parmesan (X-Large) - $3.00
+      - Provolone (X-Large) - $3.00
+      - Ricotta Cheese (X-Large) - $3.00
+      - Shredded Mozzarella (X-Large) - $3.00
+      - Swiss (X-Large) - $3.00
+    Meat (Rule: Select up to 2 items)
+      - Bacon (X-Large) - $3.00
+      - Breaded Chicken (X-Large) - $3.00
+      - Grilled Chicken (X-Large) - $3.00
+      - Ham (X-Large) - $3.00
+      - Meatballs (X-Large) - $3.00
+      - Pepperoni (X-Large) - $3.00
+      - Salami (X-Large) - $3.00
+      - Sausage (X-Large) - $3.00
+      - Steak (X-Large) - $3.00
+    Vegetable (Rule: Select up to 5 items)
+      - Black Olives (X-Large) - $3.00
+      - Broccoli (X-Large) - $3.00
+      - Fresh Basil (X-Large) - $3.00
+      - Fresh Eggplant (X-Large) - $3.00
+      - Green Peppers (X-Large) - $3.00
+      - Jalapeno Peppers (X-Large) - $3.00
+      - Mushrooms (X-Large) - $3.00
+      - Onions (X-Large) - $3.00
+      - Pineapple (X-Large) - $3.00
+      - Roasted Red Peppers (X-Large) - $3.00
+      - Spinach (X-Large) - $3.00
+      - Tomatoes (X-Large) - $3.00
+[End Category]
+
+[Begin Category] Special Gourmet Pizzas
+  * X-Large 36 cut  +$17
+- Grandpa Ultimate Deep Dish: $19.99
+  Special Margarita Sauce Topped With Basil, Garlic & Oil, Parmesan Cheese & Fresh Mozzarella
+12 cut
+[End Category]
+
+[Begin Category] Vegan Cheese Pizza
+- Vegan Cheese Large: $18.99
+  16 slices
+- Vegan Cheese medium: $15.99
+  12 slice
+- Vegan Cheese X-Large: $18.99
+  18 slices
+- Vegan Gluten Free Cheese: $16.99
+  12 slices
+[End Category]
+
+[Begin Category] Wings
+  * Served with Celery, Carrots, Bleu Cheese.
+Dressing Included.
+Extra Bleu Cheese Dressing 2 oz. cup +$0.50
+Flavors: Honey BBQ, Lemon Pepper, Mild, Medium, Hot, X-Hot, BBQ, Teriyaki, Honey Mustard, Garlic Parmesan.
+- 10 piece Jumbo Wings or Boneless Chicken Breast Chunks: $13.99
+- 20 piece Jumbo Wings or Boneless Chicken Breast Chunks: $26.99
+- 30 piece Jumbo Wings or Boneless Chicken Breast Chunks: $37.99
+- 50 piece Jumbo Wings or Boneless Chicken Breast Chunks: $64.99
+- 6 piece Jumbo Wings or Boneless Chicken Breast Chunks: $8.99
+[End Category]
+
+[Begin Category] Wraps
+-  California Wrap: $10.99
+  Grilled Chicken, Lettuce, Tomatoes, Roasted Red Peppers & Ranch Dressing
+-  Chicken Bacon Ranch Wrap: $10.99
+  Lettuce, chopped breaded chicken breast, bacon, ranch
+-  Falafel Wrap: $10.99
+  Lettuce, tomato, onion, mayo, falafel
+- Buffalo Wrap: $10.99
+  Breaded Chicken Fingers w/ Hot Wing Sauce w/ Lettuce & Crumbled Bleu Cheese. Bleu Cheese Dressing, Served on the Side
+- Chicken Caesar: $10.99
+  Shredded romaine harts, chopped chicken, bacon, grated parmesan cheese, caesar dressing
+- Philly Steak Wrap: $11.99
+  Steak, Cheese, Peppers, Onions, Mushrooms
+- Roma Wrap: $10.99
+  Breaded Chicken Tenders Wrapped w/Roasted Red Peppers, Fresh Mozzarella Cheese, Lettuce, Tomatoes & a Light Italian Dressing
+- Steak & Cheese Wrap: $11.99
+  Steak and Cheese
+- Tuna Wrap: $10.99
+  Tuna, lettuce, tomatoes, mayo & onions
+- Veggie Wrap: $10.99
+  Grilled green peppers, onions, mushrooms topped with American cheese, mayo, lettuce & tomatoes
+[End Category]

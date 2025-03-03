@@ -1,0 +1,924 @@
+#!/usr/bin/env python3
+import os
+import json
+import re
+import psycopg2
+from datetime import datetime
+from typing import TypedDict, List, Union, Annotated
+
+from langgraph.graph import StateGraph, END
+from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from pydantic import BaseModel, ValidationError
+from langchain_openai import ChatOpenAI
+
+# Use updated Chroma client API
+from chromadb import Client
+from chromadb.config import Settings
+from collections import defaultdict
+from menuIndexer import MenuIndexer,MenuParser
+from orderProcessor import OrderProcessor
+
+##########################
+# Pydantic models for order validation
+##########################
+class MenuItem(BaseModel):
+    item: str
+    size: str
+    quantity: int
+    custom: str = ""
+    price: str
+
+class OrderSchema(BaseModel):
+    message_type: str = "order"
+    phone_number: str
+    menu_items_ordered: List[MenuItem]
+    pickup_or_delivery: str
+    payment_type: str
+    address: str
+    total_price: str
+
+##########################
+# Workflow state definitions
+##########################
+class WorkflowState:
+    COLLECT_ITEMS = "collect_items"
+    DELIVERY_INFO = "delivery_info"
+    PAYMENT = "payment"
+    FINALIZED = "finalized"
+    MODIFY_ORDER = "modify_order"  # New state for modifications
+
+##########################
+# Define the AgentState type for our state machine
+##########################
+class AgentState(TypedDict):
+    user_input: Annotated[str, "single_value"]
+    chat_history: List[Union[HumanMessage, AIMessage]]
+    order_status: str
+    current_order: dict
+    input: str         # For call_agent: raw user input
+    tools: list        # List of tools if applicable
+    error_count: int
+
+##########################
+# Main OrderSystem class using state-based workflow, OpenRouter API, and Chroma-based RAG
+##########################
+class orderChat:
+    def __init__(self, caller_id: str):
+        self.caller_id = caller_id
+
+        # Set up API key and URL for OpenRouter AI API.
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
+        self.api_url = "https://openrouter.ai/api/v1"
+        self.llm_local = ChatOpenAI(
+            model="google/gemini-2.0-flash-001",
+            openai_api_key=self.api_key,
+            openai_api_base=self.api_url,
+            default_headers={
+                "Referer": "norshin.com",
+                "X-Title": "Your App Name",
+                "Content-Type": "application/json"
+            },
+            max_retries=3
+        )
+
+        # Initial order state.
+        self.state = {
+            "order_status": WorkflowState.COLLECT_ITEMS,
+            "current_order": {
+                "phone_number": caller_id,
+                "menu_items_ordered": [],
+                "pickup_or_delivery": "",
+                "payment_type": "",
+                "address": "",
+                "total_price": "0.00"
+            },
+            "chat_history": [],
+            "error_count": 0
+        }
+
+        self.db_config = {
+            "host": os.getenv("DB_HOST"),
+            "database": os.getenv("DB_DATABASE"),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("DB_PASSWORD")
+        }
+        self.test_database_connection()
+        self.load_prompts()
+
+        # Initialize Chroma vector store with new client API.
+        self.processor = self.getProcessor("misc2/prompt2.txt")
+
+        # Create retriever by using the collection query.
+        self.workflow = self.create_state_machine()
+
+
+    def getProcessor(self, promptPath):
+        """Get or create an OrderProcessor with indexed menu and rules data"""
+        try:
+            # Try to connect to existing collections first
+            indexer = MenuIndexer()
+            
+            # Check if required collections exist
+            collections_exist = self._check_collections_exist(indexer)
+            
+            if collections_exist:
+                print("Using existing menu and rule collections")
+            else:
+                # Create a MenuParser instance and parse files
+                menu_parser = MenuParser()
+                print("Parsing menu file: misc2/prompt2.txt")
+                menu_parser.parse_menu_file("misc2/prompt2.txt")
+                print("Parsing rules file: misc2/rules.txt")
+                menu_parser.parse_rules_file("misc2/rules.txt")
+                
+                # Index the parsed menu and rules
+                indexer.index_menu_and_rules(menu_parser)
+                
+            # Create and return the processor with the indexer
+            processor = OrderProcessor(indexer)
+            return processor
+            
+        except Exception as e:
+            print(f"Error in getProcessor: {str(e)}")
+            # Fallback to complete reindexing if any errors occur
+            menu_parser = MenuParser()
+            print("Parsing menu file: misc2/prompt2.txt")
+            menu_parser.parse_menu_file("misc2/prompt2.txt")
+            print("Parsing rules file: misc2/rules.txt")
+            menu_parser.parse_rules_file("misc2/rules.txt")
+            indexer = MenuIndexer()
+            indexer.index_menu_and_rules(menu_parser)
+            processor = OrderProcessor(indexer)
+            return processor
+
+    def _check_collections_exist(self, indexer):
+        """Check if all required collections exist and have data"""
+        required_collections = [
+            "categories", "items", "rules", 
+            "rule_options", "rule_items"
+        ]
+        
+        try:
+            # Initialize collections
+            indexer._initialize_collections()
+            
+            # Check if each collection exists and has data
+            for collection_name in required_collections:
+                collection = getattr(indexer, f"{collection_name}_col", None)
+                if collection is None:
+                    return False
+                    
+                # Check if collection has data
+                count = collection.count()
+                if count == 0:
+                    return False
+                    
+            return True
+        except Exception as e:
+            print(f"Error checking collections: {str(e)}")
+            return False
+
+
+    def keepChromeDB(self):
+        client = Client(Settings(persist_directory="chroma_database"))
+        try:
+            self.collection = client.get_collection("category_prompts")
+            print("Vector DB found. Using stored prompts.")
+        except Exception as e:
+            print("No existing collection found. Creating a new one using prompt2 file...")
+            self.collection = client.create_collection("category_prompts")
+            try:
+                with open("misc/prompt2", "r") as f:
+                    prompt2_text = f.read().strip()
+            except Exception as e:
+                prompt2_text = ""
+                print(f"Error reading prompt2 file: {e}")
+            self.collection.add(
+                documents=[prompt2_text],
+                metadatas=[{"id": "1"}],
+                ids=["1"]
+            )
+
+    def test_database_connection(self):
+        try:
+            with psycopg2.connect(**self.db_config) as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1")
+            print("Database connection successful")
+        except Exception as e:
+            raise RuntimeError(f"Database connection failed: {str(e)}")
+
+    def get_user_home_address(self, phone_number: str) -> str:
+        """
+        Retrieve the customer's home (delivery) address from the most recent order.
+        Assumes that the orders table stores order_data as JSON (a string) that
+        includes the key "address".
+        """
+        try:
+            with psycopg2.connect(**self.db_config) as conn:
+                with conn.cursor() as cur:
+                    # Limit to the most recent order.
+                    cur.execute("""
+                        SELECT order_data 
+                        FROM orders 
+                        WHERE phone_number = %s 
+                        AND order_data::json->>'pickup_or_delivery' = 'delivery'
+                        ORDER BY orderdate DESC 
+                        LIMIT 1
+                    """, (phone_number,))
+                    row = cur.fetchone()
+                    if row:
+                        order_data_address = row[0]["address"]
+                        return order_data_address
+            return ""
+        except Exception as e:
+            print(f"Error retrieving user's home address: {e}")
+            return ""
+
+
+    def get_top_ordered_items_by_phone(self, phone_number: str) -> list:
+        """
+        Retrieve the top 3 most ordered items for the given phone number by aggregating
+        quantities from the JSON order_data stored in the database.
+        Assumes order_data is stored as a JSONB column and that the key "menu_items_ordered"
+        is an array of objects with each containing "item" and "quantity".
+        """
+        try:
+            with psycopg2.connect(**self.db_config) as conn:
+                with conn.cursor() as cur:
+                    query = """
+                        SELECT item_elem->>'item' as item_name,
+                            SUM((item_elem->>'quantity')::int) as total_quantity
+                        FROM orders, jsonb_array_elements(order_data->'menu_items_ordered') as item_elem
+                        WHERE phone_number = %s
+                        GROUP BY item_elem->>'item'
+                        ORDER BY total_quantity DESC
+                        LIMIT 3;
+                    """
+                    cur.execute(query, (phone_number,))
+                    results = cur.fetchall()
+                    return results  # Each row is (item_name, total_quantity)
+        except Exception as e:
+            print(f"Database error in get_top_ordered_items: {str(e)}")
+            return []
+
+
+    def load_prompts(self):
+        """Load prompt text from files (prompt, prompt2, prompt3) and append selective context."""
+        try:
+            with open("misc2/prompt.txt", "r") as f:
+                self.prompt_text = f.read().strip()
+            with open("misc2/prompt3.txt", "r") as f:
+                self.prompt_text += " " + f.read().strip()
+            # Instead of dumping dates for all orders, get only the top 3 items (most ordered).
+            top_items = self.get_top_ordered_items_by_phone(self.caller_id)
+            if top_items:
+                # Format a summary string: item_name (total_quantity)
+                summary = " Top 3 most ordered items: " + ", ".join([f"{row[0]} ({row[1]})" for row in top_items])
+                self.prompt_text += summary
+            
+            home_address = self.get_user_home_address(self.caller_id)
+            if home_address:
+                self.prompt_text += f" Customer home address: {home_address}"
+            print (f" home address :{home_address}")
+
+            self.prompt_text += f" Phone number: {self.caller_id}"
+            print("Loaded prompt text.")
+        except FileNotFoundError as e:
+            print(f"Prompt file error: {str(e)}")
+            self.prompt_text = "Welcome to our ordering system."
+  
+
+    def get_order_data_by_phonenumber(self, phone_number: str) -> list:
+        try:
+            with psycopg2.connect(**self.db_config) as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        SELECT order_data FROM orders 
+                        WHERE phone_number = %s 
+                        ORDER BY orderdate DESC
+                    """, (phone_number,))
+                    return [row for row in cur.fetchall()]
+        except Exception as e:
+            print(f"Database error: {str(e)}")
+            return []
+    
+    def get_prompt_for_selection(self, user_input: str) -> str:
+        """
+        Query the Chroma vector store for a relevant prompt based on the user's input.
+        If the input is too short (less than 3 characters) or is a common greeting,
+        do not perform a search and return an empty string.
+        """
+        common_greetings = {"hi", "hello", "hey"}
+        trimmed = user_input.strip()
+        if not trimmed or len(trimmed) < 3 or trimmed.lower() in common_greetings:
+            print("Input too short or generic; skipping vector DB search.")
+            return ""
+        result = self.processor.process_order(trimmed)
+        
+        if result and "documents" in result and len(result["documents"]) > 0 and len(result["documents"][0]) > 0:
+            doc = result["documents"][0][0]
+            # Further fuzzy check: ensure the document has a significant overlap with the query
+            if trimmed.lower() in doc.lower():
+                print("Retrieved prompt from vector DB for selection.")
+                return doc
+        return ""
+
+
+    def get_prompt_for_selection2(self, user_input: str) -> str:
+        """
+        Query the Chroma vector store for a relevant prompt based on the user's input.
+        If the input is too short (less than 3 characters) or is a common greeting,
+        do not perform a search and return an empty string.
+        """
+        common_greetings = {"hi", "hello", "hey"}
+        trimmed = user_input.strip()
+        if not trimmed or len(trimmed) < 3 or trimmed.lower() in common_greetings:
+            print("Input too short or generic; skipping vector DB search.")
+            return ""
+        result = self.collection.query(query_texts=[trimmed], n_results=1)
+        if result and "documents" in result and len(result["documents"]) > 0 and len(result["documents"][0]) > 0:
+            doc = result["documents"][0][0]
+            # Further fuzzy check: ensure the document has a significant overlap with the query
+            if trimmed.lower() in doc.lower():
+                print("Retrieved prompt from vector DB for selection.")
+                return doc
+        return ""
+    
+    def create_state_machine(self):
+        workflow = StateGraph(AgentState)
+        workflow.add_node(WorkflowState.COLLECT_ITEMS, self.handle_collect_items)
+        workflow.add_node(WorkflowState.DELIVERY_INFO, self.handle_delivery_info)
+        workflow.add_node(WorkflowState.PAYMENT, self.handle_payment)
+        workflow.add_node(WorkflowState.FINALIZED, self.handle_finalized)
+        workflow.add_node(WorkflowState.MODIFY_ORDER, self.handle_modify_order)
+        workflow.set_entry_point(WorkflowState.COLLECT_ITEMS)
+        workflow.add_conditional_edges(
+            WorkflowState.COLLECT_ITEMS,
+            lambda s: WorkflowState.MODIFY_ORDER if "modify" in s["user_input"].lower() else WorkflowState.DELIVERY_INFO,
+            {WorkflowState.MODIFY_ORDER: WorkflowState.MODIFY_ORDER, WorkflowState.DELIVERY_INFO: WorkflowState.DELIVERY_INFO}
+        )
+        workflow.add_conditional_edges(
+            WorkflowState.DELIVERY_INFO,
+            lambda s: WorkflowState.MODIFY_ORDER if "modify" in s["user_input"].lower() else WorkflowState.PAYMENT,
+            {WorkflowState.MODIFY_ORDER: WorkflowState.MODIFY_ORDER, WorkflowState.PAYMENT: WorkflowState.PAYMENT}
+        )
+        workflow.add_conditional_edges(
+            WorkflowState.PAYMENT,
+            lambda s: WorkflowState.MODIFY_ORDER if "modify" in s["user_input"].lower() else WorkflowState.FINALIZED,
+            {WorkflowState.MODIFY_ORDER: WorkflowState.MODIFY_ORDER, WorkflowState.FINALIZED: WorkflowState.FINALIZED}
+        )
+        workflow.add_edge(WorkflowState.FINALIZED, END)
+        return workflow.compile()
+
+    def parse_order_data(self, content: str) -> dict:
+        print(f"\n=== PARSING ORDER DATA ===\nInput: {content}")
+        if "{" in content and "}" in content:
+            try:
+                order_data = json.loads(content)
+                print("Direct JSON parse successful:", order_data)
+                validated = OrderSchema(**order_data)
+                print("Schema validation passed")
+                return validated.dict()
+            except Exception as e:
+                print(f"Direct JSON parsing failed: {str(e)}")
+        order_data = {
+            "message_type": "order",
+            "phone_number": self.caller_id,
+            "menu_items_ordered": [],
+            "pickup_or_delivery": "",
+            "payment_type": "",
+            "address": "",
+            "total_price": "0.00"
+        }
+        item_matches = re.findall(r'(\d+)\s+([^,$]+)\s+(\$[\d\.]+)', content, re.IGNORECASE)
+        if item_matches:
+            for qty, name, price in item_matches:
+                order_data["menu_items_ordered"].append({
+                    "item": name.strip(),
+                    "size": "Regular",
+                    "quantity": int(qty),
+                    "custom": "",
+                    "price": price
+                })
+        else:
+            print("Fallback extraction: No item matches found.")
+        delivery_match = re.search(r'\b(delivery|pickup)\b', content, re.IGNORECASE)
+        if delivery_match:
+            order_data["pickup_or_delivery"] = delivery_match.group(1).lower()
+        payment_match = re.search(r'\b(cash|credit|card|venmo|paypal)\b', content, re.IGNORECASE)
+        if payment_match:
+            order_data["payment_type"] = payment_match.group(1).lower()
+        address_match = re.search(r'(?:address:|to)\s*([\w\s,.-]+)', content, re.IGNORECASE)
+        if address_match:
+            order_data["address"] = address_match.group(1).strip()
+        if order_data["menu_items_ordered"]:
+            total = sum(float(item["price"].strip("$")) * item["quantity"] for item in order_data["menu_items_ordered"])
+            order_data["total_price"] = f"${total:.2f}"
+        print("Fallback extraction result:", order_data)
+        return order_data if order_data["menu_items_ordered"] else None
+
+    def handle_collect_items(self, state: AgentState):
+        print(f"\n=== COLLECTING ITEMS ===\nUser input: {state['user_input']}")
+        try:
+            order_data = self.parse_order_data(state["user_input"])
+            if not order_data or not order_data.get("menu_items_ordered"):
+                raise ValueError("Could not detect order items")
+            print("Validated order data:", order_data)
+            state["error_count"] = 0
+            return {
+                **state,
+                "current_order": order_data,
+                "order_status": WorkflowState.DELIVERY_INFO,
+                "chat_history": state["chat_history"] + [
+                    AIMessage(content="Items detected. Please confirm delivery/pickup information.")
+                ]
+            }
+        except Exception as e:
+            return self.handle_error(state, f"Item error: {str(e)}")
+
+    def handle_delivery_info(self, state: AgentState):
+        print(f"\n=== PROCESSING DELIVERY INFO ===\nInput: {state['user_input']}")
+        try:
+            print("Current order state:", state["current_order"])
+            delivery_match = re.search(r'(delivery|pickup)(?:.*?address:)?\s*([^\n]*)', state["user_input"], re.IGNORECASE)
+            if not delivery_match:
+                raise ValueError("Missing delivery/pickup specification")
+            print("Delivery match groups:", delivery_match.groups())
+            return {
+                **state,
+                "current_order": {
+                    **state["current_order"],
+                    "pickup_or_delivery": delivery_match.group(1).lower(),
+                    "address": delivery_match.group(2).strip() if delivery_match.group(2) else ""
+                },
+                "order_status": WorkflowState.PAYMENT,
+                "chat_history": state["chat_history"] + [
+                    AIMessage(content="Delivery information saved.")
+                ]
+            }
+        except Exception as e:
+            return self.handle_error(state, f"Delivery error: {str(e)}")
+
+    def handle_payment(self, state: AgentState):
+        print(f"\n=== PROCESSING PAYMENT ===\nInput: {state['user_input']}")
+        try:
+            print("Current order state:", state["current_order"])
+            payment_match = re.search(r'(cash|credit|card|venmo|paypal)\b', state["user_input"], re.IGNORECASE)
+            if not payment_match:
+                raise ValueError("Unsupported payment method")
+            print("Payment method matched:", payment_match.group(1))
+            return {
+                **state,
+                "current_order": {
+                    **state["current_order"],
+                    "payment_type": payment_match.group(1).lower()
+                },
+                "order_status": WorkflowState.FINALIZED,
+                "chat_history": state["chat_history"] + [
+                    AIMessage(content="Payment information saved.")
+                ]
+            }
+        except Exception as e:
+            return self.handle_error(state, f"Payment error: {str(e)}")
+
+    def handle_finalized(self, state: AgentState):
+        print("\n=== FINALIZING ORDER ===")
+        try:
+            print("Final order data:", state["current_order"])
+            required_fields = ["phone_number", "menu_items_ordered", "payment_type"]
+            if state["current_order"].get("pickup_or_delivery", "").lower() == "delivery":
+                required_fields.append("address")
+            print("Required fields:", required_fields)
+            if not all(state["current_order"].get(field) for field in required_fields):
+                raise ValueError("Missing required order fields")
+            print("Saving to database...")
+            with psycopg2.connect(**self.db_config) as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(
+                        """INSERT INTO orders (phone_number, order_data)
+                           VALUES (%s, %s)""",
+                        (self.caller_id, json.dumps(state["current_order"]))
+                    )
+                    conn.commit()
+            print("Database insert successful")
+            return {
+                **state,
+                "order_status": WorkflowState.FINALIZED,
+                "chat_history": state["chat_history"] + [
+                    AIMessage(content="Order finalized successfully!")
+                ]
+            }
+        except Exception as e:
+            return self.handle_error(state, f"Finalization failed: {str(e)}")
+
+    def handle_modify_order(self, state: AgentState):
+        print(f"\n=== MODIFYING ORDER ===\nUser input: {state['user_input']}")
+        try:
+            modification_request = self.parse_modification_request(state["user_input"])
+            if not modification_request:
+                raise ValueError("Could not understand modification request.")
+            updated_order = self.apply_modifications(state["current_order"], modification_request)
+            print("Updated order:", updated_order)
+            return {
+                **state,
+                "current_order": updated_order,
+                "order_status": WorkflowState.COLLECT_ITEMS,
+                "chat_history": state["chat_history"] + [
+                    AIMessage(content="Your order has been updated. Do you want to make any other changes?")
+                ]
+            }
+        except Exception as e:
+            return self.handle_error(state, f"Modification error: {str(e)}")
+
+    def parse_modification_request(self, user_input: str) -> dict:
+        print(f"Parsing modification request: {user_input}")
+        if "add" in user_input.lower():
+            item_match = re.search(r'add\s+(\d+)\s+(.+?)\s+\$(\d+\.\d+)', user_input, re.IGNORECASE)
+            if item_match:
+                return {
+                    "action": "add",
+                    "item": {
+                        "quantity": int(item_match.group(1)),
+                        "item": item_match.group(2).strip(),
+                        "price": f"${item_match.group(3)}"
+                    }
+                }
+        if "remove" in user_input.lower():
+            item_match = re.search(r'remove\s+(.+)', user_input, re.IGNORECASE)
+            if item_match:
+                return {
+                    "action": "remove",
+                    "item_name": item_match.group(1).strip()
+                }
+        return None
+
+    def apply_modifications(self, current_order: dict, modification_request: dict) -> dict:
+        print(f"Applying modifications: {modification_request}")
+        updated_order = current_order.copy()
+        if modification_request["action"] == "add":
+            updated_order["menu_items_ordered"].append(modification_request["item"])
+        elif modification_request["action"] == "remove":
+            updated_order["menu_items_ordered"] = [
+                item for item in updated_order["menu_items_ordered"]
+                if item["item"].lower() != modification_request["item_name"].lower()
+            ]
+        total_price = sum(float(item["price"].strip("$")) * item["quantity"] for item in updated_order["menu_items_ordered"])
+        updated_order["total_price"] = f"${total_price:.2f}"
+        return updated_order
+
+    def sanitize_json(self, response_content: str) -> str:
+        try:
+            sanitized = response_content.replace("'", "\"")
+            json.loads(sanitized)
+            return sanitized
+        except json.JSONDecodeError as e:
+            print(f"JSON sanitization failed: {str(e)}")
+            return None
+
+    def parse_agent_response(self, response, user_input: str):
+        try:
+            content = response.content.strip()
+            if content.startswith("{") and content.endswith("}"):
+                sanitized_content = self.sanitize_json(content)
+                if sanitized_content is None:
+                    raise ValueError("LLM response appears to be JSON but could not be sanitized.")
+                action_data = json.loads(sanitized_content)
+                if "action" in action_data and action_data["action"] in ["add", "remove", "cancel"]:
+                    return AgentAction(
+                        tool="order_processing",
+                        tool_input=action_data,
+                        log=response.content
+                    )
+                raise ValueError("Invalid modification structure in LLM response.")
+            return AgentFinish(
+                return_values={"output": content},
+                log=response.content
+            )
+        except Exception as e:
+            print(f"Error parsing agent response: {str(e)}")
+            return AgentFinish(
+                return_values={"output": f"Error: {str(e)}"},
+                log=str(e)
+            )
+    
+    
+    def getIngredients(self, state: AgentState, origPrompt):
+        print(f"[DEBUG] Processing input: {state['input']}")
+        processor_output = self.processor.process_order(state["input"])
+        print(f"[DEBUG] Processor output status: {processor_output.get('status')}")
+        
+        # Case 1: Check if input exactly matches a category name
+        if processor_output.get("status") == "need_input" and "results" in processor_output:
+            similar_items = processor_output.get("results", [])
+            print(f"[DEBUG] Found {len(similar_items)} similar items")
+            
+            # Group items by category
+            categories = {}
+            for item in similar_items:
+                category = item.get("category", "")
+                if category not in categories:
+                    categories[category] = []
+                categories[category].append(item)
+            
+            print(f"[DEBUG] Grouped items into {len(categories)} categories")
+            
+            # Check if input matches any category name exactly
+            for category, items in categories.items():
+                if category.lower() == state["input"].lower():
+                    print(f"[DEBUG] Found exact category match: {category}")
+                    # Found exact category match - show all items in this category
+                    prompt_update = f"I see you're interested in {category}. We have these options:\n\n"
+                    
+                    for item in items:
+                        item_name = item.get("item", "")
+                        base_price = item.get("base_price", item.get("price", 0))
+                        print(f"[DEBUG] Adding item {item_name} with base price ${base_price}")
+                        
+                        if 'selected_rules' in item:
+                            rules = json.loads(item.get('selected_rules', '[]'))
+                            prompt_update += f"- {item_name} (${base_price:.2f}) - Requires selections for: {', '.join(rules)}\n"
+                        else:
+                            ingredients = item.get("ingredients", "")
+                            prompt_update += f"- {item_name} (${base_price:.2f}): {ingredients}\n"
+                    
+                    prompt_update += "\nWhich option would you like to choose?"
+                    print(f"[DEBUG] Created category options prompt")
+                    return origPrompt + "\n" + prompt_update
+        
+        # Case 2: Rule-based item requiring selections
+        if processor_output.get("status") == "need_rule_selections":
+            item_name = processor_output.get("item", "")
+            base_price = processor_output.get("base_price", 0)
+            rules = processor_output.get("rules", [])
+            print(f"[DEBUG] Processing rule-based item: {item_name} with base price ${base_price}")
+            
+            # Format available options for each rule
+            options_text = ""
+            for rule_name, options in processor_output.get("available_options", {}).items():
+                if options:
+                    min_val = options[0].get("min", 0)
+                    max_val = options[0].get("max", "unlimited")
+                    print(f"[DEBUG] Processing rule: {rule_name} with constraints min={min_val}, max={max_val}")
+                    
+                    options_text += f"\n{rule_name} (Select "
+                    if min_val == max_val:
+                        options_text += f"exactly {min_val}"
+                    elif min_val == 0:
+                        options_text += f"up to {max_val}"
+                    else:
+                        options_text += f"{min_val} to {max_val}"
+                    options_text += f"):\n"
+                    
+                    # Get ALL items for this rule option
+                    all_items = []
+                    for option in options:
+                        for item in option.get("items", []):
+                            all_items.append(f"{item.get('name', '').split(' (')[0]} (${item.get('price', 0):.2f})")
+                    
+                    print(f"[DEBUG] Found {len(all_items)} items for rule {rule_name}")
+                    
+                    # Show ALL items
+                    if all_items:
+                        options_text += f"  Options include: {', '.join(all_items)}\n"
+            
+            prompt_update = f"I see you're interested in our {item_name}! It starts at ${base_price:.2f} and you'll need to select:\n{options_text}\n"
+            prompt_update += f"What would you like to select for your {item_name}?"
+            
+            print(f"[DEBUG] Created rule-based item prompt")
+            prompt_to_send = origPrompt + "\n" + prompt_update
+        
+        # Case 3: Exact match found (standard item)
+        elif processor_output.get("status") == "success":
+            found_item = processor_output.get("item", "")
+            ingredients = processor_output.get("ingredients", "No ingredients available")
+            print(f"[DEBUG] Found exact match: {found_item}")
+            prompt_update = f"Found item: {found_item}\nIngredients: {ingredients}\n"
+            prompt_to_send = origPrompt + "\n" + prompt_update
+        
+        # Case 4: Multiple similar items found (not a category match)
+        elif processor_output.get("status") == "need_input" and "results" in processor_output:
+            similar_items = processor_output.get("results", [])
+            print(f"[DEBUG] Processing {len(similar_items)} similar items")
+            
+            # Check if there's only one item in a category with the same name
+            exact_match = None
+            for item in similar_items:
+                if item.get("item", "").lower() == state["input"].lower():
+                    exact_match = item
+                    print(f"[DEBUG] Found exact item match: {item.get('item')}")
+                    break
+                    
+            if exact_match:
+                # Direct match found - treat as a standard item
+                prompt_update = f"Found item: {exact_match.get('item', '')}\nPrice: ${exact_match.get('price', 0):.2f}\n"
+                if exact_match.get('ingredients'):
+                    prompt_update += f"Ingredients: {exact_match.get('ingredients')}\n"
+                prompt_to_send = origPrompt + "\n" + prompt_update
+            else:
+                # Multiple items found - show options
+                prompt_update = "Found similar items:\n"
+                for item in similar_items[:3]:  # Limit to top 3 matches
+                    item_name = item.get("item", "")
+                    price = item.get("price", 0)
+                    ingredients = item.get("ingredients", "")
+                    prompt_update += f"- {item_name} (${price:.2f}): {ingredients}\n"
+                
+                prompt_to_send = origPrompt + "\n" + prompt_update
+        
+        # Add this case at the beginning of getIngredients function
+        elif processor_output.get("status") == "need_category_selection":
+            category_name = processor_output.get("category", "")
+            items = processor_output.get("results", [])
+            print(f"[DEBUG] Handling category selection for {category_name} with {len(items)} items")
+            
+            prompt_update = f"I see you're interested in {category_name}. We have these options:\n\n"
+            
+            for item in items:
+                item_name = item.get("item", "")
+                base_price = item.get("base_price", item.get("price", 0))
+                print(f"[DEBUG] Adding item {item_name} with base price ${base_price}")
+                
+                if 'selected_rules' in item:
+                    #rules = json.loads(item.get('selected_rules', '[]'))
+                    #prompt_update += f"- {item_name} (${base_price:.2f}) - Requires selections for: {', '.join(rules)}\n"
+                    selected_rules = item.get('selected_rules', [])
+                    if isinstance(selected_rules, str):
+                        try:
+                            rules = json.loads(selected_rules)
+                        except json.JSONDecodeError:
+                            print(f"[DEBUG] Error parsing selected_rules for {item_name}")
+                            rules = []
+                    else:
+                            rules = selected_rules
+                    prompt_update += f"- {item_name} (${base_price:.2f}) - Requires selections for: {', '.join(rules)}\n"
+                        
+                else:
+                    ingredients = item.get("ingredients", "")
+                    prompt_update += f"- {item_name} (${base_price:.2f}): {ingredients}\n"
+            
+            prompt_update += "\nWhich option would you like to choose?"
+            print(f"[DEBUG] Created category options prompt")
+            return origPrompt + "\n" + prompt_update
+
+
+
+        # Default case: No relevant information found
+        else:
+            print("[DEBUG] No relevant information found")
+            prompt_to_send = origPrompt
+        
+        # Process any calculate_sum function calls in the prompt
+        if "calculate_sum(" in prompt_to_send:
+            pattern = r'calculate_sum\(\[([\d\., ]+)\]\)'
+            matches = re.findall(pattern, prompt_to_send)
+            for match in matches:
+                numbers = [float(num.strip()) for num in match.split(',')]
+                sum_result = sum(numbers)
+                
+                # Create a formatted string showing the addition
+                addition_str = " + ".join([f"{num:.2f}" for num in numbers])
+                replacement = f"{addition_str} = {sum_result:.2f}"
+                
+                print(f"[DEBUG] Replaced calculate_sum with formatted addition: {replacement}")
+                prompt_to_send = prompt_to_send.replace(f"calculate_sum([{match}])", replacement)
+        
+        return prompt_to_send
+
+
+    def getIngredients2 (self,state:AgentState,origPrompt):
+        processor_output = self.processor.process_order(state["input"])
+        # Check if the order processor was able to extract an item successfully.
+        if processor_output.get("status") == "success":
+            found_item = processor_output.get("item", "")
+            ingredients = processor_output.get("ingredients", "No ingredients available")
+            # Append the found info to the prompt. You can customize the text as needed.
+            prompt_update = f"Found item: {found_item}\nIngredients: {ingredients}\n"
+            print(f"[orderChat] Updating prompt with:\n{prompt_update}")
+            prompt_to_send = origPrompt + "\n" + prompt_update
+        else:
+            # In case processor did not return a successful result, leave prompt unchanged.
+            print("[orderChat] Order processor did not extract item successfully; using default prompt.")
+            prompt_to_send = origPrompt
+        return prompt_to_send
+
+    def call_agent(self, state: AgentState):
+        print("\n--- AGENT PROCESSING ---")
+        #selection_prompt = self.get_prompt_for_selection(state["input"])
+        #if selection_prompt:
+        #    prompt_to_send = selection_prompt
+        #else:
+        #    prompt_to_send = self.prompt_text
+        prompt_to_send = self.getIngredients(state,self.prompt_text)
+        messages = [
+            SystemMessage(content=prompt_to_send),
+            *state["chat_history"],
+            HumanMessage(content=state["input"])
+        ]
+        try:
+            print(f"Sending prompt to LLM:\n{prompt_to_send}")
+            response = self.llm_local.invoke(messages)
+            print(f"LLM raw response: {response.content}")
+            action = self.parse_agent_response(response, state["input"])
+            if isinstance(action, AgentFinish):
+                print("Returning AgentFinish immediately")
+                return {
+                    "input": state["input"],
+                    "chat_history": state["chat_history"],
+                    "intermediate_steps": [action],
+                    "tools": state["tools"]
+                }
+            print(f"Returning AgentAction: {action.tool}")
+            return {
+                "input": state["input"],
+                "chat_history": state["chat_history"],
+                "intermediate_steps": [action],
+                "tools": state["tools"]
+            }
+        except Exception as e:
+            print(f"Error in call_agent: {str(e)}")
+            return {
+                "input": state["input"],
+                "chat_history": state["chat_history"],
+                "intermediate_steps": [
+                    AgentFinish(
+                        return_values={"output": f"Error processing request: {str(e)}"},
+                        log=str(e)
+                    )
+                ],
+                "tools": state["tools"]
+            }
+
+    def chatAway(self, user_input: str) -> str:
+        print(f"\n=== NEW CHAT REQUEST ===\nInput: {user_input}")
+        try:
+            state = {
+                "input": user_input,
+                "user_input": user_input,
+                "chat_history": self.state["chat_history"].copy(),
+                "order_status": self.state["order_status"],
+                "current_order": self.state["current_order"].copy(),
+                "error_count": self.state.get("error_count", 0),
+                "tools": []
+            }
+            print("Initial state:", state)
+            agent_response = self.call_agent(state)
+            if isinstance(agent_response, dict) and "intermediate_steps" in agent_response:
+                for action in agent_response["intermediate_steps"]:
+                    if isinstance(action, AgentFinish):
+                        self.state.update({
+                            "chat_history": state["chat_history"] + [
+                                HumanMessage(content=user_input),
+                                AIMessage(content=action.return_values["output"])
+                            ],
+                            "order_status": agent_response.get("order_status", self.state["order_status"]),
+                            "current_order": agent_response.get("current_order", self.state["current_order"]),
+                            "error_count": state.get("error_count", 0)
+                        })
+                        return action.return_values["output"]
+            return "Order processing failed to complete"
+        except Exception as e:
+            print(f"Workflow error: {str(e)}")
+            return "An error occurred. Please start over."
+
+    def process_message(self, user_input: str) -> str:
+        return self.chatAway(user_input)
+
+    def calculate_order_price(self,order_text):
+        # 1. Find relevant category
+        categories = self.indexer.categories_col.query(
+            query_texts=[order_text],
+            n_results=1
+        )
+        category = categories['metadatas'][0][0]
+        
+        # 2. Extract ingredients
+        ingredients = self.indexer.ingredients_col.query(
+            query_texts=[order_text],
+            where={"category": category['name']},
+            n_results=20
+        )
+        
+        # 3. Apply rules and calculate price
+        total = category['base_price']
+        selections = defaultdict(list)
+        
+        for ing in ingredients['metadatas'][0]:
+            rule_type = ing['rule_type']
+            if len(selections[rule_type]) < ing['max_select']:
+                total += ing['price']
+                selections[rule_type].append(ing['price'])
+        
+        return round(total, 2)
+
+
+if __name__ == "__main__":
+    system = orderChat("+19175587915")
+    print("Ordering system ready. Type 'exit' to quit.")
+    while True:
+        user_input = input("Customer: ")
+        if user_input.lower() == "exit":
+            break
+        response = system.chatAway(user_input)
+        print("System:", response)
