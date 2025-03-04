@@ -3,6 +3,8 @@ import json
 import re
 from menuIndexer import MenuIndexer, MenuParser
 import itertools
+from fuzzywuzzy import fuzz
+from collections import Counter
 
 class OrderProcessor:
     def __init__(self, indexer):
@@ -81,14 +83,14 @@ class OrderProcessor:
             documents = results["documents"][0]  # Get the inner list
             for i, doc in enumerate(documents):
                 # Use partial matching - check if query is part of the document name
-                if query.lower() in doc.lower():
-                    exact_match = i
+                exact_match = self.find_exact_match(i,query.lower(), doc.lower())#i
+                if exact_match is not None:
                     break
         elif results["documents"]:
             # Handle case where documents is a flat list
             for i, doc in enumerate(results["documents"]):
-                if query.lower() in doc.lower():
-                    exact_match = i
+                exact_match = self.find_exact_match(i,query.lower(), doc.lower()) #i
+                if exact_match is not None:
                     break
                 
 
@@ -144,6 +146,27 @@ class OrderProcessor:
                     "status": "need_input",
                     "results": similar_items
                 }
+
+
+    def compare_strings(self,str1, str2):
+        words1 = str1.lower().split()
+        words2 = str2.lower().split()
+        common_words = set(words1) & set(words2)
+        common_count = len(common_words)
+        
+        if common_count == 0:
+            return 0
+        
+        fuzzy_score = fuzz.ratio(str1.lower(), str2.lower()) / 100
+        word_score = 2 * common_count / (len(words1) + len(words2))
+        combined_score = (fuzzy_score + word_score) / 2
+        
+        return combined_score  # Return a single float value
+
+    def find_exact_match(self, index,query, document):
+        score = self.compare_strings(query, document)
+        return index if score > 0.4 else None
+
 
     def _process_rule_based_item(self, item_name, meta):
         print(f"[DEBUG] Processing rule-based item: {item_name} with base price ${meta.get('base_price', 0)}")
