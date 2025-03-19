@@ -71,7 +71,8 @@ class orderChat:
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.api_url = "https://openrouter.ai/api/v1"
         self.llm_local = ChatOpenAI(
-            model="google/gemini-2.0-flash-001",
+            model="openai/gpt-4o-mini",
+            #model="google/gemma-3-27b-it",
             openai_api_key=self.api_key,
             openai_api_base=self.api_url,
             default_headers={
@@ -104,16 +105,16 @@ class orderChat:
             "password": os.getenv("DB_PASSWORD")
         }
         self.test_database_connection()
-        self.load_prompts()
-
+        #self.load_prompts("misc2/prompt.txt","misc2/prompt3.txt")
+        self.load_prompts("salon/prompt.txt","salon/prompt3.txt")
         # Initialize Chroma vector store with new client API.
-        self.processor = self.getProcessor("misc2/prompt2.txt")
-
+        #self.processor = self.getProcessor("misc2/prompt2.txt","misc2/rules.txt")
+        self.processor = self.getProcessor("salon/salon_prompt2.txt","salon/salon_rules.txt")
         # Create retriever by using the collection query.
         self.workflow = self.create_state_machine()
 
 
-    def getProcessor(self, promptPath):
+    def getProcessor(self, prompt2File, rulesFile):
         """Get or create an OrderProcessor with indexed menu and rules data"""
         try:
             # Try to connect to existing collections first
@@ -127,10 +128,10 @@ class orderChat:
             else:
                 # Create a MenuParser instance and parse files
                 menu_parser = MenuParser()
-                print("Parsing menu file: misc2/prompt2.txt")
-                menu_parser.parse_menu_file("misc2/prompt2.txt")
-                print("Parsing rules file: misc2/rules.txt")
-                menu_parser.parse_rules_file("misc2/rules.txt")
+                print("Parsing menu file: salon/salon_prompt2.txt")
+                menu_parser.parse_menu_file(prompt2File)
+                print("Parsing rules file: salon/salon_rules.txt")
+                menu_parser.parse_rules_file(rulesFile)
                 
                 # Index the parsed menu and rules
                 indexer.index_menu_and_rules(menu_parser)
@@ -144,9 +145,9 @@ class orderChat:
             # Fallback to complete reindexing if any errors occur
             menu_parser = MenuParser()
             print("Parsing menu file: misc2/prompt2.txt")
-            menu_parser.parse_menu_file("misc2/prompt2.txt")
+            menu_parser.parse_menu_file(prompt2File)
             print("Parsing rules file: misc2/rules.txt")
-            menu_parser.parse_rules_file("misc2/rules.txt")
+            menu_parser.parse_rules_file(rulesFile)
             indexer = MenuIndexer()
             indexer.index_menu_and_rules(menu_parser)
             processor = OrderProcessor(indexer)
@@ -264,12 +265,12 @@ class orderChat:
             return []
 
 
-    def load_prompts(self):
+    def load_prompts(self, promptFile, prompt3File):
         """Load prompt text from files (prompt, prompt2, prompt3) and append selective context."""
         try:
-            with open("misc2/prompt.txt", "r") as f:
+            with open(promptFile, "r") as f:
                 self.prompt_text = f.read().strip()
-            with open("misc2/prompt3.txt", "r") as f:
+            with open(prompt3File, "r") as f:
                 self.prompt_text += " " + f.read().strip()
             # Instead of dumping dates for all orders, get only the top 3 items (most ordered).
             top_items = self.get_top_ordered_items_by_phone(self.caller_id)
@@ -603,12 +604,143 @@ class orderChat:
                 log=str(e)
             )
     
-    
     def getIngredients(self, state: AgentState, origPrompt):
         print(f"[DEBUG] Processing input: {state['input']}")
         processor_output = self.processor.process_order(state["input"])
         print(f"[DEBUG] Processor output status: {processor_output.get('status')}")
         
+        # Handle greeting without database search
+        if processor_output.get("status") == "greeting":
+            return origPrompt
+        
+        # Early return if no meaningful data
+        if not processor_output or (not processor_output.get("results") and not processor_output.get("item")):
+            print("[DEBUG] No relevant information found")
+            return origPrompt
+        
+        # Collect and format all results
+        prompt_update = ""
+        
+        # Get all results and category information
+        results = processor_output.get("results", [])
+        category_name = processor_output.get("category", "")
+        
+        # Set appropriate header based on context
+        if category_name:
+            prompt_update = f"I see you're interested in {category_name}. We have these options:\n\n"
+        else:
+            prompt_update = "Here are all the matching items:\n\n"
+        
+        # Group items by category for better organization
+        categories = {}
+        for item in results:
+            category = item.get("category", "Other")
+            if category not in categories:
+                categories[category] = []
+            categories[category].append(item)
+        
+        # Loop through all categories and include all items
+        for category, items in categories.items():
+            if category and len(categories) > 1:
+                prompt_update += f"[Begin Category] {category}\n"
+
+            ##Insert here
+            for item in items:
+                item_name = item.get("item", "")
+                base_price = item.get("base_price", item.get("price", 0))
+                
+                # Start building the item display with consistent pricing format
+                item_display = f"- {item_name}: ${base_price:.2f}\n"
+                
+                # Check if this item has rules
+                if 'selected_rules' in item:
+                    try:
+                        # Parse selected rules (handling both string and list formats)
+                        rules = json.loads(item.get('selected_rules', '[]')) if isinstance(item.get('selected_rules'), str) else item.get('selected_rules', [])
+                        
+                        # Add basic rule information
+                        item_display += f"  Requires selections for: {', '.join(rules)}\n"
+                        
+                        # Add rule options details directly here (if available)
+                        for rule_name in rules:
+                            # Get options for this rule from the database
+                            rule_options = self.processor.indexer.rule_options_col.get(where={"name": rule_name})
+                            if rule_options and "documents" in rule_options and rule_options["documents"]:
+                                # Get min/max values from the first option's metadata
+                                if "metadatas" in rule_options and rule_options["metadatas"]:
+                                    option_meta = rule_options["metadatas"][0]
+                                    min_val = option_meta.get("min", 1)
+                                    max_val = option_meta.get("max", "unlimited")
+                                    
+                                    # Format selection requirements
+                                    if min_val == max_val:
+                                        req_text = f"exactly {min_val}"
+                                    elif min_val == 0:
+                                        req_text = f"up to {max_val}"
+                                    else:
+                                        req_text = f"{min_val} to {max_val}"
+                                    
+                                    item_display += f"    {rule_name} (Select {req_text}):\n"
+                                    
+                                    # Add option names with prices
+                                    #rule_items = self.processor.indexer.rule_items_col.get(where={"option": rule_name})
+                                    rule_items = self.processor.indexer.rule_items_col.get(where={"rule": item_name})
+                                   
+                                    if rule_items and "documents" in rule_items:
+                                        options_text = []
+                                        for i, opt_doc in enumerate(rule_items["documents"]):
+                                            opt_price = rule_items["metadatas"][i].get("price", 0) if i < len(rule_items["metadatas"]) else 0
+                                            options_text.append(f"{opt_doc} (${opt_price:.2f})")
+                                        
+                                        if options_text:
+                                            item_display += f"      Options: {', '.join(options_text[:5])}...\n"
+                    except json.JSONDecodeError:
+                        item_display += "  Requires additional selections\n"
+                else:
+                    # Regular item - just show ingredients
+                    ingredients = item.get("ingredients", "")
+                    item_display += f"  {ingredients}\n"
+                
+                # Add the formatted item to the prompt
+                prompt_update += item_display
+
+
+            # Insert  
+            if category and len(categories) > 1:
+                prompt_update += f"[End Category]\n"
+        
+        # Add call-to-action
+        prompt_update += "\nWhich option would you like to choose?"
+        
+        # Process any calculate_sum function calls in the prompt
+        prompt_to_send = origPrompt + "\n" + prompt_update
+        
+        if "calculate_sum(" in prompt_to_send:
+            pattern = r'calculate_sum\(\[([\d\., ]+)\]\)'
+            matches = re.findall(pattern, prompt_to_send)
+            for match in matches:
+                numbers = [float(num.strip()) for num in match.split(',')]
+                sum_result = sum(numbers)
+                
+                # Create a formatted string showing the addition
+                addition_str = " + ".join([f"{num:.2f}" for num in numbers])
+                replacement = f"{addition_str} = {sum_result:.2f}"
+                
+                prompt_to_send = prompt_to_send.replace(f"calculate_sum([{match}])", replacement)
+        
+        return prompt_to_send
+
+
+    
+    def getIngredients2(self, state: AgentState, origPrompt):
+        print(f"[DEBUG] Processing input: {state['input']}")
+        processor_output = self.processor.process_order(state["input"])
+        print(f"[DEBUG] Processor output status: {processor_output.get('status')}")
+        
+        # Handle greeting without database search
+        if processor_output.get("status") == "greeting":
+            return origPrompt  # Return original prompt which contains "What would you like to order?"
+    
         # Case 1: Check if input exactly matches a category name
         if processor_output.get("status") == "need_input" and "results" in processor_output:
             similar_items = processor_output.get("results", [])
@@ -624,70 +756,105 @@ class orderChat:
             
             print(f"[DEBUG] Grouped items into {len(categories)} categories")
             
-            # Check if input matches any category name exactly
+            # Create a prompt that includes all items from all categories
+            prompt_update = "Here are all the matching items:\n\n"
+            
+            # Loop through all categories and include all items
             for category, items in categories.items():
-                if category.lower() == state["input"].lower():
-                    print(f"[DEBUG] Found exact category match: {category}")
-                    # Found exact category match - show all items in this category
-                    prompt_update = f"I see you're interested in {category}. We have these options:\n\n"
+                if category:  # Only add category header for non-empty categories
+                    prompt_update += f"[Begin Category] {category}\n"
+                
+                for item in items:
+                    item_name = item.get("item", "")
+                    base_price = item.get("base_price", item.get("price", 0))
+                    print(f"[DEBUG] Adding item {item_name} with base price ${base_price}")
                     
-                    for item in items:
-                        item_name = item.get("item", "")
-                        base_price = item.get("base_price", item.get("price", 0))
-                        print(f"[DEBUG] Adding item {item_name} with base price ${base_price}")
-                        
-                        if 'selected_rules' in item:
-                            rules = json.loads(item.get('selected_rules', '[]'))
-                            prompt_update += f"- {item_name} (${base_price:.2f}) - Requires selections for: {', '.join(rules)}\n"
-                        else:
-                            ingredients = item.get("ingredients", "")
-                            prompt_update += f"- {item_name} (${base_price:.2f}): {ingredients}\n"
-                    
-                    prompt_update += "\nWhich option would you like to choose?"
-                    print(f"[DEBUG] Created category options prompt")
-                    return origPrompt + "\n" + prompt_update
-        
+                    if 'selected_rules' in item:
+                        try:
+                            rules = json.loads(item.get('selected_rules', '[]')) if isinstance(item.get('selected_rules'), str) else item.get('selected_rules', [])
+                            prompt_update += f"- {item_name}: ${base_price:.2f}\n  Requires selections for: {', '.join(rules)}\n"
+                        except json.JSONDecodeError:
+                            prompt_update += f"- {item_name}: ${base_price:.2f}\n  Requires additional selections\n"
+                    else:
+                        ingredients = item.get("ingredients", "")
+                        prompt_update += f"- {item_name}: ${base_price:.2f}\n  {ingredients}\n"
+                
+                if category:
+                    prompt_update += f"[End Category]\n"
+            
+            prompt_update += "\nWhich option would you like to choose?"
+            print(f"[DEBUG] Created all items prompt")
+            return origPrompt + "\n" + prompt_update
+
+
         # Case 2: Rule-based item requiring selections
         if processor_output.get("status") == "need_rule_selections":
-            item_name = processor_output.get("item", "")
-            base_price = processor_output.get("base_price", 0)
-            rules = processor_output.get("rules", [])
-            print(f"[DEBUG] Processing rule-based item: {item_name} with base price ${base_price}")
+            # Check if we have multiple rule-based items or a single item with options
+            if "results" in processor_output and processor_output.get("results"):
+                # Multiple items with rules
+                rule_items = [item for item in processor_output.get("results", []) 
+                              if "selected_rules" in item]
+                
+                if rule_items:
+                    prompt_update = "I found these items that require additional selections:\n\n"
+                    
+                    for item in rule_items[:5]:  # Show up to 5 matches
+                        item_name = item.get("item", "")
+                        base_price = item.get("base_price", item.get("price", 0))
+                        
+                        # Parse rules
+                        selected_rules = item.get('selected_rules', [])
+                        rules = []
+                        
+                        if isinstance(selected_rules, str):
+                            try:
+                                rules = json.loads(selected_rules)
+                            except json.JSONDecodeError:
+                                rules = []
+                        else:
+                            rules = selected_rules
+                        
+                        prompt_update += f"- {item_name} (${base_price:.2f}) - Requires selections for: {', '.join(rules)}\n"
+                    
+                    prompt_update += "\nWhich item would you like to select?"
+                    return origPrompt + "\n" + prompt_update
             
-            # Format available options for each rule
-            options_text = ""
-            for rule_name, options in processor_output.get("available_options", {}).items():
-                if options:
+            # Single rule-based item with detailed options
+            if "item" in processor_output:
+                item_name = processor_output.get("item", "")
+                base_price = processor_output.get("base_price", 0)
+                rules = processor_output.get("rules", [])
+                
+                prompt_update = f"I see you're interested in our {item_name}! It starts at ${base_price:.2f} and you'll need to select:\n"
+                
+                # Format available options for each rule
+                for rule_name, options in processor_output.get("available_options", {}).items():
+                    if not options:
+                        continue
+                    
                     min_val = options[0].get("min", 0)
                     max_val = options[0].get("max", "unlimited")
-                    print(f"[DEBUG] Processing rule: {rule_name} with constraints min={min_val}, max={max_val}")
                     
-                    options_text += f"\n{rule_name} (Select "
+                    prompt_update += f"\n{rule_name} (Select "
                     if min_val == max_val:
-                        options_text += f"exactly {min_val}"
+                        prompt_update += f"exactly {min_val}"
                     elif min_val == 0:
-                        options_text += f"up to {max_val}"
+                        prompt_update += f"up to {max_val}"
                     else:
-                        options_text += f"{min_val} to {max_val}"
-                    options_text += f"):\n"
+                        prompt_update += f"{min_val} to {max_val}"
+                    prompt_update += f"):\n"
                     
-                    # Get ALL items for this rule option
+                    # Get all items for this rule option
                     all_items = []
                     for option in options:
                         for item in option.get("items", []):
                             all_items.append(f"{item.get('name', '').split(' (')[0]} (${item.get('price', 0):.2f})")
                     
-                    print(f"[DEBUG] Found {len(all_items)} items for rule {rule_name}")
-                    
-                    # Show ALL items
                     if all_items:
-                        options_text += f"  Options include: {', '.join(all_items)}\n"
-            
-            prompt_update = f"I see you're interested in our {item_name}! It starts at ${base_price:.2f} and you'll need to select:\n{options_text}\n"
-            prompt_update += f"What would you like to select for your {item_name}?"
-            
-            print(f"[DEBUG] Created rule-based item prompt")
-            prompt_to_send = origPrompt + "\n" + prompt_update
+                        prompt_update += f" Options include: {', '.join(all_items)}\n"
+                
+                prompt_update += f"\nWhat would you like to select for your {item_name}?"
+                return origPrompt + "\n" + prompt_update
         
         # Case 3: Exact match found (standard item)
         elif processor_output.get("status") == "success":
@@ -696,36 +863,6 @@ class orderChat:
             print(f"[DEBUG] Found exact match: {found_item}")
             prompt_update = f"Found item: {found_item}\nIngredients: {ingredients}\n"
             prompt_to_send = origPrompt + "\n" + prompt_update
-        
-        # Case 4: Multiple similar items found (not a category match)
-        elif processor_output.get("status") == "need_input" and "results" in processor_output:
-            similar_items = processor_output.get("results", [])
-            print(f"[DEBUG] Processing {len(similar_items)} similar items")
-            
-            # Check if there's only one item in a category with the same name
-            exact_match = None
-            for item in similar_items:
-                if item.get("item", "").lower() == state["input"].lower():
-                    exact_match = item
-                    print(f"[DEBUG] Found exact item match: {item.get('item')}")
-                    break
-                    
-            if exact_match:
-                # Direct match found - treat as a standard item
-                prompt_update = f"Found item: {exact_match.get('item', '')}\nPrice: ${exact_match.get('price', 0):.2f}\n"
-                if exact_match.get('ingredients'):
-                    prompt_update += f"Ingredients: {exact_match.get('ingredients')}\n"
-                prompt_to_send = origPrompt + "\n" + prompt_update
-            else:
-                # Multiple items found - show options
-                prompt_update = "Found similar items:\n"
-                for item in similar_items[:3]:  # Limit to top 3 matches
-                    item_name = item.get("item", "")
-                    price = item.get("price", 0)
-                    ingredients = item.get("ingredients", "")
-                    prompt_update += f"- {item_name} (${price:.2f}): {ingredients}\n"
-                
-                prompt_to_send = origPrompt + "\n" + prompt_update
         
         # Add this case at the beginning of getIngredients function
         elif processor_output.get("status") == "need_category_selection":
@@ -850,6 +987,22 @@ class orderChat:
                 "tools": state["tools"]
             }
 
+    def truncateMessage (self, message):
+        # Use a regex pattern to match words along with following spaces.
+        pattern = re.compile(r'\S+\s*')
+        truncated = ""
+        max_chars = 160
+        for match in pattern.finditer(message):
+            token = match.group()
+            # Check if adding the next token would exceed the limit.
+            if len(truncated) + len(token) > max_chars:
+                break
+            truncated += token
+
+        # Remove any trailing whitespace
+        return truncated.strip()
+
+
     def chatAway(self, user_input: str) -> str:
         print(f"\n=== NEW CHAT REQUEST ===\nInput: {user_input}")
         try:
@@ -877,6 +1030,7 @@ class orderChat:
                             "error_count": state.get("error_count", 0)
                         })
                         return action.return_values["output"]
+                        #self.truncateMessage(action.return_values["output"])
             return "Order processing failed to complete"
         except Exception as e:
             print(f"Workflow error: {str(e)}")

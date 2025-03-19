@@ -16,11 +16,14 @@ class MenuParser:
             'rule_end': re.compile(r'^\[End Rule\]'),
             'base_price': re.compile(r'Base Price:\s*\$([\d.]+)'),
             'select_rules': re.compile(r'select rules\s*(.+)'),
+            #food regex
             'rule_option': re.compile(r'^\s*(.+?)\s*\(Rule:\s*(.+?)\)(:)?'),
-            'rule_item': re.compile(r'^(\s*)-\s*(.+?)\s*-\s*\$([\d.]+)'),
+            #rule item with description
+            'rule_item' : re.compile(r'^(\s*)-\s*(.+?)\s*-\s*\$([\d.]+)\s*-?\s*(.*)'),
+            #'rule_item': re.compile(r'^(\s*)-\s*(.+?)\s*-\s*\$([\d.]+)'),
             'standard_item': re.compile(r'^-\s*(.*?):\s*\$(\d+\.\d{2})')
         }
-    
+        
     def parse_menu_file(self, file_path):
         """Parse the menu file to extract categories and items."""
         with open(file_path, 'r') as f:
@@ -49,11 +52,23 @@ class MenuParser:
                     continue
                 if self.current_category:
                     # Check for "select rules" directive and store them
-                    select_rules_match = self.patterns['select_rules'].search(line)
+                    """ select_rules_match = self.patterns['select_rules'].search(line)
                     if select_rules_match:
                         rules_list = select_rules_match.group(1).split(',')
                         self.current_category['selected_rules'] = [rule.strip() for rule in rules_list]
-                    # Base price detection
+                    """  # Base price detection
+                    # Change this section in parse_menu_file:
+                    select_rules_match = self.patterns['select_rules'].search(line)
+                    if select_rules_match:
+                        rules_list = select_rules_match.group(1).split(',')
+                        # Add this check to append rather than replace
+                        if 'selected_rules' not in self.current_category:
+                            self.current_category['selected_rules'] = []
+                        # Append new rules instead of replacing
+                        for rule in rules_list:
+                            if rule.strip() not in self.current_category['selected_rules']:
+                                self.current_category['selected_rules'].append(rule.strip())
+                                        
                     base_price_match = self.patterns['base_price'].search(line)
                     if base_price_match:
                         self.current_category['base_price'] = float(base_price_match.group(1))
@@ -76,6 +91,8 @@ class MenuParser:
                         })
                         continue
                 i += 1
+
+
 
     def parse_rules_file(self, file_path):
         """Parse the rules file to extract rule definitions, options, and rule items."""
@@ -124,9 +141,13 @@ class MenuParser:
                         if rule_item_match:
                             item_name = rule_item_match.group(2).strip()
                             price = float(rule_item_match.group(3))
+                            description = rule_item_match.group(4)
+                            if not description:
+                                description = ""
                             current_option["items"].append({
                                 "name": item_name,
-                                "price": price
+                                "price": price,
+                                "description": description
                             })
                         j += 1
                     i = j
@@ -164,6 +185,7 @@ class MenuIndexer:
         self.categories_col = self._get_or_create_collection("categories")
         self.items_col = self._get_or_create_collection("items")
         self.rules_col = self._get_or_create_collection("rules")
+        #self.rule_options_col = self._get_or_create_collection("rule_service")
         self.rule_options_col = self._get_or_create_collection("rule_options")
         self.rule_items_col = self._get_or_create_collection("rule_items")
 
@@ -174,6 +196,14 @@ class MenuIndexer:
             return self.client.create_collection(name, embedding_function=self.embedder)
 
 
+    def validate_option_metadata(self,metadata):
+        """Ensure all metadata values are valid types for ChromaDB."""
+        for key, value in metadata.items():
+            if value is None:
+                metadata[key] = -1 if key == "max" else ""  # Convert None to appropriate default
+            elif not isinstance(value, (str, int, float, bool)):
+                metadata[key] = str(value)  # Convert to string if not a valid type
+                
     def index_menu_and_rules(self, menu_parser):
         # Remove old collections if they exist
         try:
@@ -221,8 +251,11 @@ class MenuIndexer:
                     "rule": rule['name'],
                     "name": option['name'],
                     "min": option['constraints'].get('min', 0),
-                    "max": option['constraints'].get('max', None)
+                    #"max": option['constraints'].get('max', None)
+                    "max": option['constraints'].get('max', -1)  # Use -1 to represent 'unlimited' if 'max' is None
                 }
+                
+                self.validate_option_metadata(option_metadata)
                 self.rule_options_col.add(
                     documents=[option['name']],
                     metadatas=[option_metadata],
@@ -238,7 +271,8 @@ class MenuIndexer:
                         "rule": rule['name'],
                         "option": option['name'],
                         "price": item['price'],
-                        "item": item['name']
+                        "item": item['name'],
+                        "description": item["description"]
                     }
                     self.rule_items_col.add(
                         documents=[item['name']],
@@ -300,14 +334,16 @@ class MenuIndexer:
     def _index_item(self, item, category, item_to_rules_map, menu_parser):
         print(f"[DEBUG] Processing item: {item['name']} in category {category['name']}")
         item_id = f"item_{category['name']}_{item['name']}"
-        document_text = f"{item['name']} {category['name']} {item.get('description', '')}"
-        
+        #document_text = f"{item['name']} {category['name']} {item.get('description', '')}"
+        document_text = f"{item['name']} "
+
         metadata = {
             'name': item['name'],
             'category': category['name'],
             'price': item['price'],
             'base_price': item['price'],
-            'ingredients': item.get('description', '')
+            'ingredients': item.get('description', ''),
+            "description": item.get('description', '')
         }
         
         print(f"[DEBUG] Item {item['name']} has price: ${item['price']}")
@@ -333,20 +369,36 @@ class MenuIndexer:
                         item_specific_rules = rule_options
                         print(f"[DEBUG] Found matching rule '{rule['name']}' for item {item_name} with options: {rule_options}")
                         break
-                        
-            # Special case handling for known items
-            if item_name == "Bagel":
-                item_specific_rules = ['Bagel Options', 'Bagel Spreads']
-                print(f"[DEBUG] Using special case rules for {item_name}: {item_specific_rules}")
-                
+                   
             # If item-specific rules found, use those
             if item_specific_rules:
                 metadata['selected_rules'] = json.dumps(item_specific_rules)
                 print(f"[DEBUG] Using item-specific rules for {item_name}: {item_specific_rules}")
             # Otherwise use category rules if available
+            #elif 'selected_rules' in category and category['selected_rules']:
+            #    metadata['selected_rules'] = json.dumps(category['selected_rules'])
+            #    print(f"[DEBUG] Using category rules for {item_name}: {category['selected_rules']}")
+            # Use this more generic approach:
             elif 'selected_rules' in category and category['selected_rules']:
-                metadata['selected_rules'] = json.dumps(category['selected_rules'])
-                print(f"[DEBUG] Using category rules for {item_name}: {category['selected_rules']}")
+                # Check if this item appears as an add-on in any rule_items
+                is_addon = False
+                for rule in menu_parser.rules:
+                    for option in rule.get('options', []):
+                        for addon in option.get('items', []):
+                            if addon['name'] == item_name:
+                                is_addon = True
+                                print(f"[DEBUG] {item_name} is an add-on for {option['name']}, skipping category rules")
+                                break
+                        if is_addon:
+                            break
+                    if is_addon:
+                        break
+                
+                # Only assign category rules to main services, not to add-ons
+                if not is_addon:
+                    metadata['selected_rules'] = json.dumps(category['selected_rules'])
+                    print(f"[DEBUG] Using category rules for main service {item_name}: {category['selected_rules']}")
+                
                 
         self.items_col.add(
             documents=[document_text],
@@ -414,6 +466,99 @@ class MenuIndexer:
             ids=[item_id]
         )
         print(f"[DEBUG] Added item {item['name']} to items collection")
+
+def test_local_honey_menu():
+    print("Testing Local Honey BK Menu Parser...\n")
+    
+    # Create a MenuParser instance and parse files
+    menu_parser = MenuParser()
+    """ print("Parsing menu file: local_honey_menu_formatted.txt")
+    menu_parser.parse_menu_file("local_honey_menu_formatted.txt")
+    print("Parsing rules file: local_honey_rules.txt")
+    menu_parser.parse_rules_file("local_honey_rules.txt")
+ """
+    print("Parsing menu file: local_honey_menu_formatted.txt")
+    menu_parser.parse_menu_file("salon/salon_prompt2.txt")
+    print("Parsing rules file: local_honey_rules.txt")
+    menu_parser.parse_rules_file("salon/salon_rules.txt")
+    
+    # Test 1: Verify Mani category has correct services
+    print("\nTest 1: Verify Mani category has correct services")
+    mani_category = None
+    for category in menu_parser.categories:
+        if category['name'] == "Mani":
+            mani_category = category
+            break
+    
+    if mani_category:
+        print(f"Found Mani category with {len(mani_category.get('items', []))} services")
+        
+        # Check for specific services
+        service_names = [item['name'] for item in mani_category.get('items', [])]
+        assert "Classic Honey Mani" in service_names, "Missing Classic Honey Mani service"
+        assert "Crystal Energy Mani" in service_names, "Missing Crystal Energy Mani service"
+        assert "Gel Removal (hands)" in service_names, "Missing Gel Removal service"
+        print("✓ All expected services found")
+    else:
+        print("❌ Mani category not found")
+    
+    # Test 2: Verify Classic Honey Mani rule parsing
+    print("\nTest 2: Verify Classic Honey Mani rule parsing")
+    # Test 2: Verify Classic Honey Mani rule parsing
+
+    mani_rule = None
+    for rule in menu_parser.rules:
+        if rule['name'] == "Mani":
+            mani_rule = rule
+            break
+
+    if mani_rule:
+        print(f"Found Mani rule with {len(mani_rule.get('options', []))} options")
+        
+        # Check for Classic Honey Mani option
+        classic_honey_option = None
+        for option in mani_rule.get('options', []):
+            if option['name'] == "Classic Honey Mani":
+                classic_honey_option = option
+                break
+        
+        if classic_honey_option:
+            print(f"Found Classic Honey Mani option with {len(classic_honey_option.get('items', []))} items")
+            
+            # Check for specific add-ons
+            addon_names = [item['name'] for item in classic_honey_option.get('items', [])]
+            assert "Gel Removal (hands)" in addon_names, "Missing Gel Removal add-on"
+            assert "Paraffin Wax Dip" in addon_names, "Missing Paraffin Wax Dip add-on"
+            assert "Crystal Energy Hand Massage" in addon_names, "Missing Crystal Energy Hand Massage add-on"
+            
+            print("✓ Add-ons option correctly parsed")
+        else:
+            print("❌ Classic Honey Mani option not found")
+    else:
+        print("❌ Mani rule not found")
+
+    # Test 3: Verify indexing
+    print("\nTest 3: Verify indexing")
+    indexer = MenuIndexer()
+    indexer.index_menu_and_rules(menu_parser)
+    
+    # Check if Classic Honey Mani was indexed with add-ons
+    results = indexer.items_col.query(
+        query_texts=["Classic Honey Mani"],
+        include=["metadatas"],
+        n_results=1
+    )
+    
+    if results and results["metadatas"] and results["metadatas"][0]:
+        metadata = results["metadatas"][0][0]
+        print(f"Classic Honey Mani metadata: {metadata}")
+        assert 'selected_rules' in metadata, "Classic Honey Mani should have selected_rules in metadata"
+        print("✓ Classic Honey Mani correctly indexed with rules")
+    else:
+        print("❌ Classic Honey Mani not found in indexed data")
+    
+    print("\nAll tests completed!")
+    
 
 
 def main():
@@ -518,5 +663,6 @@ def main():
     print("\nAll tests completed!")
 
 if __name__ == "__main__":
-    main()
+    #main()
+    test_local_honey_menu()
 

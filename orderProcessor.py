@@ -11,8 +11,148 @@ class OrderProcessor:
         self.indexer = indexer
         print("[OrderProcessor] Initialized.")
 
+
+    def is_greeting(self,query):
+        """
+        Determine if the user's message is a greeting.
+        Uses a combination of pattern matching and NLP techniques.
+        """
+        # Normalize the query
+        query = query.lower().strip()
+        
+        # Common greetings list
+        common_greetings = [
+            "hi", "hello", "hey", "good morning", "good afternoon", 
+            "good evening", "howdy", "what's up", "yo", "greetings", "hiya"
+        ]
+        
+        # Direct pattern matching
+        if any(query == greeting for greeting in common_greetings):
+            return True
+            
+        # Check for slight variations (with punctuation or emoji)
+        if any(query.startswith(greeting) for greeting in common_greetings):
+            # Check if the rest is just punctuation or emoji
+            remainder = query[len(next(g for g in common_greetings if query.startswith(g))):]
+            if not remainder or all(char in "!.,;:?😊👋" for char in remainder):
+                return True
+        
+        return False
+
+
+
+    def addItem(self, rule_items, unified_results, i, type_name="item"):
+        # Get document and metadata with list type handling
+        item_doc = rule_items["documents"][0][i] if isinstance(rule_items["documents"][0], list) else rule_items["documents"][i]
+        item_meta = rule_items["metadatas"][0][i] if isinstance(rule_items["metadatas"][0], list) else rule_items["metadatas"][i]
+        
+        # Ensure metadata has the expected fields
+        if  item_meta:
+            # Make sure ingredients, price and category exist in metadata
+            if "ingredients" not in item_meta:
+                item_meta["ingredients"] = ""
+            if "price" not in item_meta:
+                item_meta["price"] = 0
+            if "category" not in item_meta:
+                item_meta["category"] = ""
+        
+        unified_results.append({
+            "type": type_name,  # Use the correct type constant
+            "name": item_doc,
+            "score": rule_items["distances"][0][i] if isinstance(rule_items["distances"][0], list) else rule_items["distances"][i],
+            "metadata": item_meta 
+        })
+
+   
     def process_order(self, query):
+        if self.is_greeting(query):
+            print(f"[DEBUG] Detected greeting: {query}")
+            return {"status": "greeting"}
+
         print(f"[DEBUG] Processing order query: {query}")
+        
+        # Use unified search to get both category and item matches
+        unified_results = self.unified_search(query)
+        
+        if not unified_results:
+            print(f"[DEBUG] No results found for query: {query}")
+            return {"status": "no_results"}
+        
+        # Collect all items with scores below the threshold
+        top_matches = []
+        result_status = "need_input"
+        
+        # Result container
+        result = {
+            "status": result_status,
+            "results": None
+        }
+        
+        # First pass: Collect exact matches (score < 0.5)
+        for item_result in unified_results:
+            if item_result["score"] < 0.55:
+                print(f"[DEBUG] Found exact item match: {item_result['name']} with score {item_result['score']}")
+                
+                meta = item_result["metadata"]
+                item = {
+                    "item": item_result["name"],
+                    "type":item_result["type"],
+                    "ingredients": meta.get("ingredients", ""),
+                    "price": meta.get("price", 0),
+                    "category": meta.get("category", ""),
+                }
+                
+                if "base_price" in meta:
+                    item["base_price"] = meta["base_price"]
+                
+                # Check if item has rules
+                if "selected_rules" in meta:
+                    print(f"[DEBUG] Item has rules: {meta['selected_rules']}")
+                    item["selected_rules"] = meta["selected_rules"]
+                    result_status = "need_rule_selections"
+                
+                top_matches.append(item)
+        
+        # If no exact matches found, try with a looser threshold (< 1.1)
+        if not top_matches:
+            for item_result in unified_results:
+                if item_result["score"] < 1.1:
+                    print(f"[DEBUG] Found similar item match: {item_result['name']} with score {item_result['score']}")
+                    
+                    meta = item_result["metadata"]
+                    item = {
+                        "item": item_result["name"],
+                        "ingredients": meta.get("ingredients", ""),
+                        "price": meta.get("price", 0),
+                        "category": meta.get("category", ""),
+                    }
+                    
+                    if "base_price" in meta:
+                        item["base_price"] = meta["base_price"]
+                    
+                    if "selected_rules" in meta:
+                        print(f"[DEBUG] Item has rules: {meta['selected_rules']}")
+                        item["selected_rules"] = meta["selected_rules"]
+                        result_status = "need_rule_selections"
+                    
+                    top_matches.append(item)
+        
+        # Set result status and items
+        result["status"] = result_status
+        result["results"] = top_matches
+        
+        # Return all matches
+        if top_matches:
+            print(f"[DEBUG] Returning {len(top_matches)} matches with status {result_status}")
+            return result
+        else:
+            print(f"[DEBUG] No matches found for query: {query}")
+            return {"status": "no_results"}
+
+
+    def process_order2(self, query):
+        print(f"[DEBUG] Processing order query: {query}")
+        # First check if the query is a greeting
         
         # First check if query matches a category name exactly
         category_results = self.indexer.categories_col.query(
@@ -23,7 +163,7 @@ class OrderProcessor:
         if category_results and len(category_results["ids"]) > 0:
             # Check if the similarity score is high enough to consider it a match
             similarity_score = category_results["distances"][0]
-            if similarity_score[0] < 0.3:  # Adjust threshold as needed
+            if similarity_score[0] < 1:  # Adjust threshold as needed
                 category_name = category_results["documents"][0][0]  # Extract the string from the list
                 print(f"[DEBUG] Found potential category match: {category_name} with score {similarity_score}")
                 
@@ -68,8 +208,8 @@ class OrderProcessor:
          
         # If not a category match or only one item in category, proceed with regular search
         results = self.indexer.items_col.query(
-            query_texts=[query],
-            n_results=5
+            query_texts=[query]
+            #n_results=5
         )
         
         if not results or len(results["ids"]) == 0:
@@ -148,6 +288,266 @@ class OrderProcessor:
                 }
 
 
+    def unified_search(self, query):
+        # Search both collections
+        category_results = self.indexer.categories_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+        
+        items_results = self.indexer.items_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+        
+        # Search items
+        rule_options = self.indexer.rule_options_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+
+        # Search items
+        rule_items = self.indexer.rule_items_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+
+        # Combine into unified results
+        unified_results = []
+        
+        # Track matched categories and their scores
+        matched_categories = {}
+        matched_rules = {}
+        
+        # Track items already added to avoid duplicates
+        added_items = set()
+        added_rule_options = set()
+        
+        # Add categories with their match scores
+        if category_results and len(category_results["ids"]) > 0:
+            for i, cat_id in enumerate(category_results["ids"][0]):
+                category_name = category_results["documents"][0][i]
+                category_score = category_results["distances"][0][i]
+                
+                # Add the category to unified results
+                self.addItem(category_results, unified_results, i, "category")
+                
+                # Store this category for later processing if it's a good match
+                if category_score < 0.5:  # Using threshold for good matches
+                    matched_categories[category_name] = category_score
+                    print(f"[DEBUG] Matched category: {category_name} with score {category_score}")
+    
+        # Add items with their match scores
+        if items_results and len(items_results["ids"]) > 0:
+            for i, item_id in enumerate(items_results["ids"][0] if isinstance(items_results["ids"][0], list) else items_results["ids"]):
+                item_name = items_results["documents"][0][i] if isinstance(items_results["documents"][0], list) else items_results["documents"][i]
+                self.addItem(items_results, unified_results, i, "item")
+                added_items.add(item_name)
+        
+        # Add rule options with their match scores
+        if rule_options and len(rule_options["ids"]) > 0:
+            for i, item_id in enumerate(rule_options["ids"][0] if isinstance(rule_options["ids"][0], list) else rule_options["ids"]):
+                option_name = rule_options["documents"][0][i] if isinstance(rule_options["documents"][0], list) else rule_options["documents"][i]
+                option_score = rule_options["distances"][0][i] if isinstance(rule_options["distances"][0], list) else rule_options["distances"][i]
+                
+                # Add the rule option to unified results
+                self.addItem(rule_options, unified_results, i, "rule_option")
+                added_rule_options.add(option_name)
+                
+                # Store this rule for later processing if it's a good match
+                if option_score < 0.5:  # Using threshold for good matches
+                    option_meta = rule_options["metadatas"][0][i] if isinstance(rule_options["metadatas"][0], list) else rule_options["metadatas"][i]
+                    if option_meta and "rule" in option_meta:
+                        matched_rules[option_meta["rule"]] = option_score
+                        print(f"[DEBUG] Matched rule: {option_meta['rule']} with score {option_score}")
+
+        if rule_items and len(rule_items["ids"]) > 0:
+            for i, item_id in enumerate(rule_items["ids"][0] if isinstance(rule_items["ids"][0], list) else rule_items["ids"]):
+                self.addItem(rule_items, unified_results, i, "rule_item")
+
+        # PRESERVE CATEGORY MATCHES - add all items from matched categories with the same score
+        for category_name, category_score in matched_categories.items():
+            print(f"[DEBUG] Adding all items for matched category: {category_name} with score {category_score}")
+            
+            # Get all items in this category
+            items_in_category = self.indexer.items_col.get(
+                where={"category": category_name}
+            )
+            
+            if items_in_category and "documents" in items_in_category and len(items_in_category["documents"]) > 0:
+                for i, item_doc in enumerate(items_in_category["documents"]):
+                    # Skip if this item was already added
+                    if item_doc in added_items:
+                        continue
+                        
+                    added_items.add(item_doc)
+                    
+                    # Get the metadata for this item
+                    if "metadatas" in items_in_category and i < len(items_in_category["metadatas"]):
+                        item_meta = items_in_category["metadatas"][i]
+                    else:
+                        item_meta = {}
+                    
+                    # Ensure the metadata has all required fields
+                    if "ingredients" not in item_meta:
+                        item_meta["ingredients"] = ""
+                    if "price" not in item_meta:
+                        item_meta["price"] = 0
+                    if "category" not in item_meta:
+                        item_meta["category"] = category_name
+                    
+                    # Create a result object for this item with the category's score
+                    unified_results.append({
+                        "type": "item",
+                        "name": item_doc,
+                        "score": category_score,  # Use the category's score
+                        "metadata": item_meta,
+                        "category": item_meta.get("category", ""),  # Separate field
+                        "description": item_meta.get("description", "")  # Separate field
+                    }) 
+
+                    print(f"[DEBUG] Added category item: {item_doc} with inherited score {category_score}")
+        
+        # PRESERVE RULE TO RULE OPTIONS ASSOCIATION - add all rule options for matched rules
+        for rule_name, rule_score in matched_rules.items():
+            print(f"[DEBUG] Adding all options for matched rule: {rule_name} with score {rule_score}")
+            
+            # Get all rule options for this rule
+            rule_options_for_rule = self.indexer.rule_options_col.get(
+                where={"rule": rule_name}
+            )
+            
+            if rule_options_for_rule and "documents" in rule_options_for_rule and len(rule_options_for_rule["documents"]) > 0:
+                for i, option_doc in enumerate(rule_options_for_rule["documents"]):
+                    # Skip if this option was already added
+                    if option_doc in added_rule_options:
+                        continue
+                        
+                    added_rule_options.add(option_doc)
+                    
+                    # Get the metadata for this option
+                    if "metadatas" in rule_options_for_rule and i < len(rule_options_for_rule["metadatas"]):
+                        option_meta = rule_options_for_rule["metadatas"][i]
+                    else:
+                        option_meta = {}
+                    
+                    # Create a result object for this rule option with the rule's score
+                    unified_results.append({
+                        "type": "rule_option",
+                        "name": option_doc,
+                        "score": rule_score,  # Use the rule's score
+                        "metadata": option_meta
+                    })
+                    print(f"[DEBUG] Added rule option: {option_doc} with inherited score {rule_score}")
+
+        # Handle array-based results as before
+        expanded_results = []
+        for result in unified_results:
+            if isinstance(result.get("name"), list) and isinstance(result.get("score"), list) and isinstance(result.get("metadata"), list):
+                for i in range(len(result["name"])):
+                    if i < len(result["score"]) and i < len(result["metadata"]):
+                        expanded_results.append({
+                            "type": result.get("type", "item"),
+                            "name": result["name"][i],
+                            "score": result["score"][i],
+                            "metadata": result["metadata"][i]
+                        })
+
+        if len(expanded_results) == 0:
+            for result in unified_results:
+                if isinstance(result.get("score"), list):
+                    result["score"] = result["score"][0]
+                expanded_results.append(result)
+        
+        # Replace unified_results with expanded version
+        unified_results = expanded_results
+            
+        # Sort by score - lower distance means better match
+        unified_results.sort(key=lambda x: x["score"])
+        
+        return unified_results
+
+
+    def unified_search2(self, query):
+        # Search both collections
+        category_results = self.indexer.categories_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+        
+        items_results = self.indexer.items_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+        
+         # Search items
+        rule_options = self.indexer.rule_options_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+
+        # Search items
+        rule_items = self.indexer.rule_items_col.query(
+            query_texts=[query],
+            n_results=20
+        )
+
+        # Combine into unified results
+        unified_results = []
+        
+        # Add categories with their match scores
+        if category_results and len(category_results["ids"]) > 0:
+            for i, cat_id in enumerate(category_results["ids"][0]):
+                self.addItem(category_results,unified_results,i, "category")
+      
+         # Add items with their match scores
+        if items_results and len(items_results["ids"]) > 0:
+            for i, item_id in enumerate(items_results["ids"][0] if isinstance(items_results["ids"][0], list) else items_results["ids"]):
+                self.addItem(items_results,unified_results,i, "item")
+
+        if rule_options and len(rule_options["ids"]) > 0:
+            for i, item_id in enumerate(rule_options["ids"][0] if isinstance(rule_options["ids"][0], list) else rule_options["ids"]):
+                self.addItem(rule_options,unified_results,i,"rule_option")
+
+        if rule_items and len(rule_items["ids"]) > 0:
+            for i, item_id in enumerate(rule_items["ids"][0] if isinstance(rule_items["ids"][0], list) else rule_items["ids"]):
+                self.addItem(rule_items,unified_results,i, "rule_item")
+
+        # Modified code to properly handle array-based results
+        expanded_results = []
+
+        # First, process the unified results to handle array-based items
+        for result in unified_results:
+            # Check if this result contains arrays of names, scores, and metadata
+            if isinstance(result.get("name"), list) and isinstance(result.get("score"), list) and isinstance(result.get("metadata"), list):
+                # Create individual result objects for each item in the arrays
+                for i in range(len(result["name"])):
+                    # Only process if we have corresponding score and metadata
+                    if i < len(result["score"]) and i < len(result["metadata"]):
+                        expanded_results.append({
+                            "type": result.get("type", "item"),
+                            "name": result["name"][i],
+                            "score": result["score"][i],
+                            "metadata": result["metadata"][i]
+                        })
+
+        if len(expanded_results) == 0:
+            for result in unified_results:
+                # For single items, normalize score if it's a list
+                if isinstance(result.get("score"), list):
+                    result["score"] = result["score"][0]
+                expanded_results.append(result)
+
+        
+        # Replace unified_results with expanded version
+        unified_results = expanded_results
+              
+        # Sort by score - lower distance means better match
+        unified_results.sort(key=lambda x: x["score"])
+        
+        return unified_results
+
+
     def compare_strings(self,str1, str2):
         words1 = str1.lower().split()
         words2 = str2.lower().split()
@@ -166,6 +566,7 @@ class OrderProcessor:
     def find_exact_match(self, index,query, document):
         score = self.compare_strings(query, document)
         return index if score > 0.4 else None
+
 
 
     def _process_rule_based_item(self, item_name, meta):
@@ -897,7 +1298,7 @@ if __name__ == "__main__":
         # Check for Breakfast item with rules
         breakfast_item = None
         for item in breakfast_category.get('items', []):
-            if item.get('name') == "Breakfast,Base Price":
+            if item.get('name') == "Breakfast":
                 breakfast_item = item
                 break
         
