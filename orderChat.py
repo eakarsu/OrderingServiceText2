@@ -71,7 +71,7 @@ class orderChat:
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.api_url = "https://openrouter.ai/api/v1"
         self.llm_local = ChatOpenAI(
-            model="openai/gpt-4o-mini",
+            model="openai/chatgpt-4o-latest",
             #model="google/gemma-3-27b-it",
             openai_api_key=self.api_key,
             openai_api_base=self.api_url,
@@ -105,11 +105,15 @@ class orderChat:
             "password": os.getenv("DB_PASSWORD")
         }
         self.test_database_connection()
-        #self.load_prompts("misc2/prompt.txt","misc2/prompt3.txt")
-        self.load_prompts("salon/prompt.txt","salon/prompt3.txt")
+
+        self.load_prompts("misc2/prompt.txt","misc2/prompt3.txt")
         # Initialize Chroma vector store with new client API.
-        #self.processor = self.getProcessor("misc2/prompt2.txt","misc2/rules.txt")
-        self.processor = self.getProcessor("salon/salon_prompt2.txt","salon/salon_rules.txt")
+        self.processor = self.getProcessor("misc2/prompt2.txt","misc2/rules.txt")
+
+        """  self.load_prompts("salon/prompt.txt","salon/prompt3.txt")
+        # Initialize Chroma vector store with new client API.
+        self.processor = self.getProcessor("salon/salon_prompt2.txt","salon/salon_rules.txt") """
+
         # Create retriever by using the collection query.
         self.workflow = self.create_state_machine()
 
@@ -604,7 +608,143 @@ class orderChat:
                 log=str(e)
             )
     
+    def update_prompt (self, item_name, prompt_update):
+        rule_options = self.processor.indexer.rule_options_col.get(where={"name": item_name})
+                    
+        if rule_options and "metadatas" in rule_options and rule_options["metadatas"]:
+            # Get min/max values from the first option's metadata
+            option_meta = rule_options["metadatas"][0]
+            min_val = option_meta.get("min", 1)
+            max_val = option_meta.get("max", 1)
+            # Add selection requirements to the prompt
+            prompt_update += f" {item_name}:\n (Select from {min_val} to {max_val})\n"
+            return prompt_update
+        else:
+            return ""
+                     
+
     def getIngredients(self, state: AgentState, origPrompt):
+        print(f"[DEBUG] Processing input: {state['input']}")
+        processor_output = self.processor.process_order(state["input"])
+        
+        if not processor_output or not processor_output.get("results"):
+            return origPrompt
+        
+        prompt_update = ""
+        results = processor_output.get("results", [])
+        category_name = processor_output.get("category", "")
+        
+        if category_name:
+            prompt_update = f"I see you're interested in {category_name}. We have these options:\n\n"
+        else:
+            prompt_update = "Here are all the matching items:\n\n"
+        
+        categories = {}
+        for result in results:
+            result["item"] = result["item"].strip()
+            if result.get("type") == "category":
+                category_name = result.get("item", "")
+                if category_name not in categories:
+                    categories[category_name] = []
+                
+                # Get all items for this category
+                category_items = self.processor.indexer.items_col.get(
+                    where={"category": category_name}
+                )
+                
+                if category_items and "metadatas" in category_items:
+                    for item in category_items["metadatas"]:
+                        item["type"] = "item"
+                        item["item"] = item["name"]
+                        del item["description"]
+                        del item["name"]
+                        if not item in categories[category_name]:
+                            categories[category_name].append(item)
+            else:
+                category = result.get("category", "Other")
+                if category not in categories:
+                    categories[category] = []
+                if not result in categories[category]:
+                    categories[category].append(result)
+                
+        for category, items in categories.items():
+            if category and len(categories) > 1:
+                prompt_update += f"[Begin Category] {category}\n"
+            
+            for item in items:
+                item_type = item.get("type", "")
+                item_name = item.get("item") or item.get("name", "")
+                price = item.get("metadata", {}).get("price", 0)
+                
+                if  item_type == "category" or item_type == "rule_option":
+                    continue
+                if item_type == "item":
+                    offerings = item.get("ingredients", "") or item.get("description", "")
+                    base_price = item.get("base_price", price)
+                    prompt_update += f"- {item_name}: base price ${base_price:.2f}\n"
+                    if offerings:
+                        prompt_update += f", offerings: {offerings}\n" 
+                    update_prompt = self.update_prompt(item_name,prompt_update)
+                    if update_prompt:
+                        prompt_update = update_prompt
+                elif item_type == "rule_option":
+                    update_prompt = self.update_prompt(item_name,prompt_update)
+                    if update_prompt:
+                        prompt_update = update_prompt
+                       
+                if item_type == "rule_item":
+                    prompt_update += f"- {item_name}: ${price:.2f}\n"
+                else:
+                    #item_display = f"- {item_name}: ${price:.2f}\n"
+                    item_display = ""
+                    if 'selected_rules' in item:
+                        try:
+                            rules = json.loads(item.get('selected_rules', '[]')) if isinstance(item.get('selected_rules'), str) else item.get('selected_rules', [])
+                            
+                            for rule in rules:
+                                update_prompt = self.update_prompt(rule,item_display)
+                                if update_prompt:
+                                    item_display = update_prompt
+                                rule_items = self.processor.indexer.rule_items_col.get(where={"option": rule})
+                                if rule_items and "documents" in rule_items:
+                                    options_text = []
+                                    for i, opt_doc in enumerate(rule_items["documents"]):
+                                        if i < len(rule_items["metadatas"]):
+                                            opt_price = rule_items["metadatas"][i].get("price", 0)
+                                            options_text.append(f"- {opt_doc} (${opt_price:.2f})")
+                                    if options_text:
+                                        if base_price is not None:
+                                            item_display += f",base price ${base_price:.2f}\n Requires selections:\n" +f"\n".join(options_text) + "\n"
+                                        else:
+                                            item_display += f"Requires selections:\n" +f"\n".join(options_text) + "\n"
+                        except json.JSONDecodeError:
+                            item_display += "Requires additional selections\n"
+                    else:
+                        ingredients = item.get("ingredients", "")
+                        item_display += f"{ingredients}\n"
+                    prompt_update += item_display
+                                
+            if category and len(categories) > 1:
+                prompt_update += f"[End Category]\n"
+        
+        prompt_update += "\nWhich option would you like to choose?"
+        prompt_to_send = origPrompt + "\n" + prompt_update
+        print(f" prompt_update: {prompt_update}")
+        
+        if "calculate_sum(" in prompt_to_send:
+            pattern = r'calculate_sum\(\[([\d\., ]+)\]\)'
+            matches = re.findall(pattern, prompt_to_send)
+            for match in matches:
+                numbers = [float(num.strip()) for num in match.split(',')]
+                sum_result = sum(numbers)
+                addition_str = " + ".join([f"{num:.2f}" for num in numbers])
+                replacement = f"{addition_str} = {sum_result:.2f}"
+                prompt_to_send = prompt_to_send.replace(f"calculate_sum([{match}])", replacement)
+        
+        return prompt_to_send
+
+
+    def getIngredients2(self, state: AgentState, origPrompt):
         print(f"[DEBUG] Processing input: {state['input']}")
         processor_output = self.processor.process_order(state["input"])
         print(f"[DEBUG] Processor output status: {processor_output.get('status')}")
@@ -638,7 +778,11 @@ class orderChat:
             if category not in categories:
                 categories[category] = []
             categories[category].append(item)
-        
+
+        #For type:"item" insert it as it is. For type:"rule_option" bring all items for that option
+        #take 'item': 'Crystal Energy Mani', rule_items_col.get(where={"option": item value})
+        #[{'item': 'Mani', 'type': 'category', 'ingredients': '', 'price': 0, 'category': 'Mani'}, {'item': 'Gel Removal (hands) ', 'type': 'item', 'ingredients': 'Please include removal service if you currently have gel. Removal is included in our ...lishment, you will be charged for removal.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Gel Removal (hands)"]'}, {'item': 'SNS Removal ', 'type': 'item', 'ingredients': 'Please include removal service if you currently have SNS. Removal is included in our ...lishment, you will be charged for removal.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["SNS Removal"]'}, {'item': 'Acrylic Extensions Removal ', 'type': 'item', 'ingredients': 'Please include removal service if you currently have extensions that need to be removed before any service.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Acrylic Extensions Removal"]'}, {'item': 'Apres Gel-X Extensions Removal ', 'type': 'item', 'ingredients': 'Please include removal service if you currently have extensions that need to be removed before any service.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Apres Gel-X Extensions Removal"]'}, {'item': 'Hard Gel Extensions Removal ', 'type': 'item', 'ingredients': 'Please include removal service if you currently have extensions that need to be removed before any service.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Hard Gel Extensions Removal"]'}, {'item': 'Japanese Gel Removal ', 'type': 'item', 'ingredients': 'Removal of Japanese gel or extension *Removal will be comped if service was originally done by Local Honey', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Japanese Gel Removal"]'}, {'item': 'Chrome Nails ', 'type': 'item', 'ingredients': '', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Chrome Nails"]'}, {'item': 'SNS Removal (free returning client) ', 'type': 'item', 'ingredients': '', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["SNS Removal (free returning client)"]'}, {'item': 'Mani/Pedi', 'type': 'category', 'ingredients': '', 'price': 0, 'category': 'Mani/Pedi'}, {'item': 'Classic Honey Mani ', 'type': 'item', 'ingredients': 'The Local Honey standard mani, that goes above and beyond your average service. Nails...ervice was previously done by Local Honey.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Classic Honey Mani"]'}, {'item': 'Classic Honey Mani', 'type': 'rule_option', 'ingredients': '', 'price': 0, 'category': ''}, {'item': 'Classic Honey Gel Mani ', 'type': 'item', 'ingredients': 'The Local Honey standard mani, that goes above and beyond your average service. Nails...ervice was previously done by Local Honey.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Classic Honey Gel Mani"]'}, {'item': 'Classic Honey Gel Mani', 'type': 'rule_option', 'ingredients': '', 'price': 0, 'category': ''}, {'item': 'Crystal Energy Mani ', 'type': 'item', 'ingredients': 'Treat yourself to an enhanced crystal energy mani. Service includes our classic honey...ervice was previously done by Local Honey.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Crystal Energy Mani"]'}, {'item': 'Crystal Energy Mani', 'type': 'rule_option', 'ingredients': '', 'price': 0, 'category': ''}, {'item': 'Crystal Energy Gel Mani ', 'type': 'item', 'ingredients': 'Treat yourself to an enhanced crystal energy mani. Service includes our classic honey...ervice was previously done by Local Honey.', 'price': 0.0, 'category': 'Mani', 'base_price': 0.0, 'selected_rules': '["Crystal Energy Gel Mani"]'}, {'item': 'Crystal Energy Gel Mani', 'type': 'rule_option', 'ingredients': '', 'price': 0, 'category': ''}]
+
         # Loop through all categories and include all items
         for category, items in categories.items():
             if category and len(categories) > 1:
@@ -658,48 +802,40 @@ class orderChat:
                         # Parse selected rules (handling both string and list formats)
                         rules = json.loads(item.get('selected_rules', '[]')) if isinstance(item.get('selected_rules'), str) else item.get('selected_rules', [])
                         
-                        # Add basic rule information
-                        item_display += f"  Requires selections for: {', '.join(rules)}\n"
+                        # Add "Requires selections:" label
+                        item_display += "Requires selections:\n"
                         
-                        # Add rule options details directly here (if available)
-                        for rule_name in rules:
-                            # Get options for this rule from the database
-                            rule_options = self.processor.indexer.rule_options_col.get(where={"name": rule_name})
-                            if rule_options and "documents" in rule_options and rule_options["documents"]:
-                                # Get min/max values from the first option's metadata
-                                if "metadatas" in rule_options and rule_options["metadatas"]:
-                                    option_meta = rule_options["metadatas"][0]
-                                    min_val = option_meta.get("min", 1)
-                                    max_val = option_meta.get("max", "unlimited")
-                                    
-                                    # Format selection requirements
+                        # Get options for this item
+                        item_name = item_name.strip()
+                        rule_items = self.processor.indexer.rule_items_col.get(where={"item": item_name})
+
+                        if rule_items and "documents" in rule_items:
+                            options_text = []
+                            for i, opt_doc in enumerate(rule_items["documents"]):
+                                opt_price = rule_items["metadatas"][i].get("price", 0) if i < len(rule_items["metadatas"]) else 0
+                                option_meta = rule_items["metadatas"][i]
+                                min_val = option_meta.get("min", 1)
+                                max_val = option_meta.get("max", -1) #"unlimited")
+                                
+                                if max_val != -1:
                                     if min_val == max_val:
                                         req_text = f"exactly {min_val}"
                                     elif min_val == 0:
                                         req_text = f"up to {max_val}"
                                     else:
                                         req_text = f"{min_val} to {max_val}"
-                                    
-                                    item_display += f"    {rule_name} (Select {req_text}):\n"
-                                    
-                                    # Add option names with prices
-                                    #rule_items = self.processor.indexer.rule_items_col.get(where={"option": rule_name})
-                                    rule_items = self.processor.indexer.rule_items_col.get(where={"rule": item_name})
-                                   
-                                    if rule_items and "documents" in rule_items:
-                                        options_text = []
-                                        for i, opt_doc in enumerate(rule_items["documents"]):
-                                            opt_price = rule_items["metadatas"][i].get("price", 0) if i < len(rule_items["metadatas"]) else 0
-                                            options_text.append(f"{opt_doc} (${opt_price:.2f})")
-                                        
-                                        if options_text:
-                                            item_display += f"      Options: {', '.join(options_text[:5])}...\n"
+                                    options_text.append(f"- {opt_doc} (${opt_price:.2f}) (Select {req_text})")
+                                else:
+                                    options_text.append(f"- {opt_doc} (${opt_price:.2f})")
+                            
+                            if options_text:
+                                item_display += "\n".join(options_text) + "\n"
                     except json.JSONDecodeError:
-                        item_display += "  Requires additional selections\n"
+                        item_display += "Requires additional selections\n"
                 else:
                     # Regular item - just show ingredients
                     ingredients = item.get("ingredients", "")
-                    item_display += f"  {ingredients}\n"
+                    item_display += f"{ingredients}\n"
                 
                 # Add the formatted item to the prompt
                 prompt_update += item_display

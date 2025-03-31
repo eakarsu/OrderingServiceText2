@@ -16,6 +16,7 @@ class MenuParser:
             'rule_end': re.compile(r'^\[End Rule\]'),
             'base_price': re.compile(r'Base Price:\s*\$([\d.]+)'),
             'select_rules': re.compile(r'select rules\s*(.+)'),
+            'category_rule': re.compile(r'^-\s*Select rules\s+(.+?)\s+applies to all'),
             #food regex
             'rule_option': re.compile(r'^\s*(.+?)\s*\(Rule:\s*(.+?)\)(:)?'),
             #rule item with description
@@ -23,8 +24,84 @@ class MenuParser:
             #'rule_item': re.compile(r'^(\s*)-\s*(.+?)\s*-\s*\$([\d.]+)'),
             'standard_item': re.compile(r'^-\s*(.*?):\s*\$(\d+\.\d{2})')
         }
-        
+
     def parse_menu_file(self, file_path):
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+        
+        item_rules = {}  # New dictionary to store item-specific rules
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            if not line:
+                i += 1
+                continue
+
+            # Category detection
+            cat_match = self.patterns['category'].match(line)
+            if cat_match:
+                self.current_category = {
+                    "name": cat_match.group(1).strip(),
+                    "items": []
+                }
+                self.categories.append(self.current_category)
+                i += 1
+                continue
+
+            # Category end detection
+            if self.patterns['category_end'].match(line):
+                self.current_category = None
+                i += 1
+                continue
+
+            if self.current_category:
+                # Check for category-wide rule directive
+                category_rule_match = self.patterns['category_rule'].match(line)
+                if category_rule_match:
+                    rule_names = [rule.strip() for rule in category_rule_match.group(1).split(',')]
+                    for item in self.current_category['items']:
+                        if item['name'] not in item_rules:
+                            item_rules[item['name']] = []
+                        item_rules[item['name']].extend(rule_names)
+                    i += 1
+                    continue
+
+                # Standard item detection
+                item_match = self.patterns['standard_item'].match(line)
+                if item_match:
+                    item_name = item_match.group(1).strip()
+                    price = float(item_match.group(2))
+                    description = ""
+                    rules = []
+                    
+                    # Check for rules in the item line
+                    select_rules_match = self.patterns['select_rules'].search(line)
+                    if select_rules_match:
+                        rules = [rule.strip() for rule in select_rules_match.group(1).split(',')]
+                    
+                    # Get description from next line if it exists
+                    if i + 1 < len(lines) and lines[i+1].startswith(" "):
+                        description = lines[i+1].strip()
+                        i += 2
+                    else:
+                        i += 1
+
+                    self.current_category['items'].append({
+                        'name': item_name,
+                        'price': price,
+                        'description': description,
+                        'selected_rules': rules
+                    })
+
+        # After parsing, add the rules to the items
+        for category in self.categories:
+            for item in category['items']:
+                if item['name'] in item_rules:
+                    item['selected_rules'] = item_rules[item['name']]
+
+
+
+    def parse_menu_file2(self, file_path):
         """Parse the menu file to extract categories and items."""
         with open(file_path, 'r') as f:
             lines = f.readlines()
@@ -57,6 +134,21 @@ class MenuParser:
                         rules_list = select_rules_match.group(1).split(',')
                         self.current_category['selected_rules'] = [rule.strip() for rule in rules_list]
                     """  # Base price detection
+
+                    # Insert the new code here
+                    # Check for category-wide rule directive
+                    category_rule_match = self.patterns['category_rule'].match(line)
+                    if category_rule_match:
+                        rule_names = [rule.strip() for rule in category_rule_match.group(1).split(',')]
+                        if 'selected_rules' not in self.current_category:
+                            self.current_category['selected_rules'] = []
+                        for rule_name in rule_names:
+                            if rule_name not in self.current_category['selected_rules']:
+                                self.current_category['selected_rules'].append(rule_name)
+                                print(f"[DEBUG] Added category-wide rule '{rule_name}' to {self.current_category['name']}")
+                        i += 1
+                        continue
+
                     # Change this section in parse_menu_file:
                     select_rules_match = self.patterns['select_rules'].search(line)
                     if select_rules_match:
@@ -250,11 +342,11 @@ class MenuIndexer:
                 option_metadata = {
                     "rule": rule['name'],
                     "name": option['name'],
-                    "min": option['constraints'].get('min', 0),
+                    "min": 1,
                     #"max": option['constraints'].get('max', None)
                     "max": option['constraints'].get('max', -1)  # Use -1 to represent 'unlimited' if 'max' is None
                 }
-                
+                 
                 self.validate_option_metadata(option_metadata)
                 self.rule_options_col.add(
                     documents=[option['name']],
@@ -284,7 +376,7 @@ class MenuIndexer:
         # Build a mapping of item names to their specific rules from the menu file
         item_to_rules_map = {}
         print("[DEBUG] Building item-to-rules mapping from menu file")
-        for category in menu_parser.categories:
+        """ for category in menu_parser.categories:
             for item in category.get('items', []):
                 item_name = item['name'].split(',')[0].strip()
                 # Extract rules from item description if available
@@ -292,8 +384,16 @@ class MenuIndexer:
                     rules_text = item.get('description', '').split('select rules')[1].strip()
                     rules = [r.strip() for r in rules_text.split(',')]
                     item_to_rules_map[item_name] = rules
-                    print(f"[DEBUG] Found rules for {item_name} in description: {rules}")
+                    print(f"[DEBUG] Found rules for {item_name} in description: {rules}") """
         
+        for category in menu_parser.categories:
+            for item in category.get('items', []):
+                item_name = item['name'].split(',')[0].strip()
+                # Extract rules from item name if available
+                if 'selected_rules' in item:
+                    item_to_rules_map[item_name] = item['selected_rules']
+                    print(f"[DEBUG] Found pre-defined rules for {item_name}: {item['selected_rules']}")
+                            
         # Debug: Print the item-to-rules mapping
         print("[DEBUG] Item-to-rules mapping:")
         for item_name, rules in item_to_rules_map.items():
@@ -330,8 +430,60 @@ class MenuIndexer:
         
         print("[DEBUG] Completed index_menu_and_rules function")
 
-    
     def _index_item(self, item, category, item_to_rules_map, menu_parser):
+        print(f"[DEBUG] Processing item: {item['name']} in category {category['name']}")
+        item_id = f"item_{category['name']}_{item['name']}"
+        document_text = f"{item['name']} "
+        metadata = {
+            'name': item['name'],
+            'category': category['name'],
+            'price': item['price'],
+            'base_price': item['price'],
+            'ingredients': item.get('description', ''),
+            "description": item.get('description', '')
+        }
+        if 'selected_rules' in item and item['selected_rules']:
+            metadata['selected_rules'] = json.dumps(item['selected_rules'])
+            print(f"[DEBUG] Using item-specific rules for {item['name']}: {item['selected_rules']}")
+         
+        print(f"[DEBUG] Item {item['name']} has price: ${item['price']}")
+            
+        # Extract item name without any suffix for rule matching
+        item_name = item['name'].split(',')[0].strip()
+        print(f"[DEBUG] Extracted item name for rule matching: {item_name}")
+
+        # Check if this item has specific rules defined in the item-to-rules map
+        if item_name in item_to_rules_map:
+            item_rules = item_to_rules_map[item_name]
+            metadata['selected_rules'] = json.dumps(item_rules)
+            print(f"[DEBUG] Using mapped rules for {item_name}: {item_rules}")
+        else:
+            # Check if there's a rule with the same name as the item
+            item_specific_rules = []
+            for rule in menu_parser.rules:
+                if item_name.lower() in rule['name'].lower():
+                    rule_options = [option['name'] for option in rule.get('options', [])]
+                    if rule_options:
+                        item_specific_rules = rule_options
+                        print(f"[DEBUG] Found matching rule '{rule['name']}' for item {item_name} with options: {rule_options}")
+                        break
+            
+            # If item-specific rules found, use those
+            if item_specific_rules:
+                metadata['selected_rules'] = json.dumps(item_specific_rules)
+                print(f"[DEBUG] Using item-specific rules for {item_name}: {item_specific_rules}")
+
+        self.items_col.add(
+            documents=[document_text],
+            metadatas=[metadata],
+            ids=[item_id]
+        )
+
+        print(f"[DEBUG] Added item {item['name']} to items collection")
+
+
+
+    def _index_item2(self, item, category, item_to_rules_map, menu_parser):
         print(f"[DEBUG] Processing item: {item['name']} in category {category['name']}")
         item_id = f"item_{category['name']}_{item['name']}"
         #document_text = f"{item['name']} {category['name']} {item.get('description', '')}"
@@ -398,8 +550,8 @@ class MenuIndexer:
                 if not is_addon:
                     metadata['selected_rules'] = json.dumps(category['selected_rules'])
                     print(f"[DEBUG] Using category rules for main service {item_name}: {category['selected_rules']}")
-                
-                
+
+     
         self.items_col.add(
             documents=[document_text],
             metadatas=[metadata],
@@ -581,10 +733,10 @@ def main():
     
     if salad_category:
         print(f"Found Chopped Salad category with base price: ${salad_category.get('base_price', 0)}")
-        print(f"Selected rules: {salad_category.get('selected_rules', [])}")
-        assert "Salad Add-ons" in salad_category.get('selected_rules', []), "Missing Salad Add-ons rule"
-        assert "Salad Base" in salad_category.get('selected_rules', []), "Missing Salad Base rule"
-        assert "Salad Dressing" in salad_category.get('selected_rules', []), "Missing Salad Dressing rule"
+        print(f"Selected rules: {salad_category["items"][0].get('selected_rules', [])}")
+        assert "Salad Add-ons" in salad_category["items"][0].get('selected_rules', []), "Missing Salad Add-ons rule"
+        assert "Salad Base" in salad_category["items"][0].get('selected_rules', []), "Missing Salad Base rule"
+        assert "Salad Dressing" in salad_category["items"][0].get('selected_rules', []), "Missing Salad Dressing rule"
         print("✓ All expected rules found")
     else:
         print("❌ Chopped Salad category not found")
@@ -663,6 +815,6 @@ def main():
     print("\nAll tests completed!")
 
 if __name__ == "__main__":
-    #main()
-    test_local_honey_menu()
+    main()
+    #test_local_honey_menu()
 

@@ -3,6 +3,8 @@
   The Local Honey standard mani, that goes above and beyond your average service. Nails are cleaned, buffed, and shaped. Cuticles get cleaned up, nails perfected and polished. Service is topped off with a 5 minute hand exfoliating massage using our signature Sex Pot sugar scrub, hot towel wipe, lotion, and Moon Glo Oil, and topped with regular lacquer polish. *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
 - Classic Honey Gel Mani: $0.00,select rules Classic Honey Gel Mani
   The Local Honey standard mani, that goes above and beyond your average service. Nails are cleaned, buffed, and shaped. Cuticles get cleaned up, nails perfected and polished. Service is topped off with a 5 minute hand exfoliating massage using our signature Sex Pot sugar scrub, hot towel wipe, lotion, and Moon Glo Oil, and topped with gel polish. *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
+- SNS Mani: $0.00,select rules SNS Mani
+  SNS (Signature Nail System) contains 5 different kinds of Vitamins and Calcium to assist with nail strength and growth. SNS is a dipping powder which produces no odor, is for healthy nails, and helps your nails grow out stronger and healthier. The Colour Powder can be applied to real nails or over extensions. SNS mani will last for 14+ days with mirror finish, and is easily removed by soaking off. Your nails will still be natural and healthy after removal.  *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
 - Crystal Energy Mani: $0.00,select rules Crystal Energy Mani
   Treat yourself to an enhanced crystal energy mani. Service includes our classic honey mani, healing crystal hand massage, and paraffin wax treatment. A crystal massage wand is used to target specific pressure points, which enhance relief from pain, and enables your body to detoxify itself, while injecting healing energy into the body. Selenite provides protection from negative energies, enhances the crown chakra, and provides stress relief. The Local Honey standard mani, that goes above and beyond your average service. Nails are cleaned, buffed, and shaped. Cuticles get cleaned up, nails perfected and polished. Service is topped off with a 5 minute hand exfoliating massage using our signature Sex Pot sugar scrub, hot towel wipe, lotion, and Moon Glo Oil, and topped with gel polish. *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
 - Crystal Energy Gel Mani: $0.00,select rules Crystal Energy Gel Mani
@@ -30,6 +32,7 @@
   Removal of Japanese gel or extension *Removal will be comped if service was originally done by Local Honey
 - Chrome Nails: $0.00,select rules Chrome Nails
 - SNS Removal (free returning client): $0.00,select rules SNS Removal (free returning client)
+- Classic Honey Structured Mani: $0.00,select rules Classic Honey Structured Mani
 [End Category]
 [Begin Category] Pedi
 - Classic Jelly Pedi (regular polish): $0.00,select rules Classic Jelly Pedi (regular polish)
@@ -103,4 +106,12 @@
   De-stress with everyone's favorite go to, the all inclusive mani pedi. Service includes the Classic Honey mani, and Jelly Pedi. Choose from regular or gel polish, or combo, and if you're feeling extra indulgent add on our CBD massage oil. *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
 - Mani Pedi De-Stress Combo (gel mani/gel pedi): $0.00,select rules Mani Pedi De-Stress Combo (gel mani/gel pedi)
   De-stress with everyone's favorite go to, the all inclusive mani pedi. Service includes the Classic Honey mani, and Jelly Pedi. Choose from regular or gel polish, or combo, and if you're feeling extra indulgent add on our CBD massage oil. *If you currently have gel polish or SNS , please add the gel removal or SNS Removal to your service. Removal is included if service was previously done by Local Honey.
+[End Category]
+[Begin Category] Select prossional 
+- Chhurim: $25.00
+- Dolker: $25.00
+- Maria: $25.00
+- Tenzin: $25.00
+- Tsomo: $25.00
+- Yang: $25.00
 [End Category]

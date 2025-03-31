@@ -53,7 +53,11 @@ class OrderProcessor:
                 item_meta["ingredients"] = ""
             if "price" not in item_meta:
                 item_meta["price"] = 0
-            if "category" not in item_meta:
+            if type_name == "category":
+                item_meta["category"] = rule_items["documents"][0][i]
+            elif "rule" in item_meta:
+                item_meta["category"] = item_meta["rule"]
+            elif "category" not in item_meta:
                 item_meta["category"] = ""
         
         unified_results.append({
@@ -90,7 +94,7 @@ class OrderProcessor:
         
         # First pass: Collect exact matches (score < 0.5)
         for item_result in unified_results:
-            if item_result["score"] < 0.55:
+            if item_result["score"] < 0.7:
                 print(f"[DEBUG] Found exact item match: {item_result['name']} with score {item_result['score']}")
                 
                 meta = item_result["metadata"]
@@ -116,7 +120,7 @@ class OrderProcessor:
         # If no exact matches found, try with a looser threshold (< 1.1)
         if not top_matches:
             for item_result in unified_results:
-                if item_result["score"] < 1.1:
+                if item_result["score"] < 1.0:
                     print(f"[DEBUG] Found similar item match: {item_result['name']} with score {item_result['score']}")
                     
                     meta = item_result["metadata"]
@@ -407,7 +411,7 @@ class OrderProcessor:
                     }) 
 
                     print(f"[DEBUG] Added category item: {item_doc} with inherited score {category_score}")
-        
+        """
         # PRESERVE RULE TO RULE OPTIONS ASSOCIATION - add all rule options for matched rules
         for rule_name, rule_score in matched_rules.items():
             print(f"[DEBUG] Adding all options for matched rule: {rule_name} with score {rule_score}")
@@ -439,7 +443,7 @@ class OrderProcessor:
                         "metadata": option_meta
                     })
                     print(f"[DEBUG] Added rule option: {option_doc} with inherited score {rule_score}")
-
+        """
         # Handle array-based results as before
         expanded_results = []
         for result in unified_results:

@@ -23,6 +23,15 @@
         - Japanese Gel Removal - $10.0 - Removal of Japanese gel or extension *Removal will be comped if service was originally done by Local Honey
         - SNS Removal (free returning client) - $0.0
 
+    SNS Mani (Rule: Select 1)
+        - Gel Removal (hands) - $10.0 - Please include removal service if you currently have gel. Removal is included in our Gel Mani price if the mani was originally done by Local Honey. If you have gel on from another establishment, you will be charged for removal.
+        - SNS Removal - $15.0 - Please include removal service if you currently have SNS
+        - French Nail Design SNS - $15.0
+        - Paraffin Wax Dip - $12.0
+        - Crystal Energy Hand Massage - $12.0 - Treat yourself to an enhanced energy hand massage. Sunlight charges the selenite crystal wand, and is used to massage hands and pressure points which enhances relief from pain, and enables your body to detoxify itself. Selenite provides protection from negative energies, enhances the crown chakra, and provides stress relief.
+        - Back, Neck, and Shoulder Chair Massage (10 min) - $15.0 - Chair massage - also known as seated massage - is a type of massage that takes place on an traditional massage chair, designed to take the weight off the spine and give easy access to the head, neck, back, shoulders and arms. Add CBD massage oil for for an extra boost of zen.
+        - CBD Oil Massage - $15.0 - Add CBD oil to any hand, foot, or back massage
+        
     Crystal Energy Mani (Rule: Select 1)
         - Gel Removal (hands) - $10.0 - Please include removal service if you currently have gel. Removal is included in our Gel Mani price if the mani was originally done by Local Honey. If you have gel on from another establishment, you will be charged for removal.
         - Paraffin Wax Dip - $12.0
@@ -49,7 +58,7 @@
         - CBD Oil Massage - $15.0 - Add CBD oil to any hand, foot, or back massage
         - Gel Removal (hands) free for returning client - $0.0 - Please include removal service if you currently have gel. Removal is included in our Gel Mani price if the mani was originally done by Local Honey. If you have gel on from another establishment, you will be charged for removal.
 
-    Full Moon/New Moon Ceremony Mani (gel polish) (Rule: Select 1)
+. Removal is included in our SNS Mani price if the mani was originally done by Local Honey. If you have SNS from another establishment, you will be charged for removal.    Full Moon/New Moon Ceremony Mani (gel polish) (Rule: Select 1)
         - Gel Removal (hands) - $10.0 - Please include removal service if you currently have gel. Removal is included in our Gel Mani price if the mani was originally done by Local Honey. If you have gel on from another establishment, you will be charged for removal.
         - SNS Removal - $15.0 - Please include removal service if you currently have SNS. Removal is included in our SNS Mani price if the mani was originally done by Local Honey. If you have SNS from another establishment, you will be charged for removal.
         - Back, Neck, and Shoulder Chair Massage (10 min) - $15.0 - Chair massage - also known as seated massage - is a type of massage that takes place on an traditional massage chair, designed to take the weight off the spine and give easy access to the head, neck, back, shoulders and arms. Add CBD massage oil for for an extra boost of zen.
@@ -366,13 +375,4 @@
 
 [End Rule]
 
-[Begin Rule] Select professional
-    Select person 
-        - Chhurim - $25.00
-        - Dolker - $25.00
-        - Maria - $25.00
-        - Tenzin - $25.00
-        - Tsomo - $25.00
-        - Yang - $25.00
-[End Rule]
 

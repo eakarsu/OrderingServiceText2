@@ -69,4 +69,5 @@ Example json message:
       'total_price': '$28.85'
     }
 In the json message list every customization as a separate item and list with price.
+IMPORTANT: Carefully verify all prices and available options before responding. Ensure that base prices, add-on prices, and required selections are accurately represented, how many options you can select from options in your response.
 
