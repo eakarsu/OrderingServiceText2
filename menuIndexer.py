@@ -474,7 +474,7 @@ class MenuIndexer:
                 print(f"[DEBUG] Using item-specific rules for {item_name}: {item_specific_rules}")
 
         self.items_col.add(
-            documents=[document_text],
+            documents=[f"{document_text},description:{metadata['description']}"],
             metadatas=[metadata],
             ids=[item_id]
         )

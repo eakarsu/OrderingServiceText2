@@ -94,7 +94,8 @@ class OrderProcessor:
         
         # First pass: Collect exact matches (score < 0.5)
         for item_result in unified_results:
-            if item_result["score"] < 0.7:
+            if item_result["score"] < 0.9:
+            #if item_result["score"] < 1.2:
                 print(f"[DEBUG] Found exact item match: {item_result['name']} with score {item_result['score']}")
                 
                 meta = item_result["metadata"]
@@ -132,7 +133,7 @@ class OrderProcessor:
                     }
                     
                     if "base_price" in meta:
-                        item["base_price"] = meta["base_price"]
+                        item["base_price"] = meta["base_price"] or meta["price"]
                     
                     if "selected_rules" in meta:
                         print(f"[DEBUG] Item has rules: {meta['selected_rules']}")

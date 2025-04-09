@@ -675,7 +675,7 @@ class orderChat:
                 item_type = item.get("type", "")
                 item_name = item.get("item") or item.get("name", "")
                 price = item.get("metadata", {}).get("price", 0)
-                
+                base_price = None
                 if  item_type == "category" or item_type == "rule_option":
                     continue
                 if item_type == "item":
