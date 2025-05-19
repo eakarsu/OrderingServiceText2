@@ -1,0 +1,6 @@
+sudo docker build -t myapp .
+sudo docker run -p 8000:8000 myapp
+
+sudo docker run -it --entrypoint /bin/bash myapp
+
+

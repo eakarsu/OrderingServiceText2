@@ -1,0 +1,284 @@
+[Begin Rule] BYO Breakfast
+    Bagel Options (Rule: Select 1)
+      - Cinnamon Raisin (Small) - $1.50
+      - Egg (Small) - $1.50
+      - Egg Everything (Small) - $1.50
+      - Everything (Small) - $1.50
+      - Everything Flat  (Small) - $2.00
+      - Hero (Small) - $0.00
+      - Onion (Small) - $1.50
+      - Plain (Small) - $1.50
+      - Plain Flat (Small) - $2.00
+      - Poppy (Small) - $1.50
+      - Poppy Flat (Small) - $2.00
+      - Salt (Small) - $1.50
+      - Sesame (Small) - $1.50
+      - Sesame Flat  (Small) - $2.00
+      - Whole Wheat (Small) - $1.50
+      - Whole Wheat Everything (Small) - $1.50
+    Bagel Spreads (Rule: select 1 to 6)
+      - Bacon (Small) - $4.00
+      - Butter (Small) - $1.00
+      - Cream Cheese (Small) - $2.00
+      - Double toated (Small) - $0.00
+      - Grape Jelly (Small) - $1.00
+      - Green Olive Cream Cheese (Small) - $2.50
+      - Lox (Small) - $6.00
+      - Onion (Small) - $0.75
+      - Peanut Butter (Small) - $2.00
+      - Plain (Small) - $0.00
+      - Scallion Cream Cheese (Small) - $2.50
+      - Toasted (Small) - $0.00
+      - Tomato (Small) - $0.75
+      - Vegetable Cream Cheese  (Small) - $2.50
+    Breakfast Add-ons (Rule: Select up to 4 items)
+      - Avocado (Small) - $2.00
+      - Broccoli (Small) - $0.50
+      - Green Peppers (Small) - $0.50
+      - Hash Brown (Small) - $1.50
+      - Home-Fries (Small) - $1.50
+      - Hot Peppers (Small) - $0.50
+      - Mushrooms (Small) - $0.50
+      - Onions (Small) - $0.50
+      - Spinach (Small) - $0.50
+    Breakfast Bread (Rule: Select 1)
+      - Cinnamon Raisin Bagel (Medium) - $0.50
+      - Croissant (Medium) - $2.00
+      - Egg Bagel (Medium) - $0.50
+      - Egg Everything Bagel (Medium) - $0.50
+      - English Muffin (Medium) - $0.50
+      - Everything Bagel (Medium) - $0.50
+      - Hero (Medium) - $1.00
+      - Onion Bagel (Medium) - $0.50
+      - Onion Roll (Medium) - $0.50
+      - Pita (Medium) - $1.00
+      - Plain Bagel (Medium) - $0.50
+      - Platter (Medium) - $0.00
+      - Poppy Bagel (Medium) - $0.50
+      - Roll (Medium) - $0.00
+      - Rye Bread (sliced) (Medium) - $0.00
+      - Salt Bagel (Medium) - $0.50
+      - Sesame Bagel (Medium) - $0.50
+      - Spinach Wrap (Medium) - $1.00
+      - White Bread (sliced) (Medium) - $0.00
+      - White Wrap  (Medium) - $1.00
+      - Whole Wheat Bagel (Medium) - $0.50
+      - Whole Wheat Bread (sliced) (Medium) - $0.00
+      - Whole Wheat Everything Bagel (Medium) - $0.50
+      - Whole Wheat Roll (Medium) - $0.50
+      - Whole Wheat Wrap (Medium) - $1.00
+    Breakfast Cheese (Rule: Select up to 2 items)
+      - American Cheese  (Medium) - $1.00
+      - Blue Cheese Crumble (Medium) - $1.00
+      - Cheddar (Medium) - $1.00
+      - Feta Cheese (Medium) - $1.00
+      - Fresh Mozzarella  (Medium) - $1.00
+      - Mozzarella (Medium) - $1.00
+      - Muenster (Medium) - $1.00
+      - Pepperjack (Medium) - $1.00
+      - Provolone (Medium) - $1.00
+      - Swiss (Medium) - $1.00
+    Breakfast Dressing (Rule: Select up to 3 items)
+      - Balsamic Vinaigrette (Medium) - $0.00
+      - Balsamic Vinegar (Medium) - $0.00
+      - Blue Cheese (Medium) - $0.00
+      - Buffalo Sauce (Medium) - $0.00
+      - Caesar (Medium) - $0.00
+      - Cajun Mayo (Medium) - $0.00
+      - Crushed Red Pepper (Medium) - $0.00
+      - Dressing on the Side (Medium) - $0.00
+      - Extra Dressing (Medium) - $0.00
+      - Fat-Free Honey Dijon (Medium) - $0.00
+      - Fat-Free Italian (Medium) - $0.00
+      - Fat-Free Ranch (Medium) - $0.00
+      - Fat-Free Raspberry Vinaigrette (Medium) - $0.00
+      - Greek (Medium) - $0.00
+      - Honey Dipp Sauce (Medium) - $0.00
+      - Honey Mustard (Medium) - $0.00
+      - Horseraddish Mayo (Medium) - $0.00
+      - Hot Sauce (Medium) - $0.00
+      - Italian (Medium) - $0.00
+      - Ketchup (Medium) - $0.00
+      - Light Dressing (Medium) - $0.00
+      - Mayo (Medium) - $0.00
+      - Mustard (Medium) - $0.00
+      - Oil & Vinegar (Medium) - $0.00
+      - Olive Oil (Medium) - $0.00
+      - Pepper (Medium) - $0.00
+      - Ranch (Medium) - $0.00
+      - Raspberry Vinaigrette (Medium) - $0.00
+      - Red Vinegar (Medium) - $0.00
+      - Russian (Medium) - $0.00
+      - Salt (Medium) - $0.00
+      - Santa Fe (Medium) - $0.00
+      - Sesame Ginger (Medium) - $0.00
+      - SPK (Medium) - $0.00
+    Breakfast Egg Option (Rule: Select up to 1)
+      - 4 Eggs (Small) - $3.00
+      - Egg Whites (Small) - $0.00
+      - Fried Well Done (Small) - $0.00
+      - Omelet (Small) - $0.00
+      - Over Easy (Small) - $0.00
+      - Over Hard (Small) - $0.00
+      - Over Medium (Small) - $0.00
+      - Scrambled (Small) - $0.00
+      - Scrambled Soft (Small) - $0.00
+      - Scrambled Well Done (Small) - $0.00
+      - Sunny Side Up (Small) - $0.00
+    Breakfast Egg Quantity (Rule: Select 1)
+      - 1 Egg (Small) - $0.75
+      - 2 Eggs (Small) - $1.50
+      - 3 Eggs (Small) - $2.25
+      - 5 Eggs (Small) - $3.75
+      - 6 Eggs (Small) - $4.50
+      - 7 Eggs (Small) - $5.25
+      - 8 Eggs (Small) - $6.00
+      - Fried (Small) - $0.00
+    Breakfast Meat (Rule: Select up to 1 item)
+      - Bacon (Small) - $2.00
+      - Bologna (Small) - $1.50
+      - Fried Chicken Cutlet (Small) - $2.50
+      - Grilled Chicken (Small) - $2.50
+      - Ham (Small) - $1.50
+      - Honey Turkey (Small) - $2.00
+      - No Meat (Small) - $0.00
+      - Pastrami (Small) - $2.50
+      - Pepper Turkey (Small) - $2.00
+      - Pepperoni (Small) - $2.00
+      - Salami (Small) - $2.00
+      - Sausage (Small) - $1.50
+      - Steak (Small) - $2.00
+      - Turkey (Small) - $2.00
+      - Turkey Bacon (Small) - $2.00
+      - Turkey Sausage (Small) - $2.00
+[End Rule]
+
+
+[Begin Rule] BYO Sandwiches
+    Bread (Rule: Select 1)
+      - Cinnamon Raisin Bagel (Medium) - $0.50
+      - Croissant (Medium) - $2.00
+      - Egg Bagel (Medium) - $0.50
+      - Egg Everything Bagel (Medium) - $0.50
+      - English Muffin (Medium) - $0.50
+      - Everything Bagel (Medium) - $0.50
+      - Hero (Medium) - $1.00
+      - Onion Bagel (Medium) - $0.50
+      - Onion Roll (Medium) - $0.50
+      - Pita (Medium) - $1.00
+      - Plain Bagel (Medium) - $0.50
+      - Platter (Medium) - $0.00
+      - Poppy Bagel (Medium) - $0.50
+      - Roll (Medium) - $0.00
+      - Rye Bread (sliced) (Medium) - $0.00
+      - Salt Bagel (Medium) - $0.50
+      - Sesame Bagel (Medium) - $0.50
+      - Spinach Wrap (Medium) - $1.00
+      - White Bread (sliced) (Medium) - $0.00
+      - White Wrap  (Medium) - $1.00
+      - Whole Wheat Bagel (Medium) - $0.50
+      - Whole Wheat Bread (sliced) (Medium) - $0.00
+      - Whole Wheat Everything Bagel (Medium) - $0.50
+      - Whole Wheat Roll (Medium) - $0.50
+      - Whole Wheat Wrap (Medium) - $1.00
+    Cheese (Rule: Select up to 5)
+      - American Cheese  (Medium) - $1.00
+      - Blue Cheese Crumble (Medium) - $1.00
+      - Cheddar (Medium) - $1.00
+      - Feta Cheese (Medium) - $1.00
+      - Fresh Mozzarella  (Medium) - $1.00
+      - Mozzarella (Medium) - $1.00
+      - Muenster (Medium) - $1.00
+      - Pepperjack (Medium) - $1.00
+      - Provolone (Medium) - $1.00
+      - Swiss (Medium) - $1.00
+    Protein (Rule: select 1 to 5)
+      - Bacon (Medium) - $3.00
+      - Buffalo chicken salad (Medium) - $2.00
+      - Chicken salad (Medium) - $2.00
+      - Egg salad (Medium) - $2.00
+      - Fried eggplant (Medium) - $2.00
+      - Garden tuna salad (Medium) - $2.50
+      - Grilled chicken (Medium) - $2.00
+      - Grilled vegetables (Medium) - $2.00
+      - Ham (Medium) - $2.00
+      - Ham capicola (Medium) - $2.00
+      - Honey mustard chicken salad (Medium) - $2.00
+      - Honey turkey (Medium) - $3.00
+      - House Roast Turkey (Medium) - $2.00
+      - No meat (Medium) - $0.00
+      - Oven gold turkey (Medium) - $3.00
+      - Pastrami (Medium) - $3.00
+      - Pepper turkey (Medium) - $3.00
+      - Pepperoni (Medium) - $3.00
+      - Roast beef (Medium) - $3.00
+      - Salami (Medium) - $3.00
+      - Sliced buffalo chicken (Medium) - $3.00
+      - Sliced roast chicken (Medium) - $3.00
+      - Smoked turkey (Medium) - $3.00
+      - Tuna salad (Medium) - $2.00
+      - Virginia ham (Medium) - $3.00
+    Toppings (Rule: select up to 10)
+      - Avocado (Medium) - $1.50
+      - Cherry Peppers (Medium) - $0.75
+      - Cole-Slaw (Medium) - $1.50
+      - Cucumber (Medium) - $0.75
+      - Fried Onion Rings (Medium) - $1.50
+      - Lettuce (Medium) - $1.00
+      - Macaroni Salad (Medium) - $1.50
+      - Onion (Medium) - $0.75
+      - Potato Salad  (Medium) - $1.50
+      - Red Onion (Medium) - $0.75
+      - Roasted Red Peppers (Medium) - $1.00
+      - Spinach (Medium) - $1.00
+      - Sundried Tomato (Medium) - $1.00
+      - tomato (Medium) - $1.00
+[End Rule]
+
+
+[Begin Rule] Chopped Salad
+    Salad Add-ons (Rule: select up to 10)
+      - Almonds (Small) - $2.00
+      - Black olives (Small) - $0.50
+      - Bleu cheese (Small) - $2.00
+      - Broccoli (Small) - $0.50
+      - Brussels sprouts (Small) - $0.50
+      - Cheddar cheese (Small) - $2.00
+      - Cranberries(dried) (Small) - $0.50
+      - Crispy tortilla strips (Small) - $0.50
+      - Croutons (Small) - $0.50
+      - Cucumber (Small) - $0.50
+      - Feta cheese (Small) - $2.00
+      - Grilled chicken (Small) - $2.00
+      - Grilled Salmon (Small) - $3.00
+      - Marinated Steak (Small) - $3.00
+      - Tomatoes (Small) - $0.50
+      - Walnuts (Small) - $2.00
+    Salad Base (Rule: Select 1)
+      - Mixed Greens (Small) - $0.00
+      - Romaine (Small) - $0.00
+      - Spinach (Small) - $0.00
+    Salad Dressing (Rule: Select up to 3 items)
+      - Balsamic Vinaigrette (Small) - $0.00
+      - Bleu Cheese (Small) - $0.00
+      - Caesar (Small) - $0.00
+      - Italian (Small) - $0.00
+      - Oil & Vinegar (Small) - $0.00
+      - Olive Oil (Small) - $0.00
+      - Pepper (Small) - $0.00
+      - Ranch (Small) - $0.00
+      - Raspberry Vinaigrette (Small) - $0.00
+      - Russian (Small) - $0.00
+      - Salt (Small) - $0.00
+[End Rule]
+
+[Begin Rule] Coffee
+    Coffee Creamers (Rule: Select up to 1 item):
+    - Milk
+    - Fat-Free Milk
+    - Half and Half
+    - French Vanilla
+    - Irish Cream
+    - Caramel
+    - Hazelnut
+[End Rule]
