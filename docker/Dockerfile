@@ -34,6 +34,6 @@ EXPOSE 8000 6379
 # Start PostgreSQL, Redis, run menuIndexer.py, then main.py
 CMD service postgresql start && \
     service redis-server start && \
-    python menuIndexer.py 
-#python amazon_main.py
+    python menuIndexer.py  && \
+    python amazon_main.py
 
