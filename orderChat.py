@@ -118,6 +118,14 @@ class orderChat:
         self.workflow = self.create_state_machine()
 
 
+    def get_state(self):
+        # Return only serializable state (dict, list, str, int, etc.)
+        return self.state
+
+    def set_state(self, new_state):
+        # Return only serializable state (dict, list, str, int, etc.)
+         self.state = new_state
+         
     def getProcessor(self, prompt2File, rulesFile):
         """Get or create an OrderProcessor with indexed menu and rules data"""
         try:
