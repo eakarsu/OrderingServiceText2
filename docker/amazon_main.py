@@ -12,6 +12,7 @@ from fastapi.responses import HTMLResponse,Response, FileResponse
 from fastapi.exceptions import HTTPException
 import uvicorn
 import sys, logging, io
+from twilio.twiml.messaging_response import MessagingResponse
 
 load_dotenv()  # Loads .env if present
 PORT = 5003
@@ -24,13 +25,26 @@ authtoken = os.getenv("NGROK_AUTHTOKEN")
 ngrok.set_auth_token(authtoken)
 
 
-def update_twilio_webhook(ngrok_url):
+# Dictionary to hold session data
+data_sessions = {}
+chat_sessions = {}
+active_calls = {}
 
+def update_twilio_webhook(ngrok_url, webhook_type):
+    """
+    Updates either voice or SMS webhook for a Twilio phone number.
+    
+    Args:
+        ngrok_url (str): The base ngrok URL
+        webhook_type (str): Either 'voice' or 'sms'
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
     # Get credentials from environment variables
     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-    # Use the auth token shown in your Twilio console (with the "Show" button)
-    auth_token = os.getenv("TWILIO_AUTH_TOKEN")  # Not API_SECRET
-    phone_number = os.getenv("TWILIO_VOICE_NUMBER") # Hardcode for testing
+    auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+    phone_number = os.getenv("TWILIO_VOICE_NUMBER")
     
     print(f"Using account SID: {account_sid}")
     
@@ -38,29 +52,40 @@ def update_twilio_webhook(ngrok_url):
     client = Client(account_sid, auth_token)
     
     try:
-        # Update the voice URL for your phone number
+        # Find the phone number
         numbers = client.incoming_phone_numbers.list(phone_number=phone_number)
         if not numbers:
             print(f"No phone number found matching {phone_number}")
             return False
-            
+        
         number_sid = numbers[0].sid
-        client.incoming_phone_numbers(number_sid).update(voice_url=f"{ngrok_url}/voice")
-        client.incoming_phone_numbers(number_sid).update(
+        
+        # Update based on webhook type
+        if webhook_type.lower() == 'voice':
+            client.incoming_phone_numbers(number_sid).update(
                 voice_url=f"{ngrok_url}/voice",
                 status_callback=f"{ngrok_url}/status",
                 status_callback_method="POST"
-#                status_callback_event=["completed"]
             )
+            print(f"Updated voice webhook for {phone_number} to {ngrok_url}/voice")
         
-        print(f"Updated webhook for {phone_number} to {ngrok_url}/voice")
+        elif webhook_type.lower() == 'sms':
+            client.incoming_phone_numbers(number_sid).update(
+                sms_url=f"{ngrok_url}/sms",
+                sms_method="POST"
+            )
+            print(f"Updated SMS webhook for {phone_number} to {ngrok_url}/sms")
+        
+        else:
+            print(f"Invalid webhook type: {webhook_type}. Use 'voice' or 'sms'.")
+            return False
+        
         return True
         
-        print(f"Successfully updated voice webhook URL to {ngrok_url}/voice")
-        return True
     except Exception as e:
-        print(f"Failed to update webhook URL: {str(e)}")
+        print(f"Failed to update {webhook_type} webhook URL: {str(e)}")
         return False
+
 
 @app.post("/status")
 async def status(request: Request):
@@ -87,6 +112,47 @@ def synthesize_with_polly(text, voice_id="Joanna"):
     with open(audio_filename, "wb") as f:
         f.write(polly_response["AudioStream"].read())
     return audio_filename
+
+@app.api_route("/sms", methods=["GET", "POST"])
+async def sms_reply(request: Request):
+    global CALLER_ID
+
+    # Parse form data for POST request
+    form_data = await request.form()
+    message_body = form_data.get("Body", "").strip()
+    CALLER_ID = form_data.get("From", "").replace("whatsapp:","")
+
+    if CALLER_ID:
+        if CALLER_ID not in data_sessions:
+            print(f"DEBUG: Incoming call received from {CALLER_ID}.")
+            chat_sessions[CALLER_ID] = orderChat(CALLER_ID)
+    else:
+        CALLER_ID = "UNKNOWN"  # Default if 'From' is not present
+        print("DEBUG: Caller ID could not be retrieved.")
+
+    # Initialize session if not already started
+    if CALLER_ID not in data_sessions:
+        data_sessions[CALLER_ID] = []
+
+    # Handle exit command
+    if message_body.lower() == "exit":
+        del data_sessions[CALLER_ID]
+        response = MessagingResponse()
+        response.message("Session ended. Goodbye!")
+        return HTMLResponse(content=str(response), media_type="application/xml")
+
+    # Save the message to the session
+    data_sessions[CALLER_ID].append(message_body)
+
+    # Generate a response
+    response = MessagingResponse()
+    chatResponse = chat_sessions[CALLER_ID].chatAway(message_body)
+    response.message(str(chatResponse))
+    print("CHATBOT: {}".format(str(chatResponse)))
+
+    print("DEBUG: Send following to caller: {}".format(response.to_xml()))
+    return HTMLResponse(content=response.to_xml(), media_type="application/xml")
+
 
 # --- 4. Flask routes ---
 @app.post("/voice")
@@ -158,7 +224,8 @@ if __name__ == "__main__":
     listener = ngrok.forward(f"http://localhost:{PORT}")
     print(f"Ngrok tunnel opened at {listener.url()} for port {PORT}")
     NGROK_URL = listener.url()
-    update_twilio_webhook(NGROK_URL)
+    update_twilio_webhook(NGROK_URL, "voice")
+    update_twilio_webhook(NGROK_URL, "sms")
 
     uvicorn.run(app, host="0.0.0.0", 
                 port=PORT,
