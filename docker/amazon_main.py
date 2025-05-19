@@ -49,8 +49,8 @@ def update_twilio_webhook(ngrok_url):
         client.incoming_phone_numbers(number_sid).update(
                 voice_url=f"{ngrok_url}/voice",
                 status_callback=f"{ngrok_url}/status",
-                status_callback_method="POST",
-                status_callback_event=["completed"]
+                status_callback_method="POST"
+#                status_callback_event=["completed"]
             )
         
         print(f"Updated webhook for {phone_number} to {ngrok_url}/voice")

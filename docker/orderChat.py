@@ -71,7 +71,8 @@ class orderChat:
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.api_url = "https://openrouter.ai/api/v1"
         self.llm_local = ChatOpenAI(
-            model="openai/chatgpt-4o-latest",
+            #model="openai/chatgpt-4o-latest",
+            model = "openai/gpt-4.1",
             #model="google/gemma-3-27b-it",
             openai_api_key=self.api_key,
             openai_api_base=self.api_url,
