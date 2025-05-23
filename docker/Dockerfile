@@ -19,9 +19,10 @@ COPY . /app
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Initialize PostgreSQL, create database and table
 USER postgres
-RUN /etc/init.d/postgresql start && \
+# Initialize PostgreSQL, create database and table
+RUN service postgresql stop && \
+    /etc/init.d/postgresql start && \
     psql --command "CREATE DATABASE restaurant_orders;" && \
     psql -d restaurant_orders --command "CREATE TABLE IF NOT EXISTS orders (id SERIAL PRIMARY KEY, phone_number VARCHAR(15) NOT NULL, order_data JSONB NOT NULL, orderdate TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP, status VARCHAR(20) DEFAULT 'pending');" && \
     psql --command "ALTER USER postgres WITH PASSWORD 'sel33man';" &&\

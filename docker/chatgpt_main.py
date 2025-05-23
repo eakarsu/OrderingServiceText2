@@ -9,12 +9,24 @@ import ngrok
 import uvicorn
 import redis
 import pickle
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 PORT = 5003
 
 app = FastAPI()
-
+origins = [
+    "https://orderlybite.com",
+    "https://www.orderlybite.com"
+    # Add localhost for development if needed
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 authtoken = os.getenv("NGROK_AUTHTOKEN")
 ngrok.set_auth_token(authtoken)
 

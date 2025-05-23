@@ -8,17 +8,34 @@ from dotenv import load_dotenv
 import ngrok
 from twilio.rest import Client
 from fastapi import FastAPI, WebSocket, Request
-from fastapi.responses import HTMLResponse,Response, FileResponse
+from fastapi.responses import HTMLResponse,Response, FileResponse,JSONResponse
 from fastapi.exceptions import HTTPException
 import uvicorn
 import sys, logging, io
 from twilio.twiml.messaging_response import MessagingResponse
+from fastapi.middleware.cors import CORSMiddleware
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VoiceGrant
 
 load_dotenv()  # Loads .env if present
 PORT = 5003
 sessions = {}
 
 app = FastAPI()
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://orderlybite.com",        # Production frontend (Vercel)
+        "https://www.orderlybite.com",    # Production frontend with www
+        "http://localhost:8080",           # Your local React development server
+        "http://localhost:5003"           # Your local React development server
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 polly = boto3.client("polly", region_name="us-east-1")
 TWILIO_NUMBER = os.getenv('TWILIO_NUMBER')
 authtoken = os.getenv("NGROK_AUTHTOKEN")
@@ -137,9 +154,10 @@ async def sms_reply(request: Request):
     # Handle exit command
     if message_body.lower() == "exit":
         del data_sessions[CALLER_ID]
-        response = MessagingResponse()
-        response.message("Session ended. Goodbye!")
-        return HTMLResponse(content=str(response), media_type="application/xml")
+        return JSONResponse(content={"message": "Session ended. Goodbye!"})
+        #response = MessagingResponse()
+        #response.message("Session ended. Goodbye!")
+        #return HTMLResponse(content=str(response), media_type="application/xml")
 
     # Save the message to the session
     data_sessions[CALLER_ID].append(message_body)
@@ -151,7 +169,8 @@ async def sms_reply(request: Request):
     print("CHATBOT: {}".format(str(chatResponse)))
 
     print("DEBUG: Send following to caller: {}".format(response.to_xml()))
-    return HTMLResponse(content=response.to_xml(), media_type="application/xml")
+    return JSONResponse(content={"message": str(chatResponse)})
+    #return HTMLResponse(content=response.to_xml(), media_type="application/xml")
 
 
 # --- 4. Flask routes ---
@@ -189,7 +208,8 @@ async def voice(request: Request):
 
             response.append(gather)
             response.redirect("/voice")
-            return Response(str(response), media_type="application/xml")
+            return JSONResponse(content={"message": str(response)}) 
+            #return Response(str(response), media_type="application/xml")
     
        
         # 2. Call chatService with transcription
@@ -208,14 +228,37 @@ async def voice(request: Request):
         gather.say(response_text,voice="Polly.Joanna-Neural",language="en-US")
         response.append(gather)
         response.redirect("/voice")
-
-        return Response(str(response), media_type="application/xml")
+        return JSONResponse(content={"message": str(response)}) 
+        #return Response(str(response), media_type="application/xml")
     except Exception as e:
         logging.error(f"Error handling voice call: {str(e)}")
         response = VoiceResponse()
         response.say("We're sorry, but there was an error processing your call.")
         response.hangup()
-        return Response(content=str(response), media_type="application/xml")
+        return JSONResponse(content={"message": str(response)}) 
+        #return Response(content=str(response), media_type="application/xml")
+
+@app.post('/token')
+async def token():
+    # Your environment variables are correct
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    api_key = os.getenv('TWILIO_API_KEY_SID')
+    api_secret = os.getenv('TWILIO_API_SECRET')
+    twiml_app_sid = os.getenv('TWIML_APP_SID')
+    
+    # Create access token with voice grant
+    access_token = AccessToken(account_sid, api_key, api_secret, identity='user123')
+    
+    # Create voice grant
+    voice_grant = VoiceGrant(
+        outgoing_application_sid=twiml_app_sid,
+        incoming_allow=True
+    )
+    
+    access_token.add_grant(voice_grant)
+    
+    # Use FastAPI's JSONResponse instead of Flask's jsonify
+    return JSONResponse(content={'token': access_token.to_jwt()})
 
 
 if __name__ == "__main__":
