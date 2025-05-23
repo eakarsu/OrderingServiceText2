@@ -208,8 +208,8 @@ async def voice(request: Request):
 
             response.append(gather)
             response.redirect("/voice")
-            return JSONResponse(content={"message": str(response)}) 
-            #return Response(str(response), media_type="application/xml")
+            #return JSONResponse(content={"message": str(response)}) 
+            return Response(str(response), media_type="application/xml")
     
        
         # 2. Call chatService with transcription
@@ -228,15 +228,15 @@ async def voice(request: Request):
         gather.say(response_text,voice="Polly.Joanna-Neural",language="en-US")
         response.append(gather)
         response.redirect("/voice")
-        return JSONResponse(content={"message": str(response)}) 
-        #return Response(str(response), media_type="application/xml")
+        #return JSONResponse(content={"message": str(response)}) 
+        return Response(str(response), media_type="application/xml")
     except Exception as e:
         logging.error(f"Error handling voice call: {str(e)}")
         response = VoiceResponse()
         response.say("We're sorry, but there was an error processing your call.")
         response.hangup()
-        return JSONResponse(content={"message": str(response)}) 
-        #return Response(content=str(response), media_type="application/xml")
+        #return JSONResponse(content={"message": str(response)}) 
+        return Response(content=str(response), media_type="application/xml")
 
 @app.post('/token')
 async def token():
