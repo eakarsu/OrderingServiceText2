@@ -22,19 +22,37 @@ PORT = 5003
 sessions = {}
 
 app = FastAPI()
+# --- Add CORS Middleware ---
+# Define the origins that are allowed to make cross-site requests.
+# It's crucial to include the origins from which your Capacitor app will be served.
+origins = [
+    "https://orderlybite.com",        # Your production frontend (Vercel)
+    "https://www.orderlybite.com",    # Your production frontend with www
+    
+    # Origins for Capacitor apps [6]
+    "capacitor://localhost",        # For Capacitor iOS local scheme
+    "ionic://localhost",            # Another common Capacitor local scheme (though less used with raw Capacitor)
+    "http://localhost",             # For Capacitor Android local scheme AND potentially some iOS WKWebView scenarios if not using a custom scheme
+
+    # Origins for local development servers
+    "http://localhost:5173",        # Common Vite dev server port (if you use live reload: ionic cap run ios -l)
+    "http://localhost:8100",        # Common Ionic serve port (if you use live reload: ionic cap run ios -l)
+    
+    # Your previously listed local dev server ports
+    "http://localhost:8080",        
+    "http://localhost:5003",        
+
+    # It's also good practice to allow your backend's own origin if it ever serves a frontend
+    "https://api.orderlybite.com" 
+]
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://orderlybite.com",        # Production frontend (Vercel)
-        "https://www.orderlybite.com",    # Production frontend with www
-        "http://localhost:8080",           # Your local React development server
-        "http://localhost:5003"           # Your local React development server
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
-)
+)  
 
 polly = boto3.client("polly", region_name="us-east-1")
 TWILIO_NUMBER = os.getenv('TWILIO_NUMBER')
