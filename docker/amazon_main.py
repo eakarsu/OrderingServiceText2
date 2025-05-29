@@ -172,10 +172,9 @@ async def sms_reply(request: Request):
     # Handle exit command
     if message_body.lower() == "exit":
         del data_sessions[CALLER_ID]
-        return JSONResponse(content={"message": "Session ended. Goodbye!"})
-        #response = MessagingResponse()
-        #response.message("Session ended. Goodbye!")
-        #return HTMLResponse(content=str(response), media_type="application/xml")
+        response = MessagingResponse()
+        response.message("Session ended. Goodbye!")
+        return HTMLResponse(content=str(response), media_type="application/xml")
 
     # Save the message to the session
     data_sessions[CALLER_ID].append(message_body)
@@ -187,8 +186,7 @@ async def sms_reply(request: Request):
     print("CHATBOT: {}".format(str(chatResponse)))
 
     print("DEBUG: Send following to caller: {}".format(response.to_xml()))
-    return JSONResponse(content={"message": str(chatResponse)})
-    #return HTMLResponse(content=response.to_xml(), media_type="application/xml")
+    return HTMLResponse(content=response.to_xml(), media_type="application/xml")
 
 
 # --- 4. Flask routes ---
@@ -226,7 +224,6 @@ async def voice(request: Request):
 
             response.append(gather)
             response.redirect("/voice")
-            #return JSONResponse(content={"message": str(response)}) 
             return Response(str(response), media_type="application/xml")
     
        
