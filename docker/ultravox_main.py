@@ -16,6 +16,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse,Response, FileResponse,JSONResponse
 from fastapi.exceptions import HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VoiceGrant
 
 load_dotenv()
 app = FastAPI()
@@ -382,6 +384,28 @@ async def test_orderchat(phone_number: str, query: str = ""):
             "error": str(e),
             "session_exists": False
         }
+
+@app.post('/token')
+async def token():
+    # Your environment variables are correct
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    api_key = os.getenv('TWILIO_API_KEY_SID')
+    api_secret = os.getenv('TWILIO_API_SECRET')
+    twiml_app_sid = os.getenv('TWIML_APP_SID')
+    
+    # Create access token with voice grant
+    access_token = AccessToken(account_sid, api_key, api_secret, identity='user123')
+    
+    # Create voice grant
+    voice_grant = VoiceGrant(
+        outgoing_application_sid=twiml_app_sid,
+        incoming_allow=True
+    )
+    
+    access_token.add_grant(voice_grant)
+    
+    # Use FastAPI's JSONResponse instead of Flask's jsonify
+    return JSONResponse(content={'token': access_token.to_jwt()})
 
 if __name__ == "__main__":
     print("🍔 Starting Melville Deli Voice AI Server with OrderChat Integration...")
