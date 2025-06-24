@@ -36,5 +36,5 @@ EXPOSE 8000 6379
 CMD service postgresql start && \
     service redis-server start && \
     python menuIndexer.py  && \
-    python amazon_main.py
+    python ultravox_main.py
 

@@ -599,6 +599,16 @@ class orderChat:
                 if sanitized_content is None:
                     raise ValueError("LLM response appears to be JSON but could not be sanitized.")
                 action_data = json.loads(sanitized_content)
+                
+                # ✅ ADD THIS: Handle delivery checking JSON
+                if "type" in action_data and action_data["type"] == "is_delivery_available":
+                    delivery_response = "Perfect! We deliver to that area. Your order total is $17.40. What's your preferred payment method - cash or card?"
+                    return AgentFinish(
+                        return_values={"output": delivery_response},
+                        log=response.content
+                    )
+                
+            
                 if "action" in action_data and action_data["action"] in ["add", "remove", "cancel"]:
                     return AgentAction(
                         tool="order_processing",
