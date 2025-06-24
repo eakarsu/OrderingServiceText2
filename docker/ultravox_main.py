@@ -12,6 +12,10 @@ import ngrok
 import uvicorn
 from orderChat import orderChat
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse,Response, FileResponse,JSONResponse
+from fastapi.exceptions import HTTPException
+from twilio.twiml.messaging_response import MessagingResponse
 
 load_dotenv()
 app = FastAPI()
@@ -28,7 +32,43 @@ NGROK_URL = None
 
 # Store active Ultravox calls for cleanup
 active_calls: Dict[str, str] = {}
+# Dictionary to hold session data
+data_sessions = {}
+chat_sessions = {}
 
+
+# --- Add CORS Middleware ---
+# Define the origins that are allowed to make cross-site requests.
+# It's crucial to include the origins from which your Capacitor app will be served.
+origins = [
+    "https://orderlybite.com",        # Your production frontend (Vercel)
+    "https://www.orderlybite.com",    # Your production frontend with www
+    
+    # Origins for Capacitor apps [6]
+    "capacitor://localhost",        # For Capacitor iOS local scheme
+    "ionic://localhost",            # Another common Capacitor local scheme (though less used with raw Capacitor)
+    "http://localhost",             # For Capacitor Android local scheme AND potentially some iOS WKWebView scenarios if not using a custom scheme
+
+    # Origins for local development servers
+    "http://localhost:5173",        # Common Vite dev server port (if you use live reload: ionic cap run ios -l)
+    "http://localhost:8100",        # Common Ionic serve port (if you use live reload: ionic cap run ios -l)
+    
+    # Your previously listed local dev server ports
+    "http://localhost:8080",        
+    "http://localhost:5003",        
+
+    # It's also good practice to allow your backend's own origin if it ever serves a frontend
+    "https://api.orderlybite.com" 
+]
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)  
 def update_twilio_webhook(ngrok_url, webhook_type):
     """Updates either voice or SMS webhook for a Twilio phone number."""
     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
@@ -76,6 +116,47 @@ def update_twilio_webhook(ngrok_url, webhook_type):
     except Exception as e:
         print(f"❌ Failed to update {webhook_type} webhook URL: {str(e)}")
         return False
+
+@app.api_route("/sms", methods=["GET", "POST"])
+async def sms_reply(request: Request):
+    global CALLER_ID
+
+    # Parse form data for POST request
+    form_data = await request.form()
+    message_body = form_data.get("Body", "").strip()
+    CALLER_ID = form_data.get("From", "").replace("whatsapp:","")
+
+    if CALLER_ID:
+        if CALLER_ID not in data_sessions:
+            print(f"DEBUG: Incoming call received from {CALLER_ID}.")
+            chat_sessions[CALLER_ID] = orderChat(CALLER_ID)
+    else:
+        CALLER_ID = "UNKNOWN"  # Default if 'From' is not present
+        print("DEBUG: Caller ID could not be retrieved.")
+
+    # Initialize session if not already started
+    if CALLER_ID not in data_sessions:
+        data_sessions[CALLER_ID] = []
+
+    # Handle exit command
+    if message_body.lower() == "exit":
+        del data_sessions[CALLER_ID]
+        response = MessagingResponse()
+        response.message("Session ended. Goodbye!")
+        return HTMLResponse(content=str(response), media_type="application/xml")
+
+    # Save the message to the session
+    data_sessions[CALLER_ID].append(message_body)
+
+    # Generate a response
+    response = MessagingResponse()
+    chatResponse = chat_sessions[CALLER_ID].chatAway(message_body)
+    response.message(str(chatResponse))
+    print("CHATBOT: {}".format(str(chatResponse)))
+
+    print("DEBUG: Send following to caller: {}".format(response.to_xml()))
+    return HTMLResponse(content=response.to_xml(), media_type="application/xml")
+
 
 @app.post("/voice")
 async def voice(request: Request):
