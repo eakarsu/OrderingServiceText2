@@ -171,13 +171,26 @@ async def voice(request: Request):
     
     print(f"📞 Incoming call from {caller_number} to {phone_number_called}, Call SID: {call_sid}")
     
-    # ✅ INITIALIZE YOUR EXISTING ORDERCHAT SYSTEM
-    if caller_number not in sessions:
-        print(f"🍽️ Initializing orderChat for {caller_number}")
-        sessions[caller_number] = orderChat(caller_number)  # Uses all your vector DB logic
+    # ✅ CREATE UNIQUE SESSION FOR WEB CALLS
+    DEFAULT_WEB_NUMBER = "+18001234567"  # Your default web number
+    
+    if caller_number == DEFAULT_WEB_NUMBER:
+        # Use call_sid as unique identifier for web calls
+        session_key = f"web_{call_sid}"
+        print(f"🌐 Web call detected - creating unique session: {session_key}")
+    else:
+        # Use caller_number for regular phone calls
+        session_key = caller_number
+        print(f"📱 Regular call - using caller number: {session_key}")
+    
+    # ✅ INITIALIZE YOUR EXISTING ORDERCHAT SYSTEM WITH UNIQUE KEY
+    if session_key not in sessions:
+        print(f"🍽️ Initializing orderChat for {session_key}")
+        sessions[session_key] = orderChat(caller_number)  # Still pass original caller_number to orderChat
+        sessions[session_key].session_key = session_key  # Store the session key for reference
     
     # Create Ultravox call that will use your orderChat as a tool
-    ultravox_call = await create_ultravox_call_with_orderchat(call_sid, caller_number)
+    ultravox_call = await create_ultravox_call_with_orderchat(call_sid, caller_number, session_key)
     
     if ultravox_call:
         ultravox_call_id = ultravox_call["callId"] 
@@ -194,10 +207,10 @@ async def voice(request: Request):
         return Response(str(response), media_type="application/xml")
 
 
-async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str):
+async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str, session_key: str):
     """Create Ultravox call with your existing orderChat system as a tool"""
     
-     # ✅ SIMPLIFIED PROMPT - Remove the confusing instructions
+    # ✅ SIMPLIFIED PROMPT - Remove the confusing instructions
     system_prompt = f"""
     You are a voice assistant for Melville Deli. When a customer speaks:
 
@@ -209,6 +222,7 @@ async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str)
     Start by calling processOrder with an empty string to get the greeting.
     
     Customer phone: {caller_number}
+    Session: {session_key}
     """
     
     headers = {
@@ -216,7 +230,7 @@ async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str)
         "Content-Type": "application/json"
     }
     
-    print(f"📡 Creating Ultravox call with orderChat integration for {caller_number}")
+    print(f"📡 Creating Ultravox call with orderChat integration for {session_key}")
     
     payload = {
         "model": "fixie-ai/ultravox-70B",
@@ -241,10 +255,10 @@ async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str)
                             "required": True
                         },
                         {
-                            "name": "caller_number",
+                            "name": "session_key",  # ✅ CHANGED from caller_number to session_key
                             "location": "PARAMETER_LOCATION_BODY", 
                             "schema": {
-                                "description": "Customer's phone number",
+                                "description": "Unique session identifier",
                                 "type": "string"
                             },
                             "required": True
@@ -260,6 +274,7 @@ async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str)
         "metadata": {
             "twilio_call_sid": call_sid,
             "caller_number": caller_number,
+            "session_key": session_key,  # ✅ ADD session_key to metadata
             "restaurant": "Melville Deli"
         }
     }
@@ -286,6 +301,7 @@ async def create_ultravox_call_with_orderchat(call_sid: str, caller_number: str)
         print(f"❌ Error creating Ultravox call: {e}")
         return None
 
+
 @app.post("/process-order")
 async def process_order(request: Request):
     """Use your existing orderChat system to process customer input"""
@@ -293,20 +309,25 @@ async def process_order(request: Request):
     try:
         data = await request.json()
         user_input = data.get("user_input", "")
-        caller_number = data.get("caller_number", "")
+        session_key = data.get("session_key", "")  # ✅ CHANGED from caller_number to session_key
         
-        print(f"🍽️ Processing order for {caller_number}: '{user_input}'")
+        print(f"🍽️ Processing order for session {session_key}: '{user_input}'")
         
-        # ✅ USE YOUR EXISTING ORDERCHAT SYSTEM
-        if caller_number not in sessions:
-            print(f"🔄 Creating new orderChat session for {caller_number}")
-            sessions[caller_number] = orderChat(caller_number)  # Your existing class with all vector DB logic
+        # ✅ USE SESSION_KEY INSTEAD OF CALLER_NUMBER
+        if session_key not in sessions:
+            print(f"🔄 Creating new orderChat session for {session_key}")
+            # Extract original caller number if it's a web call
+            if session_key.startswith("web_"):
+                caller_number = "+18001234567"  # Default web number
+            else:
+                caller_number = session_key
+            sessions[session_key] = orderChat(caller_number)
         
-        # ✅ USE YOUR EXISTING CHATAWAY METHOD WITH ALL YOUR PROMPTS AND RULES
-        order_chat = sessions[caller_number]
+        # ✅ USE YOUR EXISTING CHATAWAY METHOD WITH SESSION_KEY
+        order_chat = sessions[session_key]
         response = order_chat.chatAway(user_input)
         
-        print(f"🤖 OrderChat response: {response}")
+        print(f"🤖 OrderChat response for {session_key}: {response}")
         
         return {"response": response}
         
@@ -325,10 +346,17 @@ async def status(request: Request):
     print(f"📊 Twilio call {call_sid} status: {call_status}")
     
     if call_status in ["completed", "failed", "busy", "no-answer"]:
-        # Clean up sessions by caller_number
-        if caller_number and caller_number in sessions:
-            del sessions[caller_number]
-            print(f"🧹 Cleaned up orderChat session for {caller_number}")
+        # ✅ CLEAN UP SESSIONS USING CORRECT KEY
+        DEFAULT_WEB_NUMBER = "+18001234567"
+        
+        if caller_number == DEFAULT_WEB_NUMBER:
+            session_key = f"web_{call_sid}"
+        else:
+            session_key = caller_number
+            
+        if session_key in sessions:
+            del sessions[session_key]
+            print(f"🧹 Cleaned up orderChat session for {session_key}")
         
         # Also clean up Ultravox mapping
         ultravox_call_to_remove = None
@@ -342,6 +370,7 @@ async def status(request: Request):
             print(f"🧹 Cleaned up Ultravox mapping for call {call_sid}")
     
     return Response(status_code=204)
+
 
 @app.get("/health")
 async def health():
