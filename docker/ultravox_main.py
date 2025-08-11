@@ -444,7 +444,7 @@ if __name__ == "__main__":
     ngrok.set_auth_token(authtoken)
     
     # Open ngrok tunnel
-    listener = ngrok.forward(f"http://localhost:{NGROK_PORT}" , domain="orderlybite.com.ngrok.app",pooling_enabled=True)
+    listener = ngrok.forward(f"http://localhost:{NGROK_PORT}" , domain="orderlybite.com.ngrok.app")
     print(f"🚀 Ngrok tunnel opened at {listener.url()} for port {NGROK_PORT}")
     NGROK_URL = listener.url()
     
