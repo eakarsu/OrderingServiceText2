@@ -1,0 +1,56 @@
+
+Print using IPP
+sudo apt install cups
+sudo systemctl start cups
+
+pip install pycups
+
+
+Rabbitmq Server
+sudo ufw allow 5672
+sudo ufw allow 15672
+
+nohup /usr/bin/python3 /home/sinanasa/apps/PrintClient/main.py > /home/sinanasa/apps/PrintClient/printClient.log 2>&1 &
+
+sudo systemctl enable myapp.service
+sudo systemctl start myapp.service
+Check logs:
+sudo journalctl -u myapp.service
+
+          'additions': [{'item': 'feta cheese', 'price': '$1'},{'item':'tuna salad', 'price':'$1'}],
+
+
+Do not provide price information to the customer unless customer asks. Provide prices for the function call to process_order. If you provide price information, tell the customer it is an estimated price and exact price may be different.
+
+from chromadb import PersistentClient
+from chromadb import Client
+from chromadb.config import Settings
+from chromadb.utils import embedding_functions
+import json
+
+client = PersistentClient(path="chroma_database")
+embedder = embedding_functions.SentenceTransformerEmbeddingFunction("all-MiniLM-L6-v2")
+#items,rules,rule_options,rule_items
+
+categories_col = client.get_collection("categories", embedder)
+items_col = client.get_collection("items", embedder)
+rules_col = client.get_collection("rules", embedder)
+rule_options_col = client.get_collection("rule_options", embedder)
+rule_items_col = client.get_collection("rule_items", embedder)
+
+
+with open("collection-categories.json", "w") as f:
+    json.dump(categories_col.get(), f)
+
+with open("collection-items.json", "w") as f:
+    json.dump(items_col.get(), f)
+
+with open("collection-rules.json", "w") as f:
+    json.dump(rules_col.get(), f)
+
+with open("collection-rule-options.json", "w") as f:
+    json.dump(rule_options_col.get(), f)
+
+with open("collection-rule-items.json", "w") as f:
+    json.dump(rule_items_col.get(), f)
+

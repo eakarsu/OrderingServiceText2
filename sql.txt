@@ -1,0 +1,25 @@
+restaurant_orders=#  \d orders
+                                         Table "public.orders"
+    Column    |            Type             | Collation | Nullable |              Default
+--------------+-----------------------------+-----------+----------+------------------------------------
+ id           | integer                     |           | not null | nextval('orders_id_seq'::regclass)
+ phone_number | character varying(15)       |           | not null |
+ order_data   | jsonb                       |           | not null |
+ orderdate    | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ status       | character varying(20)       |           |          | 'pending'::character varying
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (id)
+
+CREATE DATABASE restaurant_orders;
+\c restaurant_orders
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    phone_number VARCHAR(15) NOT NULL,
+    order_data JSONB NOT NULL,
+    orderdate TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'pending'
+);
+
+sudo docker build -t myapp .
+sudo docker run -it -p 6380:6379 --entrypoint /bin/bash myapp
+sudo docker run -p 8000:8000 myapp

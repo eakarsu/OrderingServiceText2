@@ -1,0 +1,189 @@
+Looking at your screenshot showing the Claude capacity issue (3,046% used) and the search results, here are the **most commonly used Aider Chat parameters and commands**:
+
+## **Most Common Startup Parameters**
+
+### **Essential Parameters:**
+```bash
+# Basic model selection
+aider --model claude-3-5-sonnet-20241022
+
+# With OpenRouter (solves your capacity issue)
+aider --model openrouter/anthropic/claude-3-5-sonnet
+
+# Cost optimization
+aider --cache-prompts --weak-model openrouter/google/gemini-2.0-flash-lite-preview-02-05:free
+
+# Start with specific files
+aider client/src/lib/twilio.ts server/routes.ts
+```
+
+### **Popular Configuration:**
+```bash
+# Complete setup for your repository
+aider --model openrouter/anthropic/claude-3-5-sonnet --cache-prompts --weak-model openrouter/google/gemini-2.0-flash-lite-preview-02-05:free
+```
+
+## **Most Common In-Chat Commands**
+
+From search result [1], here are the **essential commands** you'll use daily:
+
+### **File Management:**
+```bash
+/add           # Add files to chat (most used)
+/drop          # Remove files from chat
+/ls                  # List all files in chat
+/read-only     # Add reference files
+```
+
+### **Code Operations:**
+```bash
+/diff                # See changes made
+/undo                # Undo last commit
+/commit              # Commit changes
+/run        # Execute shell commands
+/test       # Run tests
+```
+
+### **Navigation & Control:**
+```bash
+/help                # Get help
+/exit                # Exit aider
+/clear               # Clear chat history
+/reset               # Drop all files and clear
+```
+
+## **For Your Specific Repository Issue**
+
+Given your `FoodOrderingWebSite` repository with the large `attached_assets` folder:
+
+### **Recommended Startup:**
+```bash
+cd FoodOrderingWebSite
+aider --model openrouter/anthropic/claude-3-5-sonnet --cache-prompts
+```
+
+### **Essential Commands for Your Use Case:**
+```bash
+# Add only the files you need (avoid attached_assets)
+/add client/src/lib/twilio.ts
+/add server/routes.ts
+/add shared/types.ts
+
+# Drop large folders if accidentally added
+/drop attached_assets
+
+# See what's in your chat
+/ls
+
+# Make changes and commit
+/diff
+/commit "Fix Twilio SMS endpoint data format mismatch"
+```
+
+## **Advanced Commands for Development**
+
+From search result [1], useful for complex projects:
+
+### **Model Management:**
+```bash
+/model               # Switch main model
+/weak-model          # Switch weak model
+/models              # List available models
+```
+
+### **Development Workflow:**
+```bash
+/lint                # Lint and fix code
+/map                 # Show repository structure
+/map-refresh         # Refresh repo understanding
+/tokens              # Check token usage
+```
+
+## **Keyboard Shortcuts**
+
+From search result [1], essential shortcuts:
+- **Ctrl-R**: Search command history
+- **Up Arrow**: Previous commands
+- **Ctrl-C**: Interrupt (always safe)
+- **Ctrl-X Ctrl-E**: Open editor for long messages
+
+## **Most Used Workflow Pattern**
+
+```bash
+# 1. Start with cost-effective setup
+aider --model openrouter/anthropic/claude-3-5-sonnet --cache-prompts
+
+# 2. Add specific files (not entire repo)
+/add client/src/lib/twilio.ts server/routes.ts
+
+# 3. Make changes
+"Fix the data format mismatch between frontend JSON and backend form data"
+
+# 4. Review and commit
+/diff
+/commit "Fix SMS endpoint data format issue"
+
+# 5. Test
+/run npm test
+```
+
+**The key commands you'll use 90% of the time are: `/add`, `/drop`, `/diff`, `/commit`, `/ls`, and `/run`. Start with these and gradually learn the advanced features as needed.**
+
+[1] https://aider.chat/docs/usage/commands.html
+[2] https://pplx-res.cloudinary.com/image/private/user_uploads/24312971/feaebd8c-4855-4ea1-b95e-8cab4245c49f/Screenshot-2025-06-16-at-7.23.28-AM.jpg
+[3] https://github.com/DMTarmey/aider-chat
+[4] https://github.com/magnusahlden/aider_ollama
+[5] https://aider.chat/docs/usage/modes.html
+[6] https://synthetic-souls.nlr.ai/venv/lib/python3.12/site-packages/aider/website/docs/usage-1/commands
+[7] https://aider.chat/docs/config/options.html
+[8] https://aider.chat/docs/usage/watch.html
+[9] https://aider.chat/docs/scripting.html
+[10] https://aider.chat/docs/usage.html
+[11] https://simonwillison.net/2024/Jul/31/aider/
+
+Aider supports commands from within the chat, which all start with /.
+
+Command	Description
+/add	Add files to the chat so aider can edit them or review them in detail
+/architect	Enter architect/editor mode using 2 different models. If no prompt provided, switches to architect/editor mode.
+/ask	Ask questions about the code base without editing any files. If no prompt provided, switches to ask mode.
+/chat-mode	Switch to a new chat mode
+/clear	Clear the chat history
+/code	Ask for changes to your code. If no prompt provided, switches to code mode.
+/commit	Commit edits to the repo made outside the chat (commit message optional)
+/context	Enter context mode to see surrounding code context. If no prompt provided, switches to context mode.
+/copy	Copy the last assistant message to the clipboard
+/copy-context	Copy the current chat context as markdown, suitable to paste into a web UI
+/diff	Display the diff of changes since the last message
+/drop	Remove files from the chat session to free up context space
+/edit	Alias for /editor: Open an editor to write a prompt
+/editor	Open an editor to write a prompt
+/editor-model	Switch the Editor Model to a new LLM
+/exit	Exit the application
+/git	Run a git command (output excluded from chat)
+/help	Ask questions about aider
+/lint	Lint and fix in-chat files or all dirty files if none in chat
+/load	Load and execute commands from a file
+/ls	List all known files and indicate which are included in the chat session
+/map	Print out the current repository map
+/map-refresh	Force a refresh of the repository map
+/model	Switch the Main Model to a new LLM
+/models	Search the list of available models
+/multiline-mode	Toggle multiline mode (swaps behavior of Enter and Meta+Enter)
+/paste	Paste image/text from the clipboard into the chat. Optionally provide a name for the image.
+/quit	Exit the application
+/read-only	Add files to the chat that are for reference only, or turn added files to read-only
+/reasoning-effort	Set the reasoning effort level (values: number or low/medium/high depending on model)
+/report	Report a problem by opening a GitHub Issue
+/reset	Drop all files and clear the chat history
+/run	Run a shell command and optionally add the output to the chat (alias: !)
+/save	Save commands to a file that can reconstruct the current chat session’s files
+/settings	Print out the current settings
+/test	Run a shell command and add the output to the chat on non-zero exit code
+/think-tokens	Set the thinking token budget (supports formats like 8096, 8k, 10.5k, 0.5M, or 0 to disable)
+/tokens	Report on the number of tokens used by the current chat context
+/undo	Undo the last git commit if it was done by aider
+/voice	Record and transcribe voice input
+/weak-model	Switch the Weak Model to a new LLM
+/web	Scrape a webpage, convert to markdown and send in a message
+

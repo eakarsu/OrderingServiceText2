@@ -1,0 +1,16 @@
+flask
+langchain-core
+langgraph
+chromadb
+psycopg2-binary
+pydantic
+langchain_openai
+fastapi
+uvicorn
+python-dotenv
+twilio
+PyJWT
+passlib[bcrypt]
+reportlab
+email-validator
+python-multipart
