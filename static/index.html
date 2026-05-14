@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrderingServiceText — AI Sandbox</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+           max-width: 880px; margin: 24px auto; padding: 0 16px; color: #222; }
+    h1 { margin-bottom: 4px; }
+    .sub { color: #666; margin-top: 0; }
+    fieldset { border: 1px solid #ddd; border-radius: 6px; margin: 16px 0;
+               padding: 12px 16px; }
+    legend { font-weight: 600; padding: 0 6px; }
+    label { display: block; font-size: 13px; color: #444; margin-top: 8px; }
+    input[type=text], textarea {
+      width: 100%; box-sizing: border-box; padding: 8px;
+      font-family: inherit; font-size: 14px; border: 1px solid #bbb;
+      border-radius: 4px;
+    }
+    textarea { min-height: 70px; }
+    button {
+      margin-top: 8px; padding: 8px 14px; background: #2563eb; color: white;
+      border: 0; border-radius: 4px; cursor: pointer; font-size: 14px;
+    }
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #999; cursor: not-allowed; }
+    pre.result {
+      background: #0f172a; color: #e2e8f0; padding: 10px; border-radius: 4px;
+      max-height: 280px; overflow: auto; white-space: pre-wrap; font-size: 12px;
+      margin-top: 8px;
+    }
+    .row { display: flex; gap: 8px; align-items: flex-end; }
+    .row > * { flex: 1; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 11px; font-weight: 600; }
+    .pill.ok  { background: #dcfce7; color: #166534; }
+    .pill.bad { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <h1>OrderingServiceText</h1>
+  <p class="sub">
+    Conversational text/SMS ordering — AI sandbox.
+    Status: <span id="ai-status" class="pill bad">unknown</span>
+  </p>
+
+  <fieldset>
+    <legend>Caller ID (shared by all forms)</legend>
+    <label>Phone number used as session key</label>
+    <input id="caller-id" type="text" value="+19175587915" />
+  </fieldset>
+
+  <!-- /api/ai/chat -->
+  <fieldset>
+    <legend>Send a text message <code>POST /api/ai/chat</code></legend>
+    <label>Customer message (e.g. "I'd like a large pepperoni for delivery")</label>
+    <textarea id="chat-input" placeholder="Type a message as if texting the restaurant..."></textarea>
+    <div class="row">
+      <button id="chat-send">Send</button>
+      <button id="chat-reset" style="background:#64748b;">Reset session</button>
+    </div>
+    <pre id="chat-result" class="result">[result]</pre>
+  </fieldset>
+
+  <!-- /api/ai/process-order -->
+  <fieldset>
+    <legend>One-shot menu lookup <code>POST /api/ai/process-order</code></legend>
+    <label>Menu query (single-shot, no chat history)</label>
+    <input id="po-input" type="text" placeholder="e.g. medium cappuccino with oat milk" />
+    <button id="po-send">Run</button>
+    <pre id="po-result" class="result">[result]</pre>
+  </fieldset>
+
+  <!-- /api/ai/categories -->
+  <fieldset>
+    <legend>List menu categories <code>GET /api/ai/categories</code></legend>
+    <button id="cats-send">Fetch categories</button>
+    <pre id="cats-result" class="result">[result]</pre>
+  </fieldset>
+
+  <!-- /api/ai/index-menu -->
+  <fieldset>
+    <legend>Re-index menu (admin) <code>POST /api/ai/index-menu</code></legend>
+    <label>Menu file path (relative to project root)</label>
+    <input id="im-menu" type="text" value="misc2/prompt2.txt" />
+    <label>Rules file path (optional)</label>
+    <input id="im-rules" type="text" value="misc2/rules.txt" />
+    <button id="im-send">Re-index</button>
+    <pre id="im-result" class="result">[result]</pre>
+  </fieldset>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const callerId = () => $("caller-id").value.trim() || "+19175587915";
+
+  async function postJSON(path, body) {
+    const r = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const text = await r.text();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch (e) { parsed = text; }
+    return { status: r.status, body: parsed };
+  }
+
+  async function getJSON(path) {
+    const r = await fetch(path);
+    const text = await r.text();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch (e) { parsed = text; }
+    return { status: r.status, body: parsed };
+  }
+
+  function show(el, res) {
+    el.textContent = "HTTP " + res.status + "\n\n" +
+      (typeof res.body === "string" ? res.body : JSON.stringify(res.body, null, 2));
+  }
+
+  // Health probe.
+  (async () => {
+    try {
+      const res = await getJSON("/api/health");
+      const ok = res.body && res.body.ai_configured;
+      const pill = $("ai-status");
+      pill.textContent = ok ? "AI configured" : "AI not configured (set OPENROUTER_API_KEY)";
+      pill.className = "pill " + (ok ? "ok" : "bad");
+    } catch (e) {
+      $("ai-status").textContent = "backend unreachable";
+    }
+  })();
+
+  $("chat-send").addEventListener("click", async () => {
+    const btn = $("chat-send"); btn.disabled = true;
+    try {
+      const res = await postJSON("/api/ai/chat", {
+        input: $("chat-input").value,
+        caller_id: callerId(),
+      });
+      show($("chat-result"), res);
+    } finally { btn.disabled = false; }
+  });
+
+  $("chat-reset").addEventListener("click", async () => {
+    const res = await postJSON("/api/ai/reset", { caller_id: callerId() });
+    show($("chat-result"), res);
+  });
+
+  $("po-send").addEventListener("click", async () => {
+    const btn = $("po-send"); btn.disabled = true;
+    try {
+      const res = await postJSON("/api/ai/process-order", {
+        query: $("po-input").value,
+        caller_id: callerId(),
+      });
+      show($("po-result"), res);
+    } finally { btn.disabled = false; }
+  });
+
+  $("cats-send").addEventListener("click", async () => {
+    const res = await getJSON("/api/ai/categories?caller_id=" + encodeURIComponent(callerId()));
+    show($("cats-result"), res);
+  });
+
+  $("im-send").addEventListener("click", async () => {
+    const btn = $("im-send"); btn.disabled = true;
+    try {
+      const res = await postJSON("/api/ai/index-menu", {
+        menu_file: $("im-menu").value,
+        rules_file: $("im-rules").value || null,
+      });
+      show($("im-result"), res);
+    } finally { btn.disabled = false; }
+  });
+</script>
+</body>
+</html>
