@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, FolderOpen, UtensilsCrossed, Users, User, X } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, FolderOpen, UtensilsCrossed, Users, User, X, KanbanSquare } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/menu-items', label: 'Menu Items', icon: UtensilsCrossed },
   { to: '/users', label: 'Users', icon: Users, adminOnly: true },
   { to: '/profile', label: 'Profile', icon: User },
+  { to: '/custom-views', label: 'Order Views', icon: KanbanSquare },
 ];
 
 interface Props {

@@ -17,6 +17,8 @@ import MenuItemsPage from './pages/menu/MenuItemsPage';
 import MenuItemDetailPage from './pages/menu/MenuItemDetailPage';
 import UsersPage from './pages/users/UsersPage';
 import ProfilePage from './pages/profile/ProfilePage';
+// @ts-expect-error - JS module per spec
+import CustomViewsPage from './pages/CustomViewsPage.js';
 
 export default function App() {
   return (
@@ -42,6 +44,7 @@ export default function App() {
               <Route path="/menu-items/:id" element={<MenuItemDetailPage />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/custom-views" element={<CustomViewsPage />} />
             </Route>
 
             {/* Default redirect */}
