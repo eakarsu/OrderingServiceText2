@@ -85,6 +85,7 @@ for _modpath in (
 ):
     _try_include(_modpath)
 _try_include("backend.routers.ai_extras")  # Custom Feature Suggestions (batch 11)
+_try_include("backend.routers.customViews")  # Order Views (kanban, volume, broadcast, receipt)
 
 
 # ----- Health & meta -----

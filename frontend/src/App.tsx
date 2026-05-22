@@ -20,12 +20,18 @@ import ProfilePage from './pages/profile/ProfilePage';
 // @ts-expect-error - JS module per spec
 import CustomViewsPage from './pages/CustomViewsPage.js';
 
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
 export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
