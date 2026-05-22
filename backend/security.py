@@ -34,7 +34,15 @@ def create_refresh_token(data: dict) -> str:
 
 
 def decode_token(token: str) -> dict:
-    return jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+    # PyJWT >= 2.10 enforces a string-typed "sub" claim. This codebase encodes
+    # the int user id, so disable the verify_sub guard to stay compatible while
+    # leaving signature + expiry checks active.
+    return jwt.decode(
+        token,
+        settings.JWT_SECRET,
+        algorithms=[settings.JWT_ALGORITHM],
+        options={"verify_sub": False},
+    )
 
 
 def generate_token() -> str:
