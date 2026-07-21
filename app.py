@@ -3,9 +3,8 @@
 Wires up:
   * backend/ admin routers (auth, users, orders, categories, menu_items,
     dashboard) — previously dark code with no entry point.
-  * NEW backend.routers.ai — wraps standalone AI scripts (orderChat,
-    menuIndexer, orderProcessor) as POST /api/ai/* endpoints. Returns 503
-    when OPENROUTER_API_KEY is missing.
+  * the fail-fast governed order workflow. Legacy direct-model/generated
+    capability routes are quarantined rather than presented as order actions.
   * CORS for localhost dev (5173 Vite + 8000 served HTML).
   * Static FE at /static (vanilla JS forms — see static/index.html).
   * Root / serves the static index for one-click launch UX.
@@ -14,7 +13,6 @@ Launch:
     uvicorn app:app --reload --host 0.0.0.0 --port 8000
 
 Required env:
-    OPENROUTER_API_KEY  — for /api/ai/* (otherwise endpoints return 503)
     DB_*                — for /api/auth, /api/users, etc. (Postgres)
     JWT_SECRET          — for token signing
 """
@@ -23,11 +21,12 @@ import os
 import sys
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
+from backend.routers.governed_orders import router as governed_orders_router
 
 # Ensure project root is on sys.path so `from orderChat import orderChat`
 # resolves when launched from any cwd.
@@ -38,6 +37,7 @@ if str(ROOT) not in sys.path:
 load_dotenv()
 
 app = FastAPI(title="OrderingServiceText API")
+app.include_router(governed_orders_router)
 
 # ----- CORS (localhost dev) -----
 _cors_origins_env = os.getenv("CORS_ORIGINS", "")
@@ -81,11 +81,22 @@ for _modpath in (
     "backend.routers.categories",
     "backend.routers.menu_items",
     "backend.routers.dashboard",
-    "backend.routers.ai",  # NEW — wraps standalone AI scripts
 ):
     _try_include(_modpath)
-_try_include("backend.routers.ai_extras")  # Custom Feature Suggestions (batch 11)
-_try_include("backend.routers.customViews")  # Order Views (kanban, volume, broadcast, receipt)
+
+
+@app.api_route(
+    "/api/{legacy_surface}/{legacy_path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+    include_in_schema=False,
+)
+def retired_generated_surface(legacy_surface: str, legacy_path: str):
+    if legacy_surface not in {"ai", "ai-extras", "custom-views"}:
+        raise HTTPException(status_code=404, detail="Not found")
+    raise HTTPException(
+        status_code=410,
+        detail="Generated/direct-model order actions are retired; use the governed order API",
+    )
 
 
 # ----- Health & meta -----
@@ -93,7 +104,7 @@ _try_include("backend.routers.customViews")  # Order Views (kanban, volume, broa
 def health():
     return {
         "status": "ok",
-        "ai_configured": bool(os.getenv("OPENROUTER_API_KEY")),
+        "governed_orders": "mounted",
         "router_mount_errors": _mount_errors,
     }
 

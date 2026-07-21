@@ -1,0 +1,60 @@
+name: governed-orders
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ordering_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ordering_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ordering_ci
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: ordering_ci
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: ci-only-secret-not-for-production
+      RUN_DB_TESTS: "1"
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ordering_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Unit and static verification
+        run: |
+          python -m compileall -q app.py backend
+      - name: Fresh and repeatable migrations
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE TABLE IF NOT EXISTS orders (id SERIAL PRIMARY KEY, phone_number TEXT, order_data JSONB, orderdate TIMESTAMP DEFAULT NOW())'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/migrations/001_initial_schema.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/migrations/002_governed_order_workflow.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/migrations/002_governed_order_workflow.sql
+      - name: Unit and database-backed HTTP tests
+        run: |
+          python -c "from app import app; assert any(route.path == '/api/governed-orders' for route in app.routes)"
+          python -m unittest discover -s tests -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --prefix frontend
+      - run: npm audit --prefix frontend --omit=dev --audit-level=high
+      - run: npm run build --prefix frontend

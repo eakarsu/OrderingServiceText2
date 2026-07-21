@@ -24,8 +24,18 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    # Login must also support reserved internal/test domains for already
+    # provisioned accounts; registration retains the stricter EmailStr policy.
+    email: str
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def normalize_login_email(cls, value):
+        value = value.strip().lower()
+        if len(value) > 255 or "@" not in value:
+            raise ValueError("Valid email is required")
+        return value
 
 
 class TokenResponse(BaseModel):

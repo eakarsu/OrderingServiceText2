@@ -77,7 +77,12 @@ def get_order(order_id: int, user=Depends(get_current_user), conn=Depends(get_db
 
 @router.put("/{order_id}")
 def update_order(order_id: int, req: OrderUpdateRequest, user=Depends(require_role("admin", "manager")), conn=Depends(get_db)):
-    result = order_service.update_order(conn, order_id, req.status, req.order_data)
+    if req.status is not None:
+        raise HTTPException(
+            status_code=409,
+            detail="Direct status changes are disabled; use /api/governed-orders/{id}/commands",
+        )
+    result = order_service.update_order(conn, order_id, None, req.order_data)
     if not result:
         raise HTTPException(status_code=404, detail="Order not found")
     return result
@@ -99,5 +104,10 @@ def bulk_delete(req: BulkDeleteRequest, user=Depends(require_role("admin")), con
 
 @router.put("/bulk-update")
 def bulk_update(req: BulkUpdateRequest, user=Depends(require_role("admin", "manager")), conn=Depends(get_db)):
+    if req.updates.get("status") is not None:
+        raise HTTPException(
+            status_code=409,
+            detail="Bulk status changes are disabled; submit idempotent governed order commands",
+        )
     count = order_service.bulk_update_orders(conn, req.ids, req.updates)
     return {"message": f"{count} orders updated"}

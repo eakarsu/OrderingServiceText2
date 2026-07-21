@@ -6,6 +6,7 @@ psycopg2-binary
 pydantic
 langchain_openai
 fastapi
+httpx
 uvicorn
 python-dotenv
 twilio

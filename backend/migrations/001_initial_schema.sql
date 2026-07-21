@@ -1,6 +1,14 @@
 -- Migration 001: Initial admin dashboard schema
 -- Run: psql -d restaurant_orders -f backend/migrations/001_initial_schema.sql
 
+-- Preserve the legacy order intake contract when bootstrapping a fresh database.
+CREATE TABLE IF NOT EXISTS orders (
+    id SERIAL PRIMARY KEY,
+    phone_number VARCHAR(20) NOT NULL,
+    order_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    orderdate TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
