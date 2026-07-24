@@ -27,6 +27,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from backend.routers.governed_orders import router as governed_orders_router
+from backend.routers.application_ai import router as application_ai_router
 
 # Ensure project root is on sys.path so `from orderChat import orderChat`
 # resolves when launched from any cwd.
@@ -38,6 +39,7 @@ load_dotenv()
 
 app = FastAPI(title="OrderingServiceText API")
 app.include_router(governed_orders_router)
+app.include_router(application_ai_router)
 
 # ----- CORS (localhost dev) -----
 _cors_origins_env = os.getenv("CORS_ORIGINS", "")

@@ -3,9 +3,21 @@
 
 set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ ! -f "$PROJECT_DIR/.env" ]; then
+  echo "Missing .env" >&2
+  exit 1
+fi
+set -a
+. "$PROJECT_DIR/.env"
+set +a
 BACKEND_PORT="${BACKEND_PORT:-8000}"
 FRONTEND_PORT="${FRONTEND_PORT:-5173}"
-PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || command -v python || true)}"
+if [ -x "$PROJECT_DIR/.venv/bin/python" ]; then
+  default_python="$PROJECT_DIR/.venv/bin/python"
+else
+  default_python="$(command -v python3 || command -v python || true)"
+fi
+PYTHON_BIN="${PYTHON_BIN:-$default_python}"
 export DB_DATABASE="${DB_DATABASE:-${DB_NAME:-${PGDATABASE:-}}}"
 
 if [ -z "$PYTHON_BIN" ]; then
@@ -37,4 +49,4 @@ fi
 BACKEND_PID=$!
 
 cd "$PROJECT_DIR/frontend"
-npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT"
+exec npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT" --strictPort
