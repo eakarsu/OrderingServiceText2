@@ -4,11 +4,12 @@ import os
 from typing import Any
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, field_validator
 
 from backend.database import get_db
 from backend.dependencies import get_current_user
+from backend.native_advisory_execution import run_native, connected
 
 router = APIRouter(prefix="/api/application-ai", tags=["application-ai"])
 REQUIRED_BASE_URL = "https://openrouter.ai/api/v1"
@@ -29,6 +30,7 @@ class OrderAdviceRequest(BaseModel):
 @router.post("/order-advice")
 async def order_advice(
     request: OrderAdviceRequest,
+    transport: Request,
     user: dict[str, Any] = Depends(get_current_user),
     conn=Depends(get_db),
 ):
@@ -60,17 +62,20 @@ async def order_advice(
         "HTTP-Referer": os.getenv("CLIENT_URL", "http://127.0.0.1"),
         "X-Title": "Ordering Service Text",
     }
-    try:
+    async def provider_call():
         async with httpx.AsyncClient(timeout=120.0) as client:
-            response = await client.post(f"{REQUIRED_BASE_URL}/chat/completions", headers=headers, json=payload)
+            return await client.post(f"{REQUIRED_BASE_URL}/chat/completions", headers=headers, json=payload)
+    try:
+        response = await run_native(transport, user["id"], provider_call, timeout=120)
         response.raise_for_status()
         provider_payload = response.json()
         advice = provider_payload.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-        if not advice:
+        if not advice or not str(provider_payload.get("id") or "").strip():
             raise ValueError("OpenRouter returned no ordering advice")
     except (httpx.HTTPError, ValueError, KeyError, IndexError) as exc:
         raise HTTPException(status_code=502, detail="OpenRouter advice request failed") from exc
 
+    await connected(transport)
     with conn.cursor() as cursor:
         cursor.execute(
             """
@@ -88,5 +93,17 @@ async def order_advice(
             ),
         )
         stored = cursor.fetchone()
-        conn.commit()
+        try:
+            await connected(transport)
+            conn.commit()
+        except BaseException:
+            conn.rollback()
+            raise
     return {"id": stored[0], "advice": advice, "model": model, "createdAt": stored[1].isoformat()}
+
+@router.get("/order-advice")
+async def order_advice_history(user: dict[str, Any] = Depends(get_current_user), conn=Depends(get_db)):
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT id,prompt,result,model,created_at FROM ordering_ai_results WHERE user_id=%s ORDER BY created_at DESC LIMIT 50", (user["id"],))
+        rows=cursor.fetchall()
+    return {"reports":[{"id":str(row[0]),"prompt":row[1],"content":row[2],"model":row[3],"createdAt":row[4].isoformat()} for row in rows]}

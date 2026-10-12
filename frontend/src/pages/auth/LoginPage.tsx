@@ -1,20 +1,24 @@
+import { useRef as useDemoLoginRef, useState as useDemoLoginState } from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
+  const demoLoginLock = useDemoLoginRef(false);
+  const [demoLoginBusy, setDemoLoginBusy] = useDemoLoginState(false);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, demoLoginCredentials: { email: string; password: string } | undefined = undefined) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      await login((demoLoginCredentials?.email ?? email), (demoLoginCredentials?.password ?? password));
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (err: any) {
@@ -45,12 +49,22 @@ export default function LoginPage() {
           </div>
           <button
             type="button"
-            onClick={() => { setEmail(import.meta.env.VITE_DEMO_EMAIL || ''); setPassword(import.meta.env.VITE_DEMO_PASSWORD || ''); }}
-            disabled={!import.meta.env.VITE_DEMO_EMAIL || !import.meta.env.VITE_DEMO_PASSWORD}
-            aria-label="Auto Fill Demo Credentials"
+            onClick={async (event) => {
+ if (demoLoginLock.current) return;
+ demoLoginLock.current = true; setDemoLoginBusy(true);
+ const values: {email?: string; password?: string; error?: unknown} = {};
+ const captureDemoValue = (key: "email" | "password" | "error", value: any) => { values[key] = value; return value; };
+ try {
+  await (async () => { setEmail(captureDemoValue("email", import.meta.env.VITE_DEMO_EMAIL || '')); setPassword(captureDemoValue("password", import.meta.env.VITE_DEMO_PASSWORD || '')); })();
+  if (values.error || typeof values.email !== 'string' || !values.email || typeof values.password !== 'string' || !values.password) {  return; }
+  await handleSubmit(event, { email: values.email, password: values.password });
+ } finally { demoLoginLock.current = false; setDemoLoginBusy(false); }
+}}
+            disabled={demoLoginBusy || (!import.meta.env.VITE_DEMO_EMAIL || !import.meta.env.VITE_DEMO_PASSWORD)}
+            aria-label="Log In as Demo"
             style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
           >
-            Auto Fill Demo Credentials
+            Log In as Demo
           </button>
           <button
             type="submit" disabled={loading}

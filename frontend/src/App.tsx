@@ -1,3 +1,4 @@
+import NativeAIPage from './native-ai/NativeAIPage';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
@@ -41,6 +42,7 @@ export default function App() {
 
             {/* Protected routes */}
             <Route element={<DashboardLayout />}>
+              <Route path="/ai-workspace" element={<NativeAIPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/orders/:id" element={<OrderDetailPage />} />

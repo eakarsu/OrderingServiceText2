@@ -3,6 +3,7 @@ import { LayoutDashboard, ShoppingCart, FolderOpen, UtensilsCrossed, Users, User
 import { useAuth } from '../../contexts/AuthContext';
 
 const navItems = [
+  { to: '/ai-workspace', label: 'AI workspace', icon: LayoutDashboard },
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/categories', label: 'Categories', icon: FolderOpen },
