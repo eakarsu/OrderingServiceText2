@@ -6,6 +6,15 @@ from backend.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+_PLACEHOLDER_SECRETS = {"", "change-me-in-production", "changeme", "secret"}
+
+
+def _require_jwt_secret() -> str:
+    secret = settings.JWT_SECRET or ""
+    if len(secret) < 32 or secret.lower() in _PLACEHOLDER_SECRETS:
+        raise RuntimeError("JWT_SECRET must be a non-placeholder value of at least 32 characters")
+    return secret
+
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -21,7 +30,7 @@ def create_access_token(data: dict) -> str:
         minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
     )
     payload["type"] = "access"
-    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    return jwt.encode(payload, _require_jwt_secret(), algorithm=settings.JWT_ALGORITHM)
 
 
 def create_refresh_token(data: dict) -> str:
@@ -30,7 +39,7 @@ def create_refresh_token(data: dict) -> str:
         days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
     )
     payload["type"] = "refresh"
-    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    return jwt.encode(payload, _require_jwt_secret(), algorithm=settings.JWT_ALGORITHM)
 
 
 def decode_token(token: str) -> dict:
@@ -39,7 +48,7 @@ def decode_token(token: str) -> dict:
     # leaving signature + expiry checks active.
     return jwt.decode(
         token,
-        settings.JWT_SECRET,
+        _require_jwt_secret(),
         algorithms=[settings.JWT_ALGORITHM],
         options={"verify_sub": False},
     )
